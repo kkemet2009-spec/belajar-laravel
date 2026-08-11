@@ -12,7 +12,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::latest()->get();
+        $products =Product::latest()->paginate(10);
 
         return view('products.index', compact('products'));
     }
@@ -28,28 +28,48 @@ class ProductController extends Controller
     /**
      * Menyimpan produk baru
      */
-    public function store(Request $request)
+   public function store(Request $request)
 {
     $request->validate([
-        'name' => 'required|max:255',
-        'slug' => 'required|unique:products,slug',
-        'price' => 'required|numeric',
+        'name' => 'required|string|max:255',
+        'price' => 'required|numeric|min:0',
         'stock' => 'required|integer|min:0',
+        'description' => 'nullable|string',
         'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-        'description' => 'nullable',
     ]);
 
-    $data = $request->except('image');
+    // Buat slug dasar dari nama produk
+    $baseSlug = \Illuminate\Support\Str::slug($request->name);
+    $slug = $baseSlug;
 
-    if ($request->hasFile('image')) {
-        $data['image'] = $request->file('image')->store('products', 'public');
+    // Cek apakah slug sudah digunakan
+    $counter = 1;
+
+    while (\App\Models\Product::where('slug', $slug)->exists()) {
+        $slug = $baseSlug . '-' . $counter;
+        $counter++;
     }
 
-    Product::create($data);
+    // Upload gambar
+    $imagePath = null;
+
+    if ($request->hasFile('image')) {
+        $imagePath = $request->file('image')->store('products', 'public');
+    }
+
+    // Simpan produk
+    \App\Models\Product::create([
+        'name' => $request->name,
+        'price' => $request->price,
+        'stock' => $request->stock,
+        'description' => $request->description,
+        'slug' => $slug,
+        'image' => $imagePath,
+    ]);
 
     return redirect()
         ->route('products.index')
-        ->with('success', 'Produk berhasil ditambahkan.');
+        ->with('success', 'Produk berhasil ditambahkan!');
 }
 
     /**
@@ -74,32 +94,72 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
 {
     $request->validate([
-        'name' => 'required|max:255',
-        'slug' => 'required|unique:products,slug,' . $product->id,
-        'price' => 'required|numeric',
+        'name' => 'required|string|max:255',
+        'price' => 'required|numeric|min:0',
         'stock' => 'required|integer|min:0',
+        'description' => 'nullable|string',
         'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-        'description' => 'nullable',
     ]);
 
-    $data = $request->except('image');
+    $data = [
+        'name' => $request->name,
+        'price' => $request->price,
+        'stock' => $request->stock,
+        'description' => $request->description,
+    ];
+
+    /*
+    |--------------------------------------------------------------------------
+    | Jika nama produk berubah, buat slug baru yang unik
+    |--------------------------------------------------------------------------
+    */
+
+    $baseSlug = \Illuminate\Support\Str::slug($request->name);
+    $slug = $baseSlug;
+    $counter = 1;
+
+    while (
+        \App\Models\Product::where('slug', $slug)
+            ->where('id', '!=', $product->id)
+            ->exists()
+    ) {
+        $slug = $baseSlug . '-' . $counter;
+        $counter++;
+    }
+
+    $data['slug'] = $slug;
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Upload gambar baru
+    |--------------------------------------------------------------------------
+    */
 
     if ($request->hasFile('image')) {
 
-        // Hapus foto lama
-        if ($product->image) {
-            \Storage::disk('public')->delete($product->image);
+        // Hapus gambar lama
+        if (
+            $product->image &&
+            \Illuminate\Support\Facades\Storage::disk('public')->exists($product->image)
+        ) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($product->image);
         }
 
-        // Simpan foto baru
-        $data['image'] = $request->file('image')->store('products', 'public');
+        // Simpan gambar baru
+        $data['image'] = $request->file('image')->store(
+            'products',
+            'public'
+        );
     }
+
 
     $product->update($data);
 
+
     return redirect()
-        ->route('products.show', $product)
-        ->with('success', 'Produk berhasil diperbarui.');
+        ->route('products.index')
+        ->with('success', 'Produk berhasil diperbarui!');
 }
 
     /**

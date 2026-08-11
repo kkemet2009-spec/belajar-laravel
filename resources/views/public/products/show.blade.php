@@ -4,117 +4,238 @@
 
 @section('content')
 
-<div class="container">
+<style>
+    .detail-page {
+        background: #f5f5f5;
+        min-height: 70vh;
+        padding: 50px 7%;
+    }
 
-    <div style="
-        background:white;
-        border-radius:18px;
-        overflow:hidden;
-        display:grid;
-        grid-template-columns:1fr 1fr;
-        box-shadow:0 8px 30px rgba(0,0,0,0.08);
-    ">
+    .back-button {
+        display: inline-block;
+        margin-bottom: 25px;
+        color: #555;
+        text-decoration: none;
+        font-weight: 600;
+    }
 
-        {{-- FOTO PRODUK --}}
+    .back-button:hover {
+        color: #111;
+    }
 
-        <div style="
-            background:#eee;
-            min-height:500px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-        ">
+    .detail-card {
+        max-width: 1000px;
+        margin: auto;
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 5px 25px rgba(0,0,0,.08);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .detail-image {
+        min-height: 500px;
+        background: #f1f1f1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 30px;
+    }
+
+    .detail-image img {
+        width: 100%;
+        height: 440px;
+        object-fit: contain;
+    }
+
+    .no-image {
+        color: #999;
+        font-size: 16px;
+    }
+
+    .detail-info {
+        padding: 45px;
+    }
+
+    .detail-info h1 {
+        font-size: 34px;
+        color: #111;
+        margin-bottom: 15px;
+    }
+
+    .price {
+        font-size: 28px;
+        font-weight: 800;
+        margin-bottom: 25px;
+    }
+
+    .stock {
+        display: inline-block;
+        padding: 8px 14px;
+        border-radius: 20px;
+        background: #e8f7ee;
+        color: #168344;
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 25px;
+    }
+
+    .description-title {
+        font-size: 17px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .description {
+        color: #666;
+        line-height: 1.7;
+        margin-bottom: 25px;
+    }
+
+    .slug {
+        background: #f5f5f5;
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 13px;
+        color: #666;
+        margin-bottom: 25px;
+        word-break: break-all;
+    }
+
+    .actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn {
+        padding: 12px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 700;
+        display: inline-block;
+    }
+
+    .btn-edit {
+        background: #2563eb;
+        color: white;
+    }
+
+    .btn-edit:hover {
+        background: #1d4ed8;
+    }
+
+    .btn-back {
+        background: #111;
+        color: white;
+    }
+
+    .btn-back:hover {
+        background: #333;
+    }
+
+    @media (max-width: 800px) {
+        .detail-card {
+            grid-template-columns: 1fr;
+        }
+
+        .detail-image {
+            min-height: 350px;
+        }
+
+        .detail-image img {
+            height: 320px;
+        }
+
+        .detail-info {
+            padding: 30px;
+        }
+    }
+</style>
+
+<div class="detail-page">
+
+    <a href="{{ route('products.index') }}" class="back-button">
+        ← Kembali ke Produk
+    </a>
+
+    <div class="detail-card">
+
+        {{-- FOTO --}}
+        <div class="detail-image">
 
             @if($product->image)
 
                 <img
                     src="{{ asset('storage/' . $product->image) }}"
                     alt="{{ $product->name }}"
-                    style="
-                        width:100%;
-                        height:500px;
-                        object-fit:contain;
-                        background:white;
-                    "
                 >
 
             @else
 
-                <div style="font-size:100px;">
-                    ⚽
-                </div>
+                <span class="no-image">
+                    Tidak ada gambar produk
+                </span>
 
             @endif
 
         </div>
 
 
-        {{-- INFORMASI PRODUK --}}
+        {{-- INFORMASI --}}
+        <div class="detail-info">
 
-        <div style="padding:50px;">
-
-            <h1 style="
-                font-size:40px;
-                margin-bottom:20px;
-            ">
+            <h1>
                 {{ $product->name }}
             </h1>
 
-
-            <div style="
-                font-size:30px;
-                font-weight:bold;
-                margin-bottom:20px;
-            ">
+            <div class="price">
                 Rp {{ number_format($product->price, 0, ',', '.') }}
             </div>
 
+            <div class="stock">
 
-            <p style="
-                color:#666;
-                margin-bottom:30px;
-            ">
-                📦 Stok tersedia: {{ $product->stock }}
-            </p>
+                @if($product->stock > 0)
+                    {{ $product->stock }} tersedia
+                @else
+                    Stok habis
+                @endif
 
+            </div>
 
-            <h3 style="margin-bottom:10px;">
+            <div class="description-title">
                 Deskripsi
-            </h3>
+            </div>
+
+            <div class="description">
+
+                {{ $product->description ?? 'Tidak ada deskripsi produk.' }}
+
+            </div>
+
+            <div class="description-title">
+                Slug Produk
+            </div>
+
+            <div class="slug">
+                {{ $product->slug }}
+            </div>
 
 
-            <p style="
-                color:#555;
-                line-height:1.8;
-                margin-bottom:35px;
-            ">
-                {{ $product->description }}
-            </p>
-
-
-            <div style="
-                display:flex;
-                gap:10px;
-                flex-wrap:wrap;
-            ">
+            <div class="actions">
 
                 <a
-                    href="{{ route('public.products.index') }}"
-                    class="btn"
-                    style="
-                        background:#ddd;
-                        color:#222;
-                    "
+                    href="{{ route('products.index') }}"
+                    class="btn btn-back"
                 >
-                    ← Kembali
+                    Kembali
                 </a>
 
-
                 <a
-                    href="/contact"
-                    class="btn"
+                    href="{{ route('products.edit', $product) }}"
+                    class="btn btn-edit"
                 >
-                    💬 Hubungi Kami
+                    Edit Produk
                 </a>
 
             </div>
