@@ -1,547 +1,524 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+@extends('layouts.app')
 
-    <title>Katalog Jersey - Jersey Store</title>
+@section('title', 'Produk Jersey - Jersey Store')
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+@section('content')
 
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: #f4f6f8;
-            color: #171717;
-        }
+<style>
+    * {
+        box-sizing: border-box;
+    }
 
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
+    .products-page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px 70px;
+    }
 
-        /* =========================
-           NAVBAR
-        ========================= */
+    /* ==============================
+       HERO
+    ============================== */
 
-        .navbar {
-            height: 80px;
-            background: #111;
-            color: white;
+    .products-hero {
+        position: relative;
+        overflow: hidden;
 
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        padding: 55px 40px;
+        margin-bottom: 40px;
 
-            padding: 0 5%;
-        }
+        border-radius: 24px;
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        background:
+            linear-gradient(
+                135deg,
+                #111827,
+                #1d4ed8
+            );
 
-            font-size: 27px;
-            font-weight: 800;
-        }
+        color: white;
 
-        .logo-icon {
-            width: 40px;
-            height: 40px;
+        box-shadow:
+            0 15px 40px rgba(15, 23, 42, .15);
+    }
 
-            border-radius: 50%;
+    .products-hero::before {
+        content: "";
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        position: absolute;
 
-            background: linear-gradient(135deg, #2563eb, #7c3aed);
+        width: 300px;
+        height: 300px;
 
-            font-size: 20px;
-        }
+        right: -100px;
+        top: -130px;
 
-        .nav-menu {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-        }
+        background:
+            rgba(255,255,255,.08);
 
-        .nav-menu a {
-            color: #fff;
-            font-size: 16px;
+        border-radius: 50%;
+    }
 
-            transition: 0.3s;
-        }
+    .products-hero::after {
+        content: "";
 
-        .nav-menu a:hover {
-            color: #60a5fa;
-        }
+        position: absolute;
 
-        /* =========================
-           HERO
-        ========================= */
+        width: 180px;
+        height: 180px;
 
-        .hero {
-            background:
-                radial-gradient(circle at 20% 20%, rgba(37, 99, 235, .15), transparent 30%),
-                radial-gradient(circle at 80% 70%, rgba(124, 58, 237, .15), transparent 30%),
-                linear-gradient(135deg, #171717, #101010);
+        right: 180px;
+        bottom: -110px;
 
-            color: white;
+        background:
+            rgba(255,255,255,.06);
 
-            min-height: 380px;
+        border-radius: 50%;
+    }
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+    .hero-content {
+        position: relative;
+        z-index: 2;
 
-            text-align: center;
+        max-width: 700px;
+    }
 
-            padding: 70px 20px;
-        }
+    .hero-badge {
+        display: inline-block;
 
-        .hero-content {
-            max-width: 850px;
-        }
+        padding: 7px 14px;
 
-        .hero-badge {
-            display: inline-block;
+        margin-bottom: 15px;
 
-            background: #2563eb;
+        border-radius: 50px;
 
-            padding: 10px 20px;
+        background:
+            rgba(255,255,255,.12);
 
-            border-radius: 30px;
+        border:
+            1px solid rgba(255,255,255,.2);
 
-            font-size: 14px;
-            font-weight: bold;
+        font-size: 12px;
 
-            margin-bottom: 25px;
-        }
+        font-weight: 700;
 
-        .hero h1 {
-            font-size: 52px;
-            line-height: 1.1;
+        letter-spacing: .5px;
+    }
 
-            margin-bottom: 20px;
-        }
+    .products-hero h1 {
+        margin: 0;
 
-        .hero p {
-            font-size: 19px;
-            line-height: 1.7;
+        font-size: 40px;
 
-            color: #d1d5db;
-        }
+        line-height: 1.15;
 
-        /* =========================
-           CONTENT
-        ========================= */
+        font-weight: 800;
+    }
 
-        .container {
-            width: 90%;
-            max-width: 1250px;
+    .products-hero p {
+        margin: 15px 0 0;
 
-            margin: 0 auto;
+        color:
+            rgba(255,255,255,.8);
 
-            padding: 60px 0 80px;
-        }
+        font-size: 16px;
 
-        .section-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        line-height: 1.7;
+    }
 
-            margin-bottom: 30px;
-        }
 
-        .section-title {
-            font-size: 32px;
-            font-weight: 800;
+    /* ==============================
+       HEADER
+    ============================== */
 
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+    .section-header {
+        display: flex;
 
-        .product-count {
-            color: #777;
-            font-size: 15px;
-        }
+        justify-content: space-between;
 
-        /* =========================
-           PRODUCT GRID
-        ========================= */
+        align-items: end;
 
-        .products-grid {
-            display: grid;
+        margin-bottom: 24px;
+    }
 
+    .section-header h2 {
+        margin: 0;
+
+        font-size: 26px;
+
+        color: #111827;
+    }
+
+    .section-header p {
+        margin: 6px 0 0;
+
+        color: #6b7280;
+
+        font-size: 14px;
+    }
+
+
+    /* ==============================
+       PRODUCT GRID
+    ============================== */
+
+    .product-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(3, 1fr);
+
+        gap: 24px;
+    }
+
+
+    /* ==============================
+       PRODUCT CARD
+    ============================== */
+
+    .product-card {
+        overflow: hidden;
+
+        background: white;
+
+        border:
+            1px solid #e5e7eb;
+
+        border-radius: 18px;
+
+        box-shadow:
+            0 6px 20px rgba(15,23,42,.05);
+
+        transition:
+            transform .25s ease,
+            box-shadow .25s ease;
+    }
+
+    .product-card:hover {
+        transform:
+            translateY(-7px);
+
+        box-shadow:
+            0 18px 35px rgba(15,23,42,.12);
+    }
+
+
+    /* ==============================
+       PRODUCT IMAGE
+    ============================== */
+
+    .product-image {
+        position: relative;
+
+        height: 270px;
+
+        overflow: hidden;
+
+        background:
+            #f1f5f9;
+    }
+
+    .product-image img {
+        width: 100%;
+        height: 100%;
+
+        display: block;
+
+        object-fit: cover;
+
+        transition:
+            transform .4s ease;
+    }
+
+    .product-card:hover
+    .product-image img {
+        transform:
+            scale(1.06);
+    }
+
+
+    .image-placeholder {
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        flex-direction: column;
+
+        color: #94a3b8;
+
+        background:
+            linear-gradient(
+                135deg,
+                #f8fafc,
+                #e2e8f0
+            );
+    }
+
+    .image-placeholder span {
+        font-size: 55px;
+
+        margin-bottom: 8px;
+    }
+
+    .image-placeholder small {
+        font-size: 12px;
+    }
+
+
+    /* ==============================
+       STOCK BADGE
+    ============================== */
+
+    .stock-badge {
+        position: absolute;
+
+        top: 14px;
+        left: 14px;
+
+        padding: 7px 11px;
+
+        border-radius: 8px;
+
+        background:
+            rgba(17,24,39,.88);
+
+        color: white;
+
+        font-size: 11px;
+
+        font-weight: 700;
+
+        backdrop-filter:
+            blur(5px);
+    }
+
+
+    /* ==============================
+       BODY
+    ============================== */
+
+    .product-body {
+        padding: 20px;
+    }
+
+    .product-title {
+        margin: 0 0 9px;
+
+        font-size: 19px;
+
+        line-height: 1.4;
+
+        font-weight: 750;
+
+        color: #111827;
+    }
+
+    .product-description {
+        margin: 0 0 16px;
+
+        color: #6b7280;
+
+        font-size: 13px;
+
+        line-height: 1.6;
+
+        display: -webkit-box;
+
+        -webkit-line-clamp: 2;
+
+        -webkit-box-orient: vertical;
+
+        overflow: hidden;
+    }
+
+
+    /* ==============================
+       PRICE
+    ============================== */
+
+    .product-price {
+        margin-bottom: 16px;
+
+        font-size: 22px;
+
+        font-weight: 800;
+
+        color: #1d4ed8;
+    }
+
+
+    /* ==============================
+       BUTTON
+    ============================== */
+
+    .product-footer {
+        padding-top: 15px;
+
+        border-top:
+            1px solid #f1f5f9;
+    }
+
+    .detail-button {
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        gap: 8px;
+
+        width: 100%;
+
+        padding: 11px 16px;
+
+        border-radius: 10px;
+
+        background:
+            #111827;
+
+        color: white;
+
+        text-decoration: none;
+
+        font-size: 13px;
+
+        font-weight: 700;
+
+        transition:
+            background .2s ease,
+            transform .2s ease;
+    }
+
+    .detail-button:hover {
+        background:
+            #1d4ed8;
+
+        transform:
+            translateY(-1px);
+    }
+
+
+    /* ==============================
+       EMPTY
+    ============================== */
+
+    .empty-state {
+        padding: 70px 25px;
+
+        text-align: center;
+
+        background: white;
+
+        border:
+            1px solid #e5e7eb;
+
+        border-radius: 20px;
+
+        box-shadow:
+            0 6px 20px rgba(15,23,42,.04);
+    }
+
+    .empty-icon {
+        font-size: 55px;
+
+        margin-bottom: 15px;
+    }
+
+    .empty-state h3 {
+        margin: 0 0 8px;
+
+        font-size: 20px;
+
+        color: #111827;
+    }
+
+    .empty-state p {
+        margin: 0;
+
+        color: #6b7280;
+
+        font-size: 14px;
+    }
+
+
+    /* ==============================
+       RESPONSIVE
+    ============================== */
+
+    @media (max-width: 900px) {
+
+        .product-grid {
             grid-template-columns:
-                repeat(3, minmax(0, 1fr));
-
-            gap: 25px;
+                repeat(2, 1fr);
         }
 
-        .product-card {
-            background: white;
+        .products-hero h1 {
+            font-size: 34px;
+        }
+    }
+
+
+    @media (max-width: 600px) {
+
+        .products-page {
+            padding:
+                25px 15px 50px;
+        }
+
+        .products-hero {
+            padding: 35px 25px;
 
             border-radius: 18px;
-
-            overflow: hidden;
-
-            box-shadow:
-                0 8px 25px rgba(0, 0, 0, .07);
-
-            transition:
-                transform .3s ease,
-                box-shadow .3s ease;
-
-            position: relative;
         }
 
-        .product-card:hover {
-            transform: translateY(-8px);
-
-            box-shadow:
-                0 18px 40px rgba(0, 0, 0, .13);
+        .products-hero h1 {
+            font-size: 29px;
         }
 
-        /* =========================
-           IMAGE
-        ========================= */
+        .products-hero p {
+            font-size: 14px;
+        }
+
+        .product-grid {
+            grid-template-columns: 1fr;
+        }
 
         .product-image {
-            height: 330px;
-
-            background: #f7f7f7;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            overflow: hidden;
-
-            position: relative;
+            height: 250px;
         }
+    }
 
-        .product-image img {
-            width: 100%;
-            height: 100%;
+</style>
 
-            object-fit: contain;
 
-            padding: 20px;
+<div class="products-page">
 
-            transition: transform .4s ease;
-        }
 
-        .product-card:hover .product-image img {
-            transform: scale(1.06);
-        }
-
-        .no-image {
-            color: #999;
-
-            text-align: center;
-
-            font-size: 14px;
-        }
-
-        /* =========================
-           PRODUCT INFO
-        ========================= */
-
-        .product-info {
-            padding: 22px;
-        }
-
-        .product-name {
-            font-size: 19px;
-            font-weight: 700;
-
-            line-height: 1.4;
-
-            margin-bottom: 10px;
-
-            min-height: 53px;
-        }
-
-        .product-price {
-            font-size: 23px;
-            font-weight: 800;
-
-            color: #111;
-
-            margin-bottom: 12px;
-        }
-
-        .stock {
-            display: inline-flex;
-
-            align-items: center;
-
-            padding: 7px 12px;
-
-            border-radius: 20px;
-
-            font-size: 13px;
-            font-weight: 700;
-
-            margin-bottom: 18px;
-        }
-
-        .stock.available {
-            background: #dcfce7;
-            color: #15803d;
-        }
-
-        .stock.low {
-            background: #fef3c7;
-            color: #b45309;
-        }
-
-        .stock.empty {
-            background: #fee2e2;
-            color: #dc2626;
-        }
-
-        /* =========================
-           BUTTON
-        ========================= */
-
-        .detail-button {
-            width: 100%;
-
-            display: flex;
-
-            align-items: center;
-            justify-content: center;
-
-            gap: 8px;
-
-            padding: 13px 18px;
-
-            background: #111;
-            color: white;
-
-            border-radius: 10px;
-
-            font-size: 15px;
-            font-weight: 700;
-
-            transition: .3s;
-        }
-
-        .detail-button:hover {
-            background: #2563eb;
-
-            transform: translateY(-2px);
-        }
-
-        /* =========================
-           EMPTY
-        ========================= */
-
-        .empty-products {
-            background: white;
-
-            border-radius: 18px;
-
-            padding: 70px 20px;
-
-            text-align: center;
-
-            box-shadow:
-                0 8px 25px rgba(0, 0, 0, .06);
-        }
-
-        .empty-icon {
-            font-size: 60px;
-
-            margin-bottom: 15px;
-        }
-
-        .empty-products h2 {
-            margin-bottom: 10px;
-        }
-
-        .empty-products p {
-            color: #777;
-        }
-
-        /* =========================
-           FOOTER
-        ========================= */
-
-        .footer {
-            background: #111;
-
-            color: white;
-
-            text-align: center;
-
-            padding: 30px 20px;
-
-            font-size: 15px;
-        }
-
-        .footer p {
-            color: #bbb;
-        }
-
-        /* =========================
-           RESPONSIVE
-        ========================= */
-
-        @media (max-width: 900px) {
-
-            .products-grid {
-                grid-template-columns:
-                    repeat(2, minmax(0, 1fr));
-            }
-
-            .hero h1 {
-                font-size: 42px;
-            }
-
-            .nav-menu {
-                gap: 18px;
-            }
-        }
-
-        @media (max-width: 650px) {
-
-            .navbar {
-                height: auto;
-
-                padding: 18px 5%;
-
-                flex-direction: column;
-
-                gap: 18px;
-            }
-
-            .logo {
-                font-size: 24px;
-            }
-
-            .nav-menu {
-                width: 100%;
-
-                justify-content: center;
-
-                flex-wrap: wrap;
-
-                gap: 18px;
-            }
-
-            .hero {
-                min-height: 320px;
-
-                padding: 55px 20px;
-            }
-
-            .hero h1 {
-                font-size: 35px;
-            }
-
-            .hero p {
-                font-size: 16px;
-            }
-
-            .container {
-                width: 92%;
-
-                padding-top: 40px;
-            }
-
-            .section-header {
-                align-items: flex-start;
-
-                flex-direction: column;
-
-                gap: 10px;
-            }
-
-            .section-title {
-                font-size: 27px;
-            }
-
-            .products-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .product-image {
-                height: 350px;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-    {{-- =========================
-         NAVBAR
-    ========================== --}}
-
-    <nav class="navbar">
-
-        <a href="{{ url('/') }}" class="logo">
-
-            <span class="logo-icon">
-                ⚽
-            </span>
-
-            <span>Jersey Store</span>
-
-        </a>
-
-        <div class="nav-menu">
-
-            <a href="{{ url('/') }}">
-                Home
-            </a>
-
-            <a href="{{ url('/produk') }}">
-                Produk
-            </a>
-
-            <a href="{{ url('/articles') }}">
-                Artikel
-            </a>
-
-            <a href="{{ url('/kontak') }}">
-                Kontak
-            </a>
-
-        </div>
-
-    </nav>
-
-
-    {{-- =========================
+    {{-- =========================================
          HERO
-    ========================== --}}
+    ========================================== --}}
 
-    <section class="hero">
+    <section class="products-hero">
 
         <div class="hero-content">
 
             <div class="hero-badge">
-                ⚽ KOLEKSI TERBARU
+                ⚽ JERSEY STORE
             </div>
 
             <h1>
-                Katalog Jersey
+                Koleksi Jersey
+                Terbaik
             </h1>
 
             <p>
-                Temukan berbagai jersey sepak bola favoritmu
-                dengan desain keren dan kualitas terbaik
-                hanya di Jersey Store.
+                Temukan berbagai jersey favorit dengan
+                desain berkualitas dan nyaman digunakan.
+                Pilih jersey yang paling cocok untuk
+                kamu dan lengkapi koleksimu.
             </p>
 
         </div>
@@ -549,151 +526,217 @@
     </section>
 
 
-    {{-- =========================
-         PRODUCTS
-    ========================== --}}
+    {{-- =========================================
+         SECTION HEADER
+    ========================================== --}}
 
-    <main class="container">
+    <div class="section-header">
 
-        <div class="section-header">
+        <div>
 
-            <h2 class="section-title">
-                🔥 Koleksi Jersey
+            <h2>
+                Koleksi Jersey
             </h2>
 
-            <div class="product-count">
-                {{ $products->count() }} produk tersedia
-            </div>
+            <p>
+                Pilih jersey favoritmu dari koleksi kami.
+            </p>
 
         </div>
 
+    </div>
 
-        @if($products->count() > 0)
 
-            <div class="products-grid">
+    {{-- =========================================
+         PRODUCT LIST
+    ========================================== --}}
 
-                @foreach($products as $product)
+    @if($products->count() > 0)
 
-                    <div class="product-card">
+        <div class="product-grid">
 
-                        {{-- FOTO PRODUK --}}
+
+            @foreach($products as $product)
+
+
+                <article class="product-card">
+
+
+                    {{-- =========================
+                         IMAGE
+                    ========================== --}}
+
+                    <a
+                        href="{{ route(
+                            'public.products.show',
+                            $product
+                        ) }}"
+                        style="text-decoration:none;"
+                    >
 
                         <div class="product-image">
+
 
                             @if($product->image)
 
                                 <img
-                                    src="{{ asset('storage/' . $product->image) }}"
+                                    src="{{ asset(
+                                        'storage/' .
+                                        $product->image
+                                    ) }}"
                                     alt="{{ $product->name }}"
                                     loading="lazy"
                                 >
 
                             @else
 
-                                <div class="no-image">
-                                    📷<br>
-                                    Foto belum tersedia
+                                <div class="image-placeholder">
+
+                                    <span>
+                                        👕
+                                    </span>
+
+                                    <small>
+                                        Tidak ada gambar
+                                    </small>
+
                                 </div>
 
                             @endif
 
-                        </div>
 
+                            <div class="stock-badge">
 
-                        {{-- INFORMASI PRODUK --}}
+                                @if($product->stock > 0)
 
-                        <div class="product-info">
+                                    ✓ Stok tersedia
 
-                            <h3 class="product-name">
-                                {{ $product->name }}
-                            </h3>
+                                @else
 
+                                    Stok habis
 
-                            <div class="product-price">
-
-                                Rp
-                                {{ number_format($product->price, 0, ',', '.') }}
+                                @endif
 
                             </div>
 
 
-                            {{-- STATUS STOK --}}
+                        </div>
 
-                            @if($product->stock <= 0)
-
-                                <div class="stock empty">
-                                    ❌ Stok habis
-                                </div>
-
-                            @elseif($product->stock <= 5)
-
-                                <div class="stock low">
-                                    ⚠️ Tersisa {{ $product->stock }}
-                                </div>
-
-                            @else
-
-                                <div class="stock available">
-                                    ✓ {{ $product->stock }} tersedia
-                                </div>
-
-                            @endif
+                    </a>
 
 
-                            {{-- DETAIL --}}
+                    {{-- =========================
+                         BODY
+                    ========================== --}}
+
+                    <div class="product-body">
+
+
+                        <h3 class="product-title">
+
+                            {{ $product->name }}
+
+                        </h3>
+
+
+                        @if($product->description)
+
+                            <p class="product-description">
+
+                                {{ \Illuminate\Support\Str::limit(
+                                    strip_tags($product->description),
+                                    100
+                                ) }}
+
+                            </p>
+
+                        @else
+
+                            <p class="product-description">
+
+                                Jersey berkualitas dengan
+                                desain menarik dan nyaman
+                                digunakan.
+
+                            </p>
+
+                        @endif
+
+
+                        <div class="product-price">
+
+                            Rp
+                            {{ number_format(
+                                $product->price,
+                                0,
+                                ',',
+                                '.'
+                            ) }}
+
+                        </div>
+
+
+                        <div class="product-footer">
 
                             <a
-                                href="{{ url('/produk/' . $product->id) }}"
+                                href="{{ route(
+                                    'public.products.show',
+                                    $product
+                                ) }}"
                                 class="detail-button"
                             >
-                                👁 Lihat Detail
+
+                                Lihat Detail
+
+                                <span>
+                                    →
+                                </span>
+
                             </a>
 
                         </div>
 
+
                     </div>
 
-                @endforeach
 
+                </article>
+
+
+            @endforeach
+
+
+        </div>
+
+
+    @else
+
+
+        {{-- =====================================
+             EMPTY STATE
+        ====================================== --}}
+
+        <div class="empty-state">
+
+            <div class="empty-icon">
+                👕
             </div>
 
-        @else
+            <h3>
+                Belum Ada Produk
+            </h3>
 
-            <div class="empty-products">
+            <p>
+                Saat ini belum ada jersey yang
+                tersedia. Silakan kembali lagi nanti.
+            </p>
 
-                <div class="empty-icon">
-                    📦
-                </div>
-
-                <h2>
-                    Belum Ada Produk
-                </h2>
-
-                <p>
-                    Saat ini belum ada jersey yang tersedia
-                    di katalog.
-                </p>
-
-            </div>
-
-        @endif
-
-    </main>
+        </div>
 
 
-    {{-- =========================
-         FOOTER
-    ========================== --}}
-
-    <footer class="footer">
-
-        <p>
-            © {{ date('Y') }} Jersey Store.
-            All Rights Reserved.
-        </p>
-
-    </footer>
+    @endif
 
 
-</body>
-</html>
+</div>
+
+@endsection

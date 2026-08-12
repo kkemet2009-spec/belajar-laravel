@@ -10,11 +10,17 @@ class PublicArticleController extends Controller
     {
         $articles = Article::latest()->get();
 
-        return view('public.articles.index', compact('articles'));
+        return view(
+            'public.articles.index',
+            compact('articles')
+        );
     }
 
     public function show(Article $article)
     {
-        return view('public.articles.show', compact('article'));
+        return view(
+            'public.articles.show',
+            compact('article')
+        );
     }
 }

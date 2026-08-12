@@ -11,71 +11,123 @@ use App\Http\Controllers\PublicArticleController;
 
 /*
 |--------------------------------------------------------------------------
-| WEBSITE PUBLIC
+| WEBSITE PUBLIK
 |--------------------------------------------------------------------------
+|
+| Semua halaman yang bisa dilihat pengunjung.
+|
 */
 
-// Home
-Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Produk Public
+// =====================================================
+// HOME
+// =====================================================
+
+Route::get('/', [HomeController::class, 'index'])
+    ->name('home');
+
+
+// =====================================================
+// PRODUK PUBLIK
+// =====================================================
+
+// Daftar produk
 Route::get('/produk', [PublicProductController::class, 'index'])
     ->name('public.products.index');
 
+// Detail produk
 Route::get('/produk/{product}', [PublicProductController::class, 'show'])
     ->name('public.products.show');
 
-// Artikel Public
+
+// =====================================================
+// ARTIKEL PUBLIK
+// =====================================================
+
+// Daftar artikel
 Route::get('/artikel', [PublicArticleController::class, 'index'])
     ->name('public.articles.index');
 
+// Detail artikel
 Route::get('/artikel/{article}', [PublicArticleController::class, 'show'])
     ->name('public.articles.show');
 
-// Kontak
+
+// =====================================================
+// KONTAK
+// =====================================================
+
+// /contact
 Route::get('/contact', function () {
     return view('contact');
 })->name('contact');
+
+// /kontak
+Route::get('/kontak', function () {
+    return view('contact');
+});
+
 
 
 /*
 |--------------------------------------------------------------------------
 | ADMIN DASHBOARD
 |--------------------------------------------------------------------------
+|
+| Semua halaman di bawah ini hanya bisa diakses
+| oleh user yang sudah login.
+|
 */
+
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    // Dashboard
+
+    // =================================================
+    // DASHBOARD ADMIN
+    // =================================================
+
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | CRUD PRODUK
-    |--------------------------------------------------------------------------
-    */
-
+    // =================================================
+    // KELOLA PRODUK ADMIN
+    // =================================================
+    //
+    // /products
+    // /products/create
+    // /products/{product}
+    // /products/{product}/edit
+    //
+    
     Route::resource('products', ProductController::class);
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | CRUD ARTIKEL
-    |--------------------------------------------------------------------------
-    */
+    // =================================================
+    // KELOLA ARTIKEL ADMIN
+    // =================================================
+    //
+    // /articles
+    // /articles/create
+    // /articles/{article}
+    // /articles/{article}/edit
+    //
 
     Route::resource('articles', ArticleController::class);
 
 });
 
 
+
 /*
 |--------------------------------------------------------------------------
-| AUTH
+| AUTHENTICATION
 |--------------------------------------------------------------------------
+|
+| Login, register, logout, password, dll.
+|
 */
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

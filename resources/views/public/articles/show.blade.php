@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,15 +9,16 @@
 
     <style>
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
         body {
             font-family: Arial, Helvetica, sans-serif;
             background: #f5f6f8;
-            color: #222;
+            color: #171717;
+            line-height: 1.7;
         }
 
         /* =========================
@@ -24,95 +26,190 @@
         ========================= */
 
         .navbar {
+            height: 72px;
             background: #111;
             color: white;
-            height: 72px;
-            display: flex;
-            align-items: center;
         }
 
         .nav-container {
-            width: 92%;
             max-width: 1200px;
+            height: 100%;
             margin: auto;
+            padding: 0 25px;
+
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
         }
 
         .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
             color: white;
             text-decoration: none;
-            font-size: 24px;
-            font-weight: bold;
+
+            font-size: 26px;
+            font-weight: 700;
         }
 
-        .logo span {
-            margin-right: 8px;
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background: linear-gradient(
+                135deg,
+                #2563eb,
+                #7c3aed
+            );
+
+            font-size: 20px;
         }
 
         .nav-menu {
             display: flex;
-            gap: 28px;
+            align-items: center;
+            gap: 30px;
         }
 
         .nav-menu a {
             color: white;
             text-decoration: none;
-            font-size: 15px;
+            font-size: 16px;
+
             transition: 0.2s;
         }
 
         .nav-menu a:hover {
-            color: #ccc;
+            color: #60a5fa;
         }
 
         /* =========================
-           CONTAINER
+           HERO ARTICLE
         ========================= */
 
-        .container {
-            width: 92%;
+        .article-wrapper {
             max-width: 1000px;
-            margin: 40px auto;
+            margin: 45px auto 80px;
+            padding: 0 20px;
         }
 
-        /* =========================
-           CARD
-        ========================= */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            color: #4b5563;
+            text-decoration: none;
+
+            font-size: 15px;
+            font-weight: 600;
+
+            margin-bottom: 25px;
+
+            transition: 0.2s;
+        }
+
+        .back-link:hover {
+            color: #2563eb;
+        }
 
         .article-card {
             background: white;
-            border-radius: 16px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+            border-radius: 22px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 15px 45px rgba(0, 0, 0, 0.08);
+        }
+
+        /* =========================
+           COVER IMAGE
+        ========================= */
+
+        .article-cover {
+            width: 100%;
+            height: 430px;
+
+            background: #e5e7eb;
+
             overflow: hidden;
         }
 
+        .article-cover img {
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+
+            display: block;
+
+            transition: transform 0.5s ease;
+        }
+
+        .article-card:hover .article-cover img {
+            transform: scale(1.02);
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
         .article-header {
-            padding: 35px 40px 25px;
+            padding: 40px 55px 35px;
+
             border-bottom: 1px solid #eee;
         }
 
+        .category {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            padding: 8px 15px;
+
+            border-radius: 999px;
+
+            background: #eff6ff;
+            color: #2563eb;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            margin-bottom: 18px;
+        }
+
         .article-title {
-            font-size: 34px;
-            line-height: 1.3;
-            margin-bottom: 15px;
+            font-size: 44px;
+            line-height: 1.15;
+
             color: #111;
+
+            margin-bottom: 18px;
         }
 
         .article-meta {
             display: flex;
             align-items: center;
-            gap: 15px;
-            color: #777;
-            font-size: 14px;
+            gap: 20px;
+
+            color: #6b7280;
+
+            font-size: 15px;
         }
 
-        .badge {
-            background: #f0f0f0;
-            color: #555;
-            padding: 6px 12px;
-            border-radius: 20px;
+        .meta {
+            display: flex;
+            align-items: center;
+            gap: 7px;
         }
 
         /* =========================
@@ -120,89 +217,162 @@
         ========================= */
 
         .article-content {
-            padding: 35px 40px;
+            padding: 45px 55px 50px;
         }
 
-        .content-label {
+        .content-title {
             font-size: 14px;
-            font-weight: bold;
-            color: #777;
-            margin-bottom: 12px;
+            font-weight: 700;
+
+            color: #6b7280;
+
             text-transform: uppercase;
+
+            letter-spacing: 1px;
+
+            margin-bottom: 25px;
         }
 
-        .article-description {
-            font-size: 17px;
-            line-height: 1.9;
-            color: #444;
+        .content {
+            font-size: 18px;
+            line-height: 2;
+
+            color: #374151;
+
             white-space: pre-line;
         }
 
+        .content p {
+            margin-bottom: 22px;
+        }
+
         /* =========================
-           ACTION
+           SHARE / BOTTOM
         ========================= */
 
-        .article-actions {
-            padding: 25px 40px;
+        .article-footer {
+            padding: 25px 55px;
+
             background: #fafafa;
+
             border-top: 1px solid #eee;
 
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
-            gap: 10px;
         }
 
-        .action-left,
-        .action-right {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 11px 18px;
-            border-radius: 8px;
-            text-decoration: none;
-            border: none;
-            cursor: pointer;
+        .footer-text {
+            color: #6b7280;
             font-size: 14px;
-            font-weight: bold;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            background: #111;
+            color: white;
+
+            padding: 12px 20px;
+
+            border-radius: 9px;
+
+            text-decoration: none;
+
+            font-weight: 600;
+
             transition: 0.2s;
         }
 
-        .btn:hover {
-            opacity: 0.85;
-            transform: translateY(-1px);
+        .back-button:hover {
+            background: #2563eb;
         }
 
-        .btn-back {
-            background: #e5e7eb;
-            color: #222;
+        /* =========================
+           RELATED
+        ========================= */
+
+        .related-section {
+            margin-top: 60px;
         }
 
-        .btn-edit {
-            background: #fff0c2;
-            color: #8a6200;
+        .related-title {
+            font-size: 28px;
+            margin-bottom: 25px;
         }
 
-        .btn-delete {
-            background: #ffe1e1;
-            color: #c62828;
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .related-card {
+            background: white;
+
+            padding: 25px;
+
+            border-radius: 16px;
+
+            text-decoration: none;
+
+            color: #111;
+
+            box-shadow:
+                0 8px 25px rgba(0, 0, 0, 0.05);
+
+            transition: 0.25s;
+        }
+
+        .related-card:hover {
+            transform: translateY(-4px);
+
+            box-shadow:
+                0 14px 35px rgba(0, 0, 0, 0.09);
+        }
+
+        .related-category {
+            color: #2563eb;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            margin-bottom: 8px;
+        }
+
+        .related-card h3 {
+            font-size: 19px;
+
+            line-height: 1.4;
+
+            margin-bottom: 8px;
+        }
+
+        .related-date {
+            color: #9ca3af;
+
+            font-size: 13px;
         }
 
         /* =========================
            FOOTER
         ========================= */
 
-        .footer {
+        .site-footer {
             background: #111;
-            color: white;
+
+            color: #aaa;
+
             text-align: center;
-            padding: 25px;
-            margin-top: 60px;
-            font-size: 14px;
+
+            padding: 30px 20px;
+        }
+
+        .site-footer strong {
+            color: white;
         }
 
         /* =========================
@@ -213,56 +383,90 @@
 
             .navbar {
                 height: auto;
-                padding: 18px 0;
             }
 
             .nav-container {
+                padding: 15px 20px;
+
                 flex-direction: column;
+
                 gap: 15px;
             }
 
             .nav-menu {
-                gap: 15px;
-                flex-wrap: wrap;
-                justify-content: center;
+                gap: 18px;
             }
 
-            .container {
-                width: 94%;
-                margin: 25px auto;
+            .nav-menu a {
+                font-size: 14px;
+            }
+
+            .article-wrapper {
+                margin-top: 30px;
+            }
+
+            .article-cover {
+                height: 280px;
             }
 
             .article-header {
-                padding: 25px 22px 20px;
+                padding: 30px 25px;
             }
 
             .article-title {
-                font-size: 26px;
+                font-size: 32px;
             }
 
             .article-content {
-                padding: 25px 22px;
+                padding: 30px 25px;
             }
 
-            .article-description {
-                font-size: 15px;
+            .content {
+                font-size: 16px;
                 line-height: 1.8;
             }
 
-            .article-actions {
-                padding: 20px 22px;
+            .article-footer {
+                padding: 20px 25px;
+
                 flex-direction: column;
-                align-items: stretch;
+
+                align-items: flex-start;
+
+                gap: 15px;
             }
 
-            .action-left,
-            .action-right {
-                width: 100%;
+            .related-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            .logo {
+                font-size: 22px;
             }
 
-            .btn {
-                text-align: center;
-                flex: 1;
+            .nav-menu {
+                gap: 12px;
+            }
+
+            .nav-menu a {
+                font-size: 13px;
+            }
+
+            .article-cover {
+                height: 220px;
+            }
+
+            .article-title {
+                font-size: 27px;
+            }
+
+            .article-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
             }
         }
     </style>
@@ -270,38 +474,40 @@
 
 <body>
 
-    {{-- =========================
+    <!-- =========================
          NAVBAR
-    ========================== --}}
+    ========================= -->
 
     <nav class="navbar">
 
         <div class="nav-container">
 
-            <a href="{{ route('home') }}" class="logo">
-                <span>⚽</span> Jersey Store
+            <a href="{{ url('/') }}" class="logo">
+
+                <span class="logo-icon">
+                    ⚽
+                </span>
+
+                Jersey Store
+
             </a>
 
             <div class="nav-menu">
 
-                <a href="{{ route('home') }}">
+                <a href="{{ url('/') }}">
                     Home
                 </a>
 
-                <a href="{{ route('products.index') }}">
+                <a href="{{ url('/produk') }}">
                     Produk
                 </a>
 
-                <a href="{{ route('articles.index') }}">
+                <a href="{{ url('/artikel') }}">
                     Artikel
                 </a>
 
-                <a href="{{ route('contact') }}">
+                <a href="{{ url('/kontak') }}">
                     Kontak
-                </a>
-
-                <a href="{{ route('dashboard') }}">
-                    Dashboard
                 </a>
 
             </div>
@@ -311,119 +517,192 @@
     </nav>
 
 
-    {{-- =========================
-         CONTENT
-    ========================== --}}
+    <!-- =========================
+         ARTICLE
+    ========================= -->
 
-    <main class="container">
+    <main class="article-wrapper">
 
-        <div class="article-card">
+        <a
+            href="{{ url('/artikel') }}"
+            class="back-link"
+        >
+            ← Kembali ke Artikel
+        </a>
 
-            {{-- HEADER ARTIKEL --}}
-            <div class="article-header">
+
+        <article class="article-card">
+
+            <!-- COVER -->
+
+            <div class="article-cover">
+
+                @if(!empty($article->image))
+
+                    <img
+                        src="{{ asset('storage/' . $article->image) }}"
+                        alt="{{ $article->title }}"
+                    >
+
+                @else
+
+                    <img
+                        src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=1400&q=80"
+                        alt="Football Jersey"
+                    >
+
+                @endif
+
+            </div>
+
+
+            <!-- HEADER -->
+
+            <header class="article-header">
+
+                <div class="category">
+                    📰 Artikel Jersey Store
+                </div>
+
 
                 <h1 class="article-title">
                     {{ $article->title }}
                 </h1>
 
+
                 <div class="article-meta">
 
-                    <span class="badge">
-                        📰 Artikel
-                    </span>
-
-                    <span>
+                    <div class="meta">
                         📅
-                        {{ $article->created_at
-                            ? $article->created_at->format('d M Y')
-                            : '-' }}
-                    </span>
+                        {{ $article->created_at->format('d M Y') }}
+                    </div>
+
+                    <div class="meta">
+                        ⚽ Jersey Store
+                    </div>
+
+                    <div class="meta">
+                        👁️ Artikel Publik
+                    </div>
 
                 </div>
 
-            </div>
+            </header>
 
 
-            {{-- ISI ARTIKEL --}}
-            <div class="article-content">
+            <!-- CONTENT -->
 
-                <div class="content-label">
+            <section class="article-content">
+
+                <div class="content-title">
                     Isi Artikel
                 </div>
 
-                <div class="article-description">
 
-                    {{ $article->description }}
+                @if(!empty($article->content))
 
+                    <div class="content">
+                        {{ $article->content }}
+                    </div>
+
+                @elseif(!empty($article->description))
+
+                    <div class="content">
+                        {{ $article->description }}
+                    </div>
+
+                @else
+
+                    <div class="content">
+                        Artikel ini belum memiliki isi.
+                    </div>
+
+                @endif
+
+            </section>
+
+
+            <!-- FOOTER ARTICLE -->
+
+            <div class="article-footer">
+
+                <div class="footer-text">
+                    Terima kasih telah membaca artikel Jersey Store.
                 </div>
+
+                <a
+                    href="{{ url('/artikel') }}"
+                    class="back-button"
+                >
+                    ← Artikel Lainnya
+                </a>
 
             </div>
 
-
-            {{-- TOMBOL --}}
-            <div class="article-actions">
-
-                <div class="action-left">
-
-                    <a
-                        href="{{ route('articles.index') }}"
-                        class="btn btn-back"
-                    >
-                        ← Kembali
-                    </a>
-
-                </div>
+        </article>
 
 
-                <div class="action-right">
+        <!-- =========================
+             RELATED ARTICLE
+        ========================= -->
 
-                    {{-- EDIT --}}
-                    <a
-                        href="{{ route('articles.edit', $article) }}"
-                        class="btn btn-edit"
-                    >
-                        ✏️ Edit
-                    </a>
+        @if(isset($relatedArticles) && $relatedArticles->count() > 0)
+
+            <section class="related-section">
+
+                <h2 class="related-title">
+                    Artikel Lainnya
+                </h2>
 
 
-                    {{-- HAPUS --}}
-                    <form
-                        action="{{ route('articles.destroy', $article) }}"
-                        method="POST"
-                        onsubmit="return confirm('Yakin ingin menghapus artikel ini?');"
-                    >
+                <div class="related-grid">
 
-                        @csrf
-                        @method('DELETE')
+                    @foreach($relatedArticles as $related)
 
-                        <button
-                            type="submit"
-                            class="btn btn-delete"
+                        <a
+                            href="{{ url('/artikel/' . $related->id) }}"
+                            class="related-card"
                         >
-                            🗑️ Hapus
-                        </button>
 
-                    </form>
+                            <div class="related-category">
+                                ARTIKEL JERSEY
+                            </div>
+
+                            <h3>
+                                {{ $related->title }}
+                            </h3>
+
+                            <div class="related-date">
+                                {{ $related->created_at->format('d M Y') }}
+                            </div>
+
+                        </a>
+
+                    @endforeach
 
                 </div>
 
-            </div>
+            </section>
 
-        </div>
+        @endif
 
     </main>
 
 
-    {{-- =========================
-         FOOTER
-    ========================== --}}
+    <!-- =========================
+         FOOTER WEBSITE
+    ========================= -->
 
-    <footer class="footer">
+    <footer class="site-footer">
 
-        © {{ date('Y') }} Jersey Store. All Rights Reserved.
+        © {{ date('Y') }}
+
+        <strong>Jersey Store</strong>.
+
+        Semua Hak Dilindungi.
 
     </footer>
 
-
 </body>
+
 </html>

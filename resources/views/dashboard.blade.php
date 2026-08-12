@@ -1,275 +1,612 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+@extends('layouts.admin')
 
-    <title>Dashboard - Jersey Store</title>
+@section('title', 'Dashboard Admin')
+@section('page-title', 'Dashboard Admin')
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+@section('content')
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            color: #222;
-        }
+<style>
+    .welcome-section {
+        margin-bottom: 30px;
+    }
 
-        .navbar {
-            background: #111;
-            color: white;
-            height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 7%;
-        }
+    .welcome-section h1 {
+        font-size: 32px;
+        margin-bottom: 8px;
+        color: #111827;
+    }
 
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-        }
+    .welcome-section p {
+        color: #6b7280;
+        font-size: 16px;
+    }
 
-        .navbar-right {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
+    /* STATISTIC CARD */
 
-        .username {
-            color: #ddd;
-        }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        margin-bottom: 32px;
+    }
 
-        .logout {
-            background: #e53935;
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 7px;
-            cursor: pointer;
-        }
+    .stat-card {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 5px 20px rgba(0,0,0,.05);
+        border: 1px solid #f0f0f0;
+        transition: .2s;
+    }
 
-        .logout:hover {
-            background: #c62828;
-        }
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0,0,0,.08);
+    }
 
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 40px auto;
-        }
+    .stat-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+    }
 
-        .welcome {
-            margin-bottom: 30px;
-        }
+    .stat-title {
+        color: #6b7280;
+        font-size: 14px;
+    }
 
-        .welcome h1 {
-            font-size: 32px;
-            margin-bottom: 8px;
-        }
+    .stat-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+    }
 
-        .welcome p {
-            color: #666;
-        }
+    .icon-blue {
+        background: #dbeafe;
+    }
 
-        .menu {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
+    .icon-purple {
+        background: #ede9fe;
+    }
 
-        .menu a {
-            text-decoration: none;
-            background: #111;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-        }
+    .icon-green {
+        background: #d1fae5;
+    }
 
-        .menu a:hover {
-            background: #333;
-        }
+    .icon-orange {
+        background: #ffedd5;
+    }
 
-        .cards {
-            display: grid;
+    .stat-number {
+        font-size: 32px;
+        font-weight: bold;
+        color: #111827;
+    }
+
+    /* QUICK ACTION */
+
+    .section-title {
+        font-size: 21px;
+        margin-bottom: 18px;
+        color: #111827;
+    }
+
+    .quick-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-bottom: 35px;
+    }
+
+    .quick-card {
+        background: white;
+        padding: 25px;
+        border-radius: 16px;
+        text-decoration: none;
+        color: #111827;
+        border: 1px solid #eee;
+        box-shadow: 0 5px 20px rgba(0,0,0,.04);
+        transition: .2s;
+    }
+
+    .quick-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(0,0,0,.08);
+    }
+
+    .quick-icon {
+        font-size: 30px;
+        margin-bottom: 15px;
+    }
+
+    .quick-card h3 {
+        font-size: 17px;
+        margin-bottom: 7px;
+    }
+
+    .quick-card p {
+        color: #6b7280;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    /* INFO */
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 20px;
+    }
+
+    .info-card {
+        background: white;
+        border-radius: 16px;
+        padding: 25px;
+        border: 1px solid #eee;
+        box-shadow: 0 5px 20px rgba(0,0,0,.04);
+    }
+
+    .info-card h3 {
+        margin-bottom: 20px;
+        font-size: 19px;
+    }
+
+    .activity {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 14px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .activity:last-child {
+        border-bottom: none;
+    }
+
+    .activity-icon {
+        width: 40px;
+        height: 40px;
+        background: #f3f4f6;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .activity-text strong {
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .activity-text small {
+        color: #9ca3af;
+    }
+
+    .system-status {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px;
+        background: #ecfdf5;
+        border-radius: 10px;
+        color: #047857;
+        margin-bottom: 15px;
+    }
+
+    .status-dot {
+        width: 10px;
+        height: 10px;
+        background: #10b981;
+        border-radius: 50%;
+    }
+
+    .system-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 13px 0;
+        border-bottom: 1px solid #eee;
+        font-size: 14px;
+    }
+
+    .system-item:last-child {
+        border-bottom: none;
+    }
+
+    .system-item span:first-child {
+        color: #6b7280;
+    }
+
+    .system-item span:last-child {
+        font-weight: bold;
+    }
+
+
+    /* RESPONSIVE */
+
+    @media (max-width: 1100px) {
+
+        .stats-grid {
             grid-template-columns: repeat(2, 1fr);
-            gap: 25px;
         }
 
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        .quick-grid {
+            grid-template-columns: repeat(2, 1fr);
         }
 
-        .card h3 {
-            color: #666;
-            margin-bottom: 15px;
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 650px) {
+
+        .stats-grid {
+            grid-template-columns: 1fr;
         }
 
-        .number {
-            font-size: 40px;
-            font-weight: bold;
+        .quick-grid {
+            grid-template-columns: 1fr;
         }
 
-        .card a {
-            display: inline-block;
-            margin-top: 20px;
-            text-decoration: none;
-            color: white;
-            background: #111;
-            padding: 10px 16px;
-            border-radius: 7px;
+        .welcome-section h1 {
+            font-size: 26px;
         }
 
-        footer {
-            margin-top: 60px;
-            background: #111;
-            color: white;
-            text-align: center;
-            padding: 25px;
+        .stat-number {
+            font-size: 28px;
         }
+    }
+</style>
 
-        @media (max-width: 700px) {
-            .navbar {
-                padding: 0 20px;
-            }
 
-            .username {
-                display: none;
-            }
+{{-- =========================
+     WELCOME
+========================= --}}
 
-            .cards {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-</head>
+<div class="welcome-section">
 
-<body>
+    <h1>
+        Selamat Datang 👋
+    </h1>
 
-    {{-- NAVBAR --}}
-    <div class="navbar">
+    <p>
+        Kelola produk, artikel, dan website Jersey Store dari sini.
+    </p>
 
-        <div class="logo">
-            ⚽ Jersey Store
+</div>
+
+
+{{-- =========================
+     STATISTIK
+========================= --}}
+
+<div class="stats-grid">
+
+
+    {{-- TOTAL PRODUK --}}
+
+    <div class="stat-card">
+
+        <div class="stat-top">
+
+            <div class="stat-title">
+                Total Produk
+            </div>
+
+            <div class="stat-icon icon-blue">
+                ⚽
+            </div>
+
         </div>
 
-        <div class="navbar-right">
-
-            <span class="username">
-                {{ Auth::user()->name }}
-            </span>
-
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-
-                <button type="submit" class="logout">
-                    Logout
-                </button>
-            </form>
-
+        <div class="stat-number">
+            {{ $totalProducts ?? 0 }}
         </div>
 
     </div>
 
 
-    {{-- CONTENT --}}
-    <div class="container">
+    {{-- TOTAL ARTIKEL --}}
 
-        <div class="welcome">
+    <div class="stat-card">
 
-            <h1>
-                Dashboard Admin
-            </h1>
+        <div class="stat-top">
 
-            <p>
-                Selamat datang, {{ Auth::user()->name }} 👋
-            </p>
+            <div class="stat-title">
+                Total Artikel
+            </div>
+
+            <div class="stat-icon icon-purple">
+                📰
+            </div>
 
         </div>
 
-
-        {{-- MENU --}}
-        <div class="menu">
-
-            <a href="{{ route('dashboard') }}">
-                Dashboard
-            </a>
-
-            <a href="{{ route('products.index') }}">
-                ⚽ Kelola Produk
-            </a>
-
-            <a href="{{ route('articles.index') }}">
-                📰 Kelola Artikel
-            </a>
-
-            <a href="{{ route('home') }}">
-                🌐 Lihat Website
-            </a>
-
-        </div>
-
-
-        {{-- STATISTICS --}}
-        <div class="cards">
-
-            {{-- PRODUK --}}
-            <div class="card">
-
-                <h3>
-                    Total Produk Jersey
-                </h3>
-
-                <div class="number">
-                    {{ \App\Models\Product::count() }}
-                </div>
-
-                <a href="{{ route('products.index') }}">
-                    Kelola Produk →
-                </a>
-
-            </div>
-
-
-            {{-- ARTIKEL --}}
-            <div class="card">
-
-                <h3>
-                    Total Artikel
-                </h3>
-
-                <div class="number">
-                    {{ \App\Models\Article::count() }}
-                </div>
-
-                <a href="{{ route('articles.index') }}">
-                    Kelola Artikel →
-                </a>
-
-            </div>
-
+        <div class="stat-number">
+            {{ $totalArticles ?? 0 }}
         </div>
 
     </div>
 
 
-    {{-- FOOTER --}}
-    <footer>
+    {{-- TOTAL STOK --}}
+
+    <div class="stat-card">
+
+        <div class="stat-top">
+
+            <div class="stat-title">
+                Total Stok
+            </div>
+
+            <div class="stat-icon icon-green">
+                📦
+            </div>
+
+        </div>
+
+        <div class="stat-number">
+            {{ $totalStock ?? 0 }}
+        </div>
+
+    </div>
+
+
+    {{-- PRODUK TERSEDIA --}}
+
+    <div class="stat-card">
+
+        <div class="stat-top">
+
+            <div class="stat-title">
+                Produk Tersedia
+            </div>
+
+            <div class="stat-icon icon-orange">
+                ✅
+            </div>
+
+        </div>
+
+        <div class="stat-number">
+            {{ $availableProducts ?? 0 }}
+        </div>
+
+    </div>
+
+
+</div>
+
+
+{{-- =========================
+     AKSI CEPAT
+========================= --}}
+
+<h2 class="section-title">
+    Aksi Cepat
+</h2>
+
+
+<div class="quick-grid">
+
+
+    {{-- TAMBAH PRODUK --}}
+
+    <a
+        href="{{ route('products.create') }}"
+        class="quick-card"
+    >
+
+        <div class="quick-icon">
+            ➕
+        </div>
+
+        <h3>
+            Tambah Produk
+        </h3>
 
         <p>
-            © {{ date('Y') }} Jersey Store.
-            Admin Dashboard.
+            Tambahkan jersey baru ke katalog produk.
         </p>
 
-    </footer>
+    </a>
 
-</body>
-</html>
+
+    {{-- TAMBAH ARTIKEL --}}
+
+    <a
+        href="{{ route('articles.create') }}"
+        class="quick-card"
+    >
+
+        <div class="quick-icon">
+            📝
+        </div>
+
+        <h3>
+            Tulis Artikel
+        </h3>
+
+        <p>
+            Buat artikel atau berita terbaru tentang jersey.
+        </p>
+
+    </a>
+
+
+    {{-- WEBSITE --}}
+
+    <a
+        href="{{ url('/produk') }}"
+        target="_blank"
+        class="quick-card"
+    >
+
+        <div class="quick-icon">
+            🌐
+        </div>
+
+        <h3>
+            Lihat Website
+        </h3>
+
+        <p>
+            Buka tampilan website publik Jersey Store.
+        </p>
+
+    </a>
+
+
+</div>
+
+
+{{-- =========================
+     INFORMASI
+========================= --}}
+
+<div class="info-grid">
+
+
+    {{-- AKTIVITAS --}}
+
+    <div class="info-card">
+
+        <h3>
+            📋 Aktivitas Admin
+        </h3>
+
+
+        <div class="activity">
+
+            <div class="activity-icon">
+                ⚽
+            </div>
+
+            <div class="activity-text">
+
+                <strong>
+                    Kelola Produk
+                </strong>
+
+                <small>
+                    Tambahkan, edit, atau hapus produk jersey.
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="activity">
+
+            <div class="activity-icon">
+                📰
+            </div>
+
+            <div class="activity-text">
+
+                <strong>
+                    Kelola Artikel
+                </strong>
+
+                <small>
+                    Buat dan kelola artikel Jersey Store.
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="activity">
+
+            <div class="activity-icon">
+                🌐
+            </div>
+
+            <div class="activity-text">
+
+                <strong>
+                    Website Publik
+                </strong>
+
+                <small>
+                    Pengunjung dapat melihat katalog jersey.
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {{-- STATUS SISTEM --}}
+
+    <div class="info-card">
+
+        <h3>
+            ⚙️ Status Sistem
+        </h3>
+
+
+        <div class="system-status">
+
+            <div class="status-dot"></div>
+
+            <strong>
+                Sistem Online
+            </strong>
+
+        </div>
+
+
+        <div class="system-item">
+
+            <span>
+                Website
+            </span>
+
+            <span>
+                Online
+            </span>
+
+        </div>
+
+
+        <div class="system-item">
+
+            <span>
+                Database
+            </span>
+
+            <span>
+                Terhubung
+            </span>
+
+        </div>
+
+
+        <div class="system-item">
+
+            <span>
+                Admin
+            </span>
+
+            <span>
+                Aktif
+            </span>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+@endsection
