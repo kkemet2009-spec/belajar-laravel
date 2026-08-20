@@ -9,155 +9,104 @@
         box-sizing: border-box;
     }
 
-    .products-page {
-        max-width: 1280px;
-        margin: 0 auto;
-        padding: 40px 20px 70px;
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
     }
 
-    /* ==============================
-       HERO
-    ============================== */
+    /* ================= PAGE HEADER ================= */
 
-    .products-hero {
-        position: relative;
-        overflow: hidden;
-
-        padding: 55px 40px;
-        margin-bottom: 32px;
-
-        border-radius: 24px;
-
-        background: linear-gradient(135deg, #111827, #1d4ed8);
-
-        color: white;
-
-        box-shadow: 0 15px 40px rgba(15, 23, 42, .15);
+    .products-header {
+        background: #F1F1EF;
+        padding: 56px 32px 48px;
+        text-align: center;
     }
 
-    .products-hero::before {
-        content: "";
-        position: absolute;
-        width: 300px;
-        height: 300px;
-        right: -100px;
-        top: -130px;
-        background: rgba(255,255,255,.08);
-        border-radius: 50%;
+    .products-header .eyebrow {
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        color: #4B5563;
+        margin-bottom: 12px;
     }
 
-    .products-hero::after {
-        content: "";
-        position: absolute;
-        width: 180px;
-        height: 180px;
-        right: 180px;
-        bottom: -110px;
-        background: rgba(255,255,255,.06);
-        border-radius: 50%;
-    }
-
-    .hero-content {
-        position: relative;
-        z-index: 2;
-        max-width: 700px;
-    }
-
-    .hero-badge {
-        display: inline-block;
-        padding: 7px 14px;
-        margin-bottom: 15px;
-        border-radius: 50px;
-        background: rgba(255,255,255,.12);
-        border: 1px solid rgba(255,255,255,.2);
-        font-size: 12px;
+    .products-header h1 {
+        font-family: 'Playfair Display', 'Inter', serif;
+        font-size: 48px;
+        line-height: 1.08;
         font-weight: 700;
-        letter-spacing: .5px;
+        letter-spacing: -.01em;
+        color: #171717;
+        margin: 0 0 14px;
     }
 
-    .products-hero h1 {
-        margin: 0;
-        font-size: 40px;
-        line-height: 1.15;
-        font-weight: 800;
-    }
-
-    .products-hero p {
-        margin: 15px 0 0;
-        color: rgba(255,255,255,.8);
-        font-size: 16px;
+    .products-header p {
+        max-width: 480px;
+        margin: 0 auto 28px;
+        color: #4B5563;
+        font-size: 15px;
         line-height: 1.7;
-        max-width: 560px;
     }
-
-    /* ==============================
-       SEARCH BAR (frontend only)
-    ============================== */
 
     .search-wrap {
         position: relative;
-        z-index: 2;
-        margin-top: 26px;
-        max-width: 420px;
+        max-width: 380px;
+        margin: 0 auto;
     }
 
     .search-wrap input {
         width: 100%;
-        padding: 13px 16px 13px 42px;
-        border-radius: 12px;
-        border: none;
+        padding: 13px 18px 13px 42px;
+        border-radius: 999px;
+        border: 1px solid #E5E7EB;
         outline: none;
         font-size: 14px;
-        background: rgba(255,255,255,.95);
-        color: #111827;
+        background: #FFFFFF;
+        color: #171717;
     }
 
-    .search-wrap input::placeholder {
-        color: #94a3b8;
+    .search-wrap input:focus {
+        border-color: #171717;
     }
 
     .search-wrap .search-icon {
         position: absolute;
-        left: 15px;
+        left: 17px;
         top: 50%;
         transform: translateY(-50%);
-        font-size: 15px;
-        color: #6b7280;
+        font-size: 14px;
+        color: #9CA3AF;
     }
 
-    /* ==============================
-       SECTION HEADER
-    ============================== */
+    /* ================= SECTION ================= */
 
-    .section-header {
+    .products-section {
+        max-width: 1240px;
+        margin: 0 auto;
+        padding: 56px 32px 90px;
+    }
+
+    .section-heading-row {
         display: flex;
+        align-items: center;
         justify-content: space-between;
-        align-items: end;
-        margin-bottom: 22px;
+        margin-bottom: 26px;
         flex-wrap: wrap;
         gap: 10px;
     }
 
-    .section-header h2 {
+    .section-heading-row h2 {
+        font-size: 20px;
+        font-weight: 700;
+        color: #171717;
         margin: 0;
-        font-size: 24px;
-        color: #111827;
-    }
-
-    .section-header p {
-        margin: 6px 0 0;
-        color: #6b7280;
-        font-size: 14px;
     }
 
     .result-count {
         font-size: 13px;
-        color: #6b7280;
+        color: #6B7280;
     }
 
-    /* ==============================
-       PRODUCT GRID
-    ============================== */
+    /* ================= PRODUCT GRID ================= */
 
     .product-grid {
         display: grid;
@@ -165,43 +114,37 @@
         gap: 22px;
     }
 
-    /* ==============================
-       PRODUCT CARD
-    ============================== */
-
     .product-card {
-        overflow: hidden;
         display: flex;
         flex-direction: column;
-        background: white;
-        border: 1px solid #e5e7eb;
-        border-radius: 16px;
-        box-shadow: 0 6px 20px rgba(15,23,42,.05);
-        transition: transform .25s ease, box-shadow .25s ease;
+        background: #FFFFFF;
+        border: 1px solid #E5E7EB;
+        border-radius: 14px;
+        overflow: hidden;
+        transition: transform .2s ease, border-color .2s ease;
     }
 
     .product-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 18px 35px rgba(15,23,42,.12);
+        transform: translateY(-4px);
+        border-color: #D1D5DB;
     }
 
     .product-image {
         position: relative;
-        height: 230px;
+        height: 240px;
         overflow: hidden;
-        background: #f1f5f9;
+        background: #F8FAFC;
     }
 
     .product-image img {
         width: 100%;
         height: 100%;
-        display: block;
         object-fit: cover;
-        transition: transform .4s ease;
+        transition: transform .35s ease;
     }
 
     .product-card:hover .product-image img {
-        transform: scale(1.06);
+        transform: scale(1.05);
     }
 
     .image-placeholder {
@@ -211,17 +154,10 @@
         align-items: center;
         justify-content: center;
         flex-direction: column;
-        color: #94a3b8;
-        background: linear-gradient(135deg, #f8fafc, #e2e8f0);
-    }
-
-    .image-placeholder span {
-        font-size: 46px;
-        margin-bottom: 6px;
-    }
-
-    .image-placeholder small {
-        font-size: 12px;
+        gap: 6px;
+        color: #9CA3AF;
+        background: #F1F5F9;
+        font-size: 13px;
     }
 
     .product-body {
@@ -232,18 +168,18 @@
     }
 
     .product-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: #171717;
         margin: 0 0 8px;
-        font-size: 17px;
         line-height: 1.4;
-        font-weight: 750;
-        color: #111827;
     }
 
     .product-description {
-        margin: 0 0 14px;
-        color: #6b7280;
-        font-size: 13px;
+        font-size: 12.5px;
+        color: #6B7280;
         line-height: 1.6;
+        margin: 0 0 14px;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
@@ -251,187 +187,111 @@
     }
 
     .product-price {
-        margin-bottom: 14px;
-        font-size: 20px;
+        font-size: 18px;
         font-weight: 800;
-        color: #1d4ed8;
+        color: #171717;
+        margin-bottom: 6px;
     }
 
     .stock-text {
-        margin-bottom: 14px;
-        font-size: 12.5px;
+        font-size: 12px;
         font-weight: 600;
+        margin-bottom: 16px;
     }
 
     .stock-text.in-stock {
-        color: #16a34a;
+        color: #16A34A;
     }
 
     .stock-text.out-stock {
-        color: #dc2626;
+        color: #DC2626;
     }
-
-    /* ==============================
-       ACTIONS
-    ============================== */
 
     .product-actions {
         margin-top: auto;
-        padding-top: 14px;
-        border-top: 1px solid #f1f5f9;
         display: flex;
-        flex-direction: column;
         gap: 8px;
-    }
-
-    .btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 7px;
-        width: 100%;
-        padding: 10px 14px;
-        border-radius: 10px;
-        border: none;
-        cursor: pointer;
-        text-decoration: none;
-        font-size: 13px;
-        font-weight: 700;
-        transition: background .2s ease, transform .2s ease, opacity .2s ease;
-        font-family: inherit;
     }
 
     .btn-detail {
-        background: #111827;
-        color: white;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 11px 14px;
+        border-radius: 999px;
+        background: #171717;
+        color: #FFFFFF;
+        text-decoration: none;
+        font-size: 12.5px;
+        font-weight: 700;
+        transition: background .2s ease;
     }
 
     .btn-detail:hover {
-        background: #1d4ed8;
-        transform: translateY(-1px);
-    }
-
-    .btn-row {
-        display: flex;
-        gap: 8px;
+        background: #F4B400;
+        color: #171717;
     }
 
     .btn-cart {
-        background: #facc15;
-        color: #111827;
-        flex: 1;
+        width: 42px;
+        height: 42px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        border: none;
+        background: #F4B400;
+        color: #171717;
+        font-size: 15px;
+        cursor: pointer;
+        transition: transform .2s ease, opacity .2s ease;
     }
 
     .btn-cart:hover:not(:disabled) {
-        background: #eab308;
-        transform: translateY(-1px);
+        transform: translateY(-2px);
     }
 
-    .btn-buy {
-        background: #1d4ed8;
-        color: white;
-        flex: 1.4;
-        box-shadow: 0 6px 16px rgba(29,78,216,.28);
-    }
-
-    .btn-buy:hover:not(:disabled) {
-        background: #1e3a8a;
-        transform: translateY(-1px);
-    }
-
-    .btn:disabled {
-        opacity: .5;
+    .btn-cart:disabled {
+        opacity: .4;
         cursor: not-allowed;
-        transform: none !important;
     }
 
-    /* ==============================
-       WHY SECTION
-    ============================== */
-
-    .why-section {
-        margin-top: 64px;
-    }
-
-    .why-section h3 {
-        text-align: center;
-        font-size: 22px;
-        color: #111827;
-        margin: 0 0 28px;
-    }
-
-    .why-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 18px;
-    }
-
-    .why-card {
-        text-align: center;
-        padding: 24px 16px;
-        border: 1px solid #e5e7eb;
-        border-radius: 14px;
-        background: white;
-    }
-
-    .why-card .why-icon {
-        font-size: 26px;
-        margin-bottom: 10px;
-    }
-
-    .why-card h4 {
-        margin: 0 0 6px;
-        font-size: 14px;
-        color: #111827;
-    }
-
-    .why-card p {
-        margin: 0;
-        font-size: 12.5px;
-        color: #6b7280;
-        line-height: 1.5;
-    }
-
-    /* ==============================
-       EMPTY / NO RESULT
-    ============================== */
+    /* ================= EMPTY / NO RESULT ================= */
 
     .empty-state {
+        grid-column: 1 / -1;
         padding: 70px 25px;
         text-align: center;
-        background: white;
-        border: 1px solid #e5e7eb;
-        border-radius: 20px;
-        box-shadow: 0 6px 20px rgba(15,23,42,.04);
+        background: #F8FAFC;
+        border-radius: 16px;
     }
 
     .empty-icon {
-        font-size: 50px;
-        margin-bottom: 15px;
+        font-size: 44px;
+        margin-bottom: 14px;
+        opacity: .6;
     }
 
     .empty-state h3 {
         margin: 0 0 8px;
-        font-size: 19px;
-        color: #111827;
+        font-size: 17px;
+        color: #171717;
     }
 
     .empty-state p {
         margin: 0;
-        color: #6b7280;
-        font-size: 14px;
+        color: #6B7280;
+        font-size: 13.5px;
     }
 
-    /* ==============================
-       TOAST (untuk fitur yang belum tersedia)
-    ============================== */
+    /* ================= TOAST ================= */
 
     .js-toast {
         position: fixed;
         left: 50%;
         bottom: 28px;
         transform: translateX(-50%) translateY(20px);
-        background: #111827;
+        background: #171717;
         color: white;
         padding: 12px 18px;
         border-radius: 10px;
@@ -449,60 +309,34 @@
         transform: translateX(-50%) translateY(0);
     }
 
-    /* ==============================
-       RESPONSIVE
-    ============================== */
+    /* ================= RESPONSIVE ================= */
 
-    @media (max-width: 1100px) {
-        .product-grid,
-        .why-grid {
-            grid-template-columns: repeat(3, 1fr);
-        }
-    }
-
-    @media (max-width: 900px) {
+    @media (max-width: 1024px) {
         .product-grid {
             grid-template-columns: repeat(2, 1fr);
         }
 
-        .why-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .products-hero h1 {
-            font-size: 34px;
+        .products-header h1 {
+            font-size: 36px;
         }
     }
 
-    @media (max-width: 560px) {
-        .products-page {
-            padding: 25px 15px 50px;
+    @media (max-width: 640px) {
+        .products-header {
+            padding: 40px 20px 36px;
         }
 
-        .products-hero {
-            padding: 32px 22px;
-            border-radius: 18px;
+        .products-header h1 {
+            font-size: 30px;
         }
 
-        .products-hero h1 {
-            font-size: 28px;
-        }
-
-        .products-hero p {
-            font-size: 14px;
-        }
-
-        .search-wrap {
-            max-width: 100%;
+        .products-section {
+            padding: 40px 20px 60px;
         }
 
         .product-grid {
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
-        }
-
-        .why-grid {
-            grid-template-columns: 1fr;
         }
 
         .product-image {
@@ -514,76 +348,51 @@
         }
 
         .product-title {
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .product-price {
-            font-size: 16px;
-        }
-
-        .btn-row {
-            flex-direction: column;
+            font-size: 15px;
         }
     }
 </style>
 
 
-<div class="products-page">
+<!-- ================= HEADER ================= -->
 
-    {{-- =========================================
-         HERO
-    ========================================== --}}
+<div class="products-header">
 
-    <section class="products-hero">
+    <span class="eyebrow">Koleksi Jersey 2026</span>
 
-        <div class="hero-content">
+    <h1>Koleksi Jersey</h1>
 
-            <div class="hero-badge">⚽ JERSEY STORE</div>
+    <p>
+        Temukan berbagai jersey favorit dengan desain berkualitas
+        dan nyaman digunakan.
+    </p>
 
-            <h1>Koleksi Jersey Terbaik</h1>
-
-            <p>
-                Temukan berbagai jersey favorit dengan
-                desain berkualitas dan nyaman digunakan.
-                Pilih jersey yang paling cocok untuk
-                kamu dan lengkapi koleksimu.
-            </p>
-
-        </div>
-
-        <div class="search-wrap">
-            <span class="search-icon">🔍</span>
-            <input
-                type="text"
-                id="productSearch"
-                placeholder="Cari nama jersey..."
-                onkeyup="filterProducts()"
-                autocomplete="off"
-            >
-        </div>
-
-    </section>
-
-
-    {{-- =========================================
-         SECTION HEADER
-    ========================================== --}}
-
-    <div class="section-header">
-
-        <div>
-            <h2>Koleksi Jersey</h2>
-            <p>Pilih jersey favoritmu dari koleksi kami.</p>
-        </div>
-
-        <div class="result-count" id="resultCount"></div>
-
+    <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input
+            type="text"
+            id="productSearch"
+            placeholder="Cari nama jersey..."
+            onkeyup="filterProducts()"
+            autocomplete="off"
+        >
     </div>
 
+</div>
 
-    {{-- =========================================
-         PRODUCT LIST
-    ========================================== --}}
+
+<!-- ================= PRODUCT LIST ================= -->
+
+<div class="products-section">
+
+    <div class="section-heading-row">
+        <h2>Semua Produk</h2>
+        <div class="result-count" id="resultCount"></div>
+    </div>
 
     @if($products->count() > 0)
 
@@ -593,11 +402,7 @@
 
                 <article class="product-card" data-name="{{ strtolower($product->name) }}">
 
-                    {{-- IMAGE --}}
-                    <a
-                        href="{{ route('public.products.show', $product) }}"
-                        style="text-decoration:none;"
-                    >
+                    <a href="{{ route('public.products.show', $product) }}" style="text-decoration:none;">
                         <div class="product-image">
 
                             @if($product->image)
@@ -609,14 +414,13 @@
                             @else
                                 <div class="image-placeholder">
                                     <span>👕</span>
-                                    <small>Tidak ada gambar</small>
+                                    <span>Tidak ada gambar</span>
                                 </div>
                             @endif
 
                         </div>
                     </a>
 
-                    {{-- BODY --}}
                     <div class="product-body">
 
                         <h3 class="product-title">{{ $product->name }}</h3>
@@ -625,10 +429,6 @@
                             <p class="product-description">
                                 {{ \Illuminate\Support\Str::limit(strip_tags($product->description), 90) }}
                             </p>
-                        @else
-                            <p class="product-description">
-                                Jersey berkualitas dengan desain menarik dan nyaman digunakan.
-                            </p>
                         @endif
 
                         <div class="product-price">
@@ -636,43 +436,24 @@
                         </div>
 
                         <div class="stock-text {{ $product->stock > 0 ? 'in-stock' : 'out-stock' }}">
-                            @if($product->stock > 0)
-                                ✓ Stok tersedia
-                            @else
-                                ✕ Stok habis
-                            @endif
+                            {{ $product->stock > 0 ? '✓ Stok tersedia' : '✕ Stok habis' }}
                         </div>
 
                         <div class="product-actions">
 
-                            <a
-                                href="{{ route('public.products.show', $product) }}"
-                                class="btn btn-detail"
-                            >
-                                Lihat Detail <span>→</span>
+                            <a href="{{ route('public.products.show', $product) }}" class="btn-detail">
+                                Lihat Detail
                             </a>
 
-                            <div class="btn-row">
-
-                                <button
-                                    type="button"
-                                    class="btn btn-cart"
-                                    {{ $product->stock > 0 ? '' : 'disabled' }}
-                                    onclick="showComingSoon('keranjang')"
-                                >
-                                    🛒 Keranjang
-                                </button>
-
-                                <button
-                                    type="button"
-                                    class="btn btn-buy"
-                                    {{ $product->stock > 0 ? '' : 'disabled' }}
-                                    onclick="showComingSoon('beli')"
-                                >
-                                    Beli Sekarang
-                                </button>
-
-                            </div>
+                            <button
+                                type="button"
+                                class="btn-cart"
+                                {{ $product->stock > 0 ? '' : 'disabled' }}
+                                onclick="showComingSoon()"
+                                title="Tambah ke Keranjang"
+                            >
+                                🛒
+                            </button>
 
                         </div>
 
@@ -684,7 +465,7 @@
 
         </div>
 
-        <div class="empty-state" id="noResultState" style="display:none; margin-top:24px;">
+        <div class="empty-state" id="noResultState" style="display:none;">
             <div class="empty-icon">🔎</div>
             <h3>Produk Tidak Ditemukan</h3>
             <p>Coba gunakan kata kunci lain.</p>
@@ -692,62 +473,23 @@
 
     @else
 
-        <div class="empty-state">
-            <div class="empty-icon">👕</div>
-            <h3>Belum Ada Produk</h3>
-            <p>Saat ini belum ada jersey yang tersedia. Silakan kembali lagi nanti.</p>
+        <div class="product-grid">
+            <div class="empty-state">
+                <div class="empty-icon">👕</div>
+                <h3>Belum Ada Produk</h3>
+                <p>Saat ini belum ada jersey yang tersedia. Silakan kembali lagi nanti.</p>
+            </div>
         </div>
 
     @endif
 
-
-    {{-- =========================================
-         WHY SECTION
-    ========================================== --}}
-
-    <div class="why-section">
-
-        <h3>Kenapa Belanja di Jersey Store?</h3>
-
-        <div class="why-grid">
-
-            <div class="why-card">
-                <div class="why-icon">👕</div>
-                <h4>Jersey Berkualitas</h4>
-                <p>Bahan nyaman dan tahan lama untuk pemakaian sehari-hari.</p>
-            </div>
-
-            <div class="why-card">
-                <div class="why-icon">💰</div>
-                <h4>Harga Bersahabat</h4>
-                <p>Harga yang wajar untuk kualitas jersey yang kamu dapatkan.</p>
-            </div>
-
-            <div class="why-card">
-                <div class="why-icon">🚚</div>
-                <h4>Pengiriman Cepat</h4>
-                <p>Pesanan diproses dan dikirim secepat mungkin.</p>
-            </div>
-
-            <div class="why-card">
-                <div class="why-icon">🤝</div>
-                <h4>Pelayanan Terbaik</h4>
-                <p>Tim kami siap membantu kebutuhan belanjamu.</p>
-            </div>
-
-        </div>
-
-    </div>
-
 </div>
 
 
-{{-- Toast untuk tombol yang backend-nya belum tersedia --}}
 <div class="js-toast" id="jsToast"></div>
 
 
 <script>
-    // Filter produk sederhana di sisi frontend (tidak memanggil backend)
     function filterProducts() {
         const query = document.getElementById('productSearch').value.trim().toLowerCase();
         const cards = document.querySelectorAll('#productGrid .product-card');
@@ -764,9 +506,7 @@
         });
 
         if (resultCount) {
-            resultCount.textContent = query
-                ? visibleCount + ' produk ditemukan'
-                : '';
+            resultCount.textContent = query ? visibleCount + ' produk ditemukan' : '';
         }
 
         if (noResult) {
@@ -774,14 +514,9 @@
         }
     }
 
-    // Notifikasi sementara untuk tombol Keranjang / Beli Sekarang
-    // (Diaktifkan sebagai UI dulu karena backend keranjang/checkout belum tersedia)
-    function showComingSoon(type) {
+    function showComingSoon() {
         const toast = document.getElementById('jsToast');
-        toast.textContent = type === 'keranjang'
-            ? 'Fitur keranjang belum tersedia'
-            : 'Fitur beli sekarang belum tersedia';
-
+        toast.textContent = 'Fitur keranjang belum tersedia';
         toast.classList.add('show');
 
         clearTimeout(window.__toastTimeout);
