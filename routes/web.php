@@ -7,15 +7,14 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\PublicProductController;
 use App\Http\Controllers\PublicArticleController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 
 
 /*
 |--------------------------------------------------------------------------
 | WEBSITE PUBLIK
 |--------------------------------------------------------------------------
-|
-| Semua halaman yang bisa dilihat pengunjung.
-|
 */
 
 
@@ -41,14 +40,72 @@ Route::get('/produk/{product}', [PublicProductController::class, 'show'])
 
 
 // =====================================================
+// KERANJANG
+// =====================================================
+
+// Halaman keranjang
+Route::get('/keranjang', [CartController::class, 'index'])
+    ->name('cart.index');
+
+// Tambah produk ke keranjang
+Route::post('/keranjang/{product}', [CartController::class, 'add'])
+    ->name('cart.add');
+
+// Update jumlah produk
+Route::patch('/keranjang/{product}', [CartController::class, 'update'])
+    ->name('cart.update');
+
+// Hapus produk dari keranjang
+Route::delete('/keranjang/{product}', [CartController::class, 'remove'])
+    ->name('cart.remove');
+
+// Kosongkan keranjang
+Route::delete('/keranjang', [CartController::class, 'clear'])
+    ->name('cart.clear');
+
+
+// =====================================================
+// BELI SEKARANG
+// =====================================================
+
+// Langsung menuju checkout dari halaman produk
+Route::post('/beli-sekarang/{product}', [CheckoutController::class, 'buyNow'])
+    ->name('checkout.buyNow');
+
+
+// =====================================================
+// CHECKOUT
+// =====================================================
+
+// Halaman checkout
+Route::get('/checkout', [CheckoutController::class, 'index'])
+    ->name('checkout.index');
+
+// Proses checkout
+Route::post('/checkout', [CheckoutController::class, 'store'])
+    ->name('checkout.store');
+
+
+// =====================================================
+// WISHLIST
+// =====================================================
+
+// Wishlist
+Route::get('/wishlist', [CartController::class, 'wishlist'])
+    ->name('wishlist.index');
+
+// Tambah/hapus wishlist
+Route::post('/wishlist/{product}', [CartController::class, 'toggleWishlist'])
+    ->name('wishlist.toggle');
+
+
+// =====================================================
 // ARTIKEL PUBLIK
 // =====================================================
 
-// Daftar artikel
 Route::get('/artikel', [PublicArticleController::class, 'index'])
     ->name('public.articles.index');
 
-// Detail artikel
 Route::get('/artikel/{article}', [PublicArticleController::class, 'show'])
     ->name('public.articles.show');
 
@@ -57,15 +114,13 @@ Route::get('/artikel/{article}', [PublicArticleController::class, 'show'])
 // KONTAK
 // =====================================================
 
-// /contact
 Route::get('/contact', function () {
     return view('contact');
 })->name('contact');
 
-// /kontak
 Route::get('/kontak', function () {
     return view('contact');
-});
+})->name('kontak');
 
 
 
@@ -73,18 +128,12 @@ Route::get('/kontak', function () {
 |--------------------------------------------------------------------------
 | ADMIN DASHBOARD
 |--------------------------------------------------------------------------
-|
-| Semua halaman di bawah ini hanya bisa diakses
-| oleh user yang sudah login.
-|
 */
-
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
-
     // =================================================
-    // DASHBOARD ADMIN
+    // DASHBOARD
     // =================================================
 
     Route::get('/dashboard', function () {
@@ -93,27 +142,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
     // =================================================
-    // KELOLA PRODUK ADMIN
+    // KELOLA PRODUK
     // =================================================
-    //
-    // /products
-    // /products/create
-    // /products/{product}
-    // /products/{product}/edit
-    //
-    
+
     Route::resource('products', ProductController::class);
 
 
     // =================================================
-    // KELOLA ARTIKEL ADMIN
+    // KELOLA ARTIKEL
     // =================================================
-    //
-    // /articles
-    // /articles/create
-    // /articles/{article}
-    // /articles/{article}/edit
-    //
 
     Route::resource('articles', ArticleController::class);
 
@@ -125,9 +162,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 |--------------------------------------------------------------------------
 | AUTHENTICATION
 |--------------------------------------------------------------------------
-|
-| Login, register, logout, password, dll.
-|
 */
 
 require __DIR__ . '/auth.php';

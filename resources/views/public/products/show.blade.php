@@ -562,34 +562,22 @@
                     </div>
 
 
-                    <div class="buttons">
+                   <form action="{{ route('cart.add',$product) }}" method="POST">
 
-                        <button
-                            type="button"
-                            class="btn btn-cart"
-                            onclick="tambahKeranjang()"
-                        >
-                            🛒 Tambah Keranjang
-                        </button>
+    @csrf
 
-                        <button
-                            type="button"
-                            class="btn btn-buy"
-                            onclick="beliSekarang()"
-                        >
-                            ⚡ Beli Sekarang
-                        </button>
+    <input type="hidden"
+           name="quantity"
+           id="quantity-input"
+           value="1">
 
-                        <button
-                            type="button"
-                            class="btn btn-favorite"
-                            onclick="favorit()"
-                            title="Favorit"
-                        >
-                            ♡
-                        </button>
+    <button class="btn btn-dark w-100 py-3 rounded-3">
 
-                    </div>
+        🛒 Tambah Keranjang
+
+    </button>
+
+</form>
 
                 @else
 

@@ -272,6 +272,12 @@
 
 <body>
 
+    @php
+        $authPageRoutes = ['login', 'register', 'password.request', 'password.email', 'password.reset', 'password.confirm', 'verification.notice', 'verification.verify'];
+        $isAuthPage = request()->routeIs($authPageRoutes);
+    @endphp
+
+    @unless($isAuthPage)
     {{-- NAVBAR --}}
     <header class="navbar" id="navbar">
         <div class="navbar-inner">
@@ -312,12 +318,14 @@
         <a href="{{ route('public.articles.index') }}" class="{{ request()->routeIs('public.articles.*') ? 'active' : '' }}">Artikel</a>
         <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'active' : '' }}">Kontak</a>
     </div>
+    @endunless
 
 
     {{-- ISI HALAMAN --}}
     @yield('content')
 
 
+    @unless($isAuthPage)
     {{-- FOOTER --}}
     <footer>
 
@@ -347,6 +355,7 @@
         </div>
 
     </footer>
+    @endunless
 
     <script>
         var hamburgerBtn = document.getElementById('hamburgerBtn');

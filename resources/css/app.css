@@ -1,3 +1,321 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+
+/* =====================================================
+   DEV STORE — GLOBAL DESIGN SYSTEM
+   ===================================================== */
+
+:root {
+    --primary: #111111;
+    --accent: #D4A72C;
+    --accent-hover: #B88916;
+
+    --bg: #FAFAF8;
+    --white: #FFFFFF;
+
+    --border: #E5E7EB;
+    --muted: #6B7280;
+
+    --success: #16A34A;
+    --danger: #DC2626;
+
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 18px;
+
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+
+/* =====================================================
+   GLOBAL
+   ===================================================== */
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--primary);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* =====================================================
+   HEADINGS
+   ===================================================== */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+
+/* =====================================================
+   BUTTON
+   ===================================================== */
+
+.btn-dark {
+    background: var(--primary);
+    color: var(--white);
+
+    border: none;
+    border-radius: var(--radius-md);
+
+    padding: 12px 24px;
+
+    font-weight: 600;
+
+    transition: all 0.25s ease;
+}
+
+.btn-dark:hover {
+    background: #2a2a2a;
+    transform: translateY(-2px);
+}
+
+
+.btn-primary {
+    background: var(--accent);
+    color: var(--primary);
+
+    border: none;
+    border-radius: var(--radius-md);
+
+    padding: 12px 24px;
+
+    font-weight: 700;
+
+    transition: all 0.25s ease;
+}
+
+.btn-primary:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+}
+
+
+/* =====================================================
+   PRODUCT CARD
+   ===================================================== */
+
+.product-card {
+    background: var(--white);
+
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+
+    overflow: hidden;
+
+    transition: all 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+}
+
+
+/* =====================================================
+   PRODUCT IMAGE
+   ===================================================== */
+
+.product-card img {
+    width: 100%;
+    height: 320px;
+
+    object-fit: contain;
+
+    background: #F5F5F3;
+
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover img {
+    transform: scale(1.03);
+}
+
+
+/* =====================================================
+   PRICE
+   ===================================================== */
+
+.product-price {
+    font-size: 24px;
+    font-weight: 700;
+
+    color: var(--primary);
+}
+
+
+/* =====================================================
+   STOCK
+   ===================================================== */
+
+.product-stock {
+    color: var(--success);
+
+    font-weight: 600;
+}
+
+
+/* =====================================================
+   PRODUCT DETAIL
+   ===================================================== */
+
+.product-detail {
+    background: var(--white);
+
+    border-radius: var(--radius-lg);
+
+    border: 1px solid var(--border);
+
+    box-shadow: var(--shadow-sm);
+}
+
+
+/* =====================================================
+   QUANTITY
+   ===================================================== */
+
+.quantity-control {
+    display: flex;
+
+    width: fit-content;
+
+    border: 1px solid var(--border);
+
+    border-radius: var(--radius-md);
+
+    overflow: hidden;
+}
+
+.quantity-control button {
+    width: 50px;
+    height: 50px;
+
+    border: none;
+
+    background: #F5F5F3;
+
+    font-size: 20px;
+
+    cursor: pointer;
+}
+
+.quantity-control span {
+    width: 60px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-weight: 600;
+}
+
+
+/* =====================================================
+   CART
+   ===================================================== */
+
+.cart-card {
+    background: var(--white);
+
+    border: 1px solid var(--border);
+
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-sm);
+}
+
+
+/* =====================================================
+   CHECKOUT
+   ===================================================== */
+
+.checkout-card {
+    background: var(--white);
+
+    border: 1px solid var(--border);
+
+    border-radius: var(--radius-lg);
+
+    padding: 24px;
+
+    box-shadow: var(--shadow-sm);
+}
+
+
+/* =====================================================
+   NAVBAR
+   ===================================================== */
+
+.navbar {
+    background: var(--white);
+
+    border-bottom: 1px solid var(--border);
+}
+
+.navbar a {
+    color: var(--primary);
+
+    text-decoration: none;
+
+    transition: color 0.2s ease;
+}
+
+.navbar a:hover {
+    color: var(--accent);
+}
+
+
+/* =====================================================
+   ACTIVE NAVIGATION
+   ===================================================== */
+
+.navbar a.active {
+    color: var(--accent);
+
+    font-weight: 700;
+}
+
+
+/* =====================================================
+   GLOBAL CONTAINER
+   ===================================================== */
+
+.store-container {
+    max-width: 1280px;
+
+    margin: 0 auto;
+
+    padding: 40px 24px;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 768px) {
+
+    .store-container {
+        padding: 24px 16px;
+    }
+
+    .product-card img {
+        height: 250px;
+    }
+
+    .product-price {
+        font-size: 20px;
+    }
+}

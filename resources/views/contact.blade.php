@@ -833,19 +833,8 @@
                 Kunjungi kami langsung di lokasi toko.
             </p>
 
-            {{--
-                TODO: Jika alamat dan koordinat toko sudah tersedia,
-                ganti div.map-placeholder di bawah dengan embed Google Maps, contoh:
-
-                <iframe
-                    src="https://www.google.com/maps/embed?pb=..."
-                    width="100%" height="100%" style="border:0; border-radius:14px;"
-                    allowfullscreen loading="lazy">
-                </iframe>
-            --}}
-            <div class="map-placeholder">
-                Google Maps akan ditampilkan di sini
-            </div>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15813.90234988375!2d110.36853153106239!3d-7.739271351319612!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a58e23d58705d%3A0xe3e3f1de06133d33!2sHotel%20Alana%20Yogyakarta%20Hotel%20%26%20Convention%20Center!5e0!3m2!1sid!2sid!4v1787282665798!5m2!1sid!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+            
 
         </div>
 
