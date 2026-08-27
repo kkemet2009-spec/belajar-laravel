@@ -1,4 +1,3 @@
-```blade
 @extends('layouts.app')
 
 @section('content')
@@ -10,7 +9,7 @@
         {{-- HEADER --}}
         <div class="mb-10">
             <div class="mb-3 flex items-center gap-2 text-sm text-gray-500">
-                <a href="{{ route('home') }}" class="transition hover:text-[#D4A72C]">
+                <a href="{{ route('home') }}" class="transition hover:text-[#92400E]">
                     Home
                 </a>
 
@@ -21,7 +20,7 @@
                 </span>
             </div>
 
-            <h1 class="text-3xl font-semibold tracking-tight text-[#111111] md:text-4xl">
+            <h1 class="text-3xl font-bold tracking-tight text-[#111827] md:text-4xl" style="font-family: 'Playfair Display', serif;">
                 Checkout
             </h1>
 
@@ -76,7 +75,7 @@
 
             <div class="mx-auto max-w-3xl">
 
-                <div class="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm">
+                <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
 
                     {{-- Success Header --}}
                     <div class="border-b border-gray-100 px-6 py-8 text-center md:px-10">
@@ -85,12 +84,12 @@
                             ✓
                         </div>
 
-                        <h2 class="text-2xl font-semibold text-[#111111]">
+                        <h2 class="text-2xl font-bold text-[#111827]" style="font-family: 'Playfair Display', serif;">
                             Pesanan Berhasil Dibuat
                         </h2>
 
                         <p class="mt-2 text-sm text-gray-500">
-                            Terima kasih sudah berbelanja di DEV STORE.
+                            Terima kasih sudah berbelanja di Jersey Store.
                         </p>
 
                     </div>
@@ -103,7 +102,7 @@
                             Nomor Pesanan
                         </p>
 
-                        <p class="mt-2 text-xl font-semibold tracking-wide text-[#D4A72C]">
+                        <p class="mt-2 text-xl font-bold tracking-wide text-[#92400E]">
                             {{ $lastOrder['order_number'] }}
                         </p>
 
@@ -113,7 +112,7 @@
                     {{-- Customer --}}
                     <div class="px-6 py-7 md:px-10">
 
-                        <h3 class="mb-5 text-lg font-semibold text-[#111111]">
+                        <h3 class="mb-5 text-lg font-bold text-[#111827]">
                             Informasi Pengiriman
                         </h3>
 
@@ -167,7 +166,7 @@
                     {{-- Order Items --}}
                     <div class="border-t border-gray-100 px-6 py-7 md:px-10">
 
-                        <h3 class="mb-5 text-lg font-semibold text-[#111111]">
+                        <h3 class="mb-5 text-lg font-bold text-[#111827]">
                             Detail Pesanan
                         </h3>
 
@@ -178,7 +177,7 @@
                                 <div class="flex gap-4">
 
                                     {{-- Image --}}
-                                    <div class="h-20 w-20 shrink-0 overflow-hidden rounded-2xl bg-gray-100">
+                                    <div class="h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-gray-100">
 
                                         @if(!empty($item['image']))
 
@@ -245,7 +244,7 @@
                                     Total Pembayaran
                                 </span>
 
-                                <span class="text-2xl font-bold text-[#111111]">
+                                <span class="text-2xl font-bold text-[#111827]">
                                     Rp {{ number_format($lastOrder['total'], 0, ',', '.') }}
                                 </span>
 
@@ -261,14 +260,14 @@
 
                         <a
                             href="{{ route('public.products.index') }}"
-                            class="flex-1 rounded-xl bg-[#111111] px-6 py-3.5 text-center text-sm font-semibold text-white transition hover:bg-[#D4A72C] hover:text-[#111111]"
+                            class="flex-1 rounded-full bg-[#111827] px-6 py-3.5 text-center text-sm font-semibold text-white transition hover:bg-[#F4B400] hover:text-[#111827]"
                         >
                             Lanjut Belanja
                         </a>
 
                         <a
                             href="{{ route('home') }}"
-                            class="flex-1 rounded-xl border border-gray-300 bg-white px-6 py-3.5 text-center text-sm font-semibold text-gray-900 transition hover:border-[#D4A72C] hover:text-[#D4A72C]"
+                            class="flex-1 rounded-full border border-gray-300 bg-white px-6 py-3.5 text-center text-sm font-semibold text-gray-900 transition hover:border-[#F4B400] hover:text-[#92400E]"
                         >
                             Kembali ke Home
                         </a>
@@ -297,15 +296,15 @@
                     <div class="space-y-6 lg:col-span-2">
 
                         {{-- Customer Information --}}
-                        <div class="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm md:p-8">
+                        <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm md:p-8">
 
                             <div class="mb-7">
 
-                                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#D4A72C]">
+                                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#92400E]">
                                     01
                                 </p>
 
-                                <h2 class="mt-2 text-xl font-semibold text-[#111111]">
+                                <h2 class="mt-2 text-xl font-bold text-[#111827]">
                                     Informasi Pengiriman
                                 </h2>
 
@@ -335,7 +334,7 @@
                                         value="{{ old('name') }}"
                                         required
                                         placeholder="Masukkan nama lengkap"
-                                        class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#D4A72C] focus:ring-2 focus:ring-[#D4A72C]/10"
+                                        class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#F4B400] focus:ring-2 focus:ring-[#F4B400]/20"
                                     >
 
                                 </div>
@@ -358,7 +357,7 @@
                                         value="{{ old('phone') }}"
                                         required
                                         placeholder="Contoh: 081234567890"
-                                        class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#D4A72C] focus:ring-2 focus:ring-[#D4A72C]/10"
+                                        class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#F4B400] focus:ring-2 focus:ring-[#F4B400]/20"
                                     >
 
                                 </div>
@@ -380,7 +379,7 @@
                                         rows="5"
                                         required
                                         placeholder="Nama jalan, nomor rumah, desa/kelurahan, kecamatan, kabupaten/kota, provinsi"
-                                        class="w-full resize-none rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#D4A72C] focus:ring-2 focus:ring-[#D4A72C]/10"
+                                        class="w-full resize-none rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#F4B400] focus:ring-2 focus:ring-[#F4B400]/20"
                                     >{{ old('address') }}</textarea>
 
                                 </div>
@@ -391,15 +390,15 @@
 
 
                         {{-- Payment --}}
-                        <div class="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm md:p-8">
+                        <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm md:p-8">
 
                             <div class="mb-7">
 
-                                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#D4A72C]">
+                                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#92400E]">
                                     02
                                 </p>
 
-                                <h2 class="mt-2 text-xl font-semibold text-[#111111]">
+                                <h2 class="mt-2 text-xl font-bold text-[#111827]">
                                     Metode Pembayaran
                                 </h2>
 
@@ -413,7 +412,7 @@
                             <div class="space-y-3">
 
                                 {{-- Transfer Bank --}}
-                                <label class="group flex cursor-pointer items-center gap-4 rounded-2xl border border-gray-200 p-4 transition hover:border-[#D4A72C]">
+                                <label class="group flex cursor-pointer items-center gap-4 rounded-xl border border-gray-200 p-4 transition hover:border-[#F4B400]">
 
                                     <input
                                         type="radio"
@@ -421,7 +420,7 @@
                                         value="Transfer Bank"
                                         {{ old('payment_method') === 'Transfer Bank' ? 'checked' : '' }}
                                         required
-                                        class="h-4 w-4 accent-[#D4A72C]"
+                                        class="h-4 w-4 accent-[#F4B400]"
                                     >
 
                                     <div class="flex-1">
@@ -440,14 +439,14 @@
 
 
                                 {{-- QRIS --}}
-                                <label class="group flex cursor-pointer items-center gap-4 rounded-2xl border border-gray-200 p-4 transition hover:border-[#D4A72C]">
+                                <label class="group flex cursor-pointer items-center gap-4 rounded-xl border border-gray-200 p-4 transition hover:border-[#F4B400]">
 
                                     <input
                                         type="radio"
                                         name="payment_method"
                                         value="QRIS"
                                         {{ old('payment_method') === 'QRIS' ? 'checked' : '' }}
-                                        class="h-4 w-4 accent-[#D4A72C]"
+                                        class="h-4 w-4 accent-[#F4B400]"
                                     >
 
                                     <div class="flex-1">
@@ -466,14 +465,14 @@
 
 
                                 {{-- COD --}}
-                                <label class="group flex cursor-pointer items-center gap-4 rounded-2xl border border-gray-200 p-4 transition hover:border-[#D4A72C]">
+                                <label class="group flex cursor-pointer items-center gap-4 rounded-xl border border-gray-200 p-4 transition hover:border-[#F4B400]">
 
                                     <input
                                         type="radio"
                                         name="payment_method"
                                         value="COD"
                                         {{ old('payment_method') === 'COD' ? 'checked' : '' }}
-                                        class="h-4 w-4 accent-[#D4A72C]"
+                                        class="h-4 w-4 accent-[#F4B400]"
                                     >
 
                                     <div class="flex-1">
@@ -500,15 +499,15 @@
                     {{-- RIGHT --}}
                     <div class="lg:col-span-1">
 
-                        <div class="sticky top-24 rounded-3xl border border-gray-200 bg-white p-6 shadow-sm md:p-7">
+                        <div class="sticky top-24 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm md:p-7">
 
                             <div class="mb-6">
 
-                                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#D4A72C]">
+                                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#92400E]">
                                     03
                                 </p>
 
-                                <h2 class="mt-2 text-xl font-semibold text-[#111111]">
+                                <h2 class="mt-2 text-xl font-bold text-[#111827]">
                                     Ringkasan Pesanan
                                 </h2>
 
@@ -540,7 +539,7 @@
 
                                             @endif
 
-                                            <span class="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#111111] px-1 text-[10px] font-semibold text-white">
+                                            <span class="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#111827] px-1 text-[10px] font-semibold text-white">
                                                 {{ $item['quantity'] }}
                                             </span>
 
@@ -614,7 +613,7 @@
                                             Total
                                         </p>
 
-                                        <p class="mt-1 text-2xl font-bold text-[#111111]">
+                                        <p class="mt-1 text-2xl font-bold text-[#111827]">
                                             Rp {{ number_format($total, 0, ',', '.') }}
                                         </p>
 
@@ -628,7 +627,7 @@
                             {{-- Submit --}}
                             <button
                                 type="submit"
-                                class="mt-7 w-full rounded-xl bg-[#111111] px-6 py-4 text-sm font-semibold text-white transition hover:bg-[#D4A72C] hover:text-[#111111] focus:outline-none focus:ring-2 focus:ring-[#D4A72C] focus:ring-offset-2"
+                                class="mt-7 w-full rounded-full bg-[#111827] px-6 py-4 text-sm font-semibold text-white transition hover:bg-[#F4B400] hover:text-[#111827] focus:outline-none focus:ring-2 focus:ring-[#F4B400] focus:ring-offset-2"
                             >
                                 Konfirmasi Pesanan
                             </button>
@@ -637,7 +636,7 @@
                             {{-- Back --}}
                             <a
                                 href="{{ route('cart.index') }}"
-                                class="mt-3 block w-full rounded-xl border border-gray-300 bg-white px-6 py-3.5 text-center text-sm font-semibold text-gray-800 transition hover:border-[#D4A72C] hover:text-[#D4A72C]"
+                                class="mt-3 block w-full rounded-full border border-gray-300 bg-white px-6 py-3.5 text-center text-sm font-semibold text-gray-800 transition hover:border-[#F4B400] hover:text-[#92400E]"
                             >
                                 Kembali ke Keranjang
                             </a>
@@ -682,4 +681,3 @@
 </div>
 
 @endsection
-```

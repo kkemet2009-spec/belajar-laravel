@@ -6,72 +6,231 @@
 
     <title>{{ $product->name }} - Jersey Store</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+
     <style>
         * {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
         }
 
         body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: #f5f6f8;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #FFFFFF;
             color: #171717;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* ================= NAVBAR ================= */
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        a {
+            font-family: inherit;
+        }
+
+        /* ================= NAVBAR (sama persis dengan Home) ================= */
 
         .navbar {
-            background: #111;
-            height: 78px;
-            display: flex;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            height: 80px;
+            background: #FFFFFF;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .navbar-inner {
+            max-width: 1240px;
+            height: 100%;
+            margin: 0 auto;
+            padding: 0 32px;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
             align-items: center;
-            justify-content: space-between;
-            padding: 0 7%;
-            color: white;
         }
 
         .logo {
+            justify-self: start;
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 25px;
-            font-weight: bold;
+            gap: 10px;
+            color: #111827;
+            text-decoration: none;
         }
 
         .logo-icon {
-            width: 40px;
-            height: 40px;
+            width: 46px;
+            height: 46px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .nav-links {
+            justify-self: center;
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            position: relative;
+            color: #111827;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            padding-bottom: 6px;
+        }
+
+        .nav-links a.active {
+            font-weight: 600;
+            color: #92400E;
+        }
+
+        .nav-links a.active::after {
+            content: "";
+            position: absolute;
+            left: 0; right: 0; bottom: 0;
+            height: 2px;
+            background: #F4B400;
+        }
+
+        .nav-right {
+            justify-self: end;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .icon-btn {
+            position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 21px;
-        }
-
-        .nav-menu {
-            display: flex;
-            gap: 30px;
-        }
-
-        .nav-menu a {
-            color: white;
-            text-decoration: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: #F8FAFC;
+            color: #111827;
             font-size: 16px;
-            transition: 0.2s;
+            text-decoration: none;
+            cursor: pointer;
         }
 
-        .nav-menu a:hover {
-            color: #3b82f6;
+        .icon-btn:hover {
+            background: #F1F5F9;
+        }
+
+        .icon-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            min-width: 17px;
+            height: 17px;
+            padding: 0 4px;
+            border-radius: 50px;
+            background: #F4B400;
+            color: #111827;
+            font-size: 10px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+        }
+
+        .hamburger span {
+            width: 22px;
+            height: 2px;
+            background: #111827;
+        }
+
+        .mobile-menu {
+            display: none;
+            flex-direction: column;
+            background: #FFFFFF;
+            border-bottom: 1px solid #E5E7EB;
+            padding: 8px 32px 16px;
+        }
+
+        .mobile-menu.open {
+            display: flex;
+        }
+
+        .mobile-menu a {
+            color: #111827;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            padding: 12px 0;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .mobile-menu a.active {
+            color: #92400E;
+            font-weight: 700;
+        }
+
+        @media (max-width: 800px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .navbar-inner {
+                grid-template-columns: 1fr auto;
+            }
+        }
+
+        /* ================= FLASH MESSAGE ================= */
+
+        .flash {
+            max-width: 1240px;
+            margin: 20px auto 0;
+            padding: 0 32px;
+        }
+
+        .flash-box {
+            border-radius: 12px;
+            padding: 13px 18px;
+            font-size: 13.5px;
+            font-weight: 600;
+        }
+
+        .flash-success {
+            background: #DCFCE7;
+            color: #15803D;
+        }
+
+        .flash-error {
+            background: #FEE2E2;
+            color: #B91C1C;
         }
 
         /* ================= CONTAINER ================= */
 
         .container {
-            width: 90%;
-            max-width: 1100px;
-            margin: 40px auto;
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 40px 32px 90px;
         }
 
         .back {
@@ -79,167 +238,167 @@
             align-items: center;
             gap: 7px;
             text-decoration: none;
-            color: #555;
+            color: #6B7280;
             font-weight: 600;
-            margin-bottom: 25px;
+            font-size: 13.5px;
+            margin-bottom: 24px;
         }
 
         .back:hover {
-            color: #2563eb;
+            color: #111827;
         }
 
-        /* ================= PRODUCT ================= */
+        /* ================= PRODUCT LAYOUT ================= */
 
-        .product-card {
-            background: white;
-            border-radius: 22px;
-            overflow: hidden;
+        .product-layout {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            box-shadow: 0 10px 35px rgba(0,0,0,0.08);
+            gap: 56px;
+            align-items: start;
         }
 
         /* ================= IMAGE ================= */
 
         .product-image {
-            background: #f1f1f1;
-            min-height: 560px;
+            border-radius: 20px;
+            overflow: hidden;
+            background: #F8FAFC;
+            min-height: 480px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 45px;
+            padding: 40px;
+            border: 1px solid #E5E7EB;
         }
 
         .product-image img {
             width: 100%;
-            max-width: 480px;
-            max-height: 520px;
+            max-width: 440px;
+            max-height: 480px;
             object-fit: contain;
-            transition: transform 0.3s ease;
+            transition: transform .3s ease;
         }
 
         .product-image img:hover {
-            transform: scale(1.04);
+            transform: scale(1.03);
         }
 
         .no-image {
-            color: #888;
+            color: #9CA3AF;
             text-align: center;
+            font-size: 13.5px;
         }
 
         .no-image-icon {
-            font-size: 70px;
-            margin-bottom: 15px;
+            font-size: 60px;
+            margin-bottom: 12px;
         }
 
         /* ================= INFO ================= */
 
-        .product-info {
-            padding: 50px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
         .badge {
             display: inline-block;
             width: fit-content;
-            background: #e8f1ff;
-            color: #2563eb;
-            padding: 8px 14px;
-            border-radius: 30px;
-            font-size: 13px;
-            font-weight: bold;
+            background: #F8FAFC;
+            border: 1px solid #E5E7EB;
+            color: #6B7280;
+            padding: 7px 14px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: .4px;
+            text-transform: uppercase;
             margin-bottom: 18px;
         }
 
         .product-title {
-            font-size: 38px;
-            line-height: 1.15;
-            margin-bottom: 18px;
-        }
-
-        .rating {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 20px;
-            color: #666;
-        }
-
-        .stars {
-            color: #f59e0b;
-            font-size: 18px;
+            font-family: 'Playfair Display', serif;
+            font-size: 34px;
+            line-height: 1.2;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 16px;
         }
 
         .price {
-            font-size: 34px;
+            font-size: 30px;
             font-weight: 800;
-            margin-bottom: 18px;
+            color: #111827;
+            margin-bottom: 16px;
         }
 
         .stock {
             display: inline-flex;
             width: fit-content;
-            padding: 9px 15px;
-            border-radius: 30px;
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 25px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 13px;
+            margin-bottom: 26px;
         }
 
         .stock.available {
-            background: #dcfce7;
-            color: #15803d;
+            background: #DCFCE7;
+            color: #15803D;
         }
 
         .stock.empty {
-            background: #fee2e2;
-            color: #dc2626;
+            background: #FEE2E2;
+            color: #B91C1C;
         }
 
         .section-title {
-            font-size: 18px;
-            margin-bottom: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 8px;
         }
 
         .description {
-            color: #666;
+            color: #6B7280;
             line-height: 1.8;
-            margin-bottom: 28px;
+            font-size: 14.5px;
+            margin-bottom: 30px;
         }
 
         /* ================= PURCHASE ================= */
 
         .purchase-box {
-            border-top: 1px solid #eee;
-            padding-top: 25px;
+            border-top: 1px solid #E5E7EB;
+            padding-top: 26px;
         }
 
         .quantity-label {
-            font-weight: bold;
+            font-weight: 700;
+            font-size: 13.5px;
             margin-bottom: 10px;
             display: block;
+            color: #111827;
         }
 
         .quantity {
             display: flex;
             align-items: center;
             width: 135px;
-            height: 44px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
+            height: 46px;
+            border: 1px solid #E5E7EB;
+            border-radius: 999px;
             overflow: hidden;
-            margin-bottom: 18px;
+            margin-bottom: 22px;
         }
 
         .quantity button {
             width: 40px;
             height: 100%;
             border: none;
-            background: #f3f3f3;
-            font-size: 20px;
+            background: #F8FAFC;
+            font-size: 18px;
             cursor: pointer;
+            color: #111827;
+        }
+
+        .quantity button:hover {
+            background: #F1F5F9;
         }
 
         .quantity input {
@@ -247,55 +406,77 @@
             height: 100%;
             border: none;
             text-align: center;
-            font-size: 16px;
+            font-size: 15px;
             outline: none;
+            font-family: inherit;
         }
 
         .buttons {
             display: flex;
             gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .buttons form {
+            flex: 1;
+            min-width: 150px;
         }
 
         .btn {
+            display: block;
+            width: 100%;
             border: none;
-            border-radius: 11px;
+            border-radius: 999px;
             padding: 14px 20px;
-            font-size: 15px;
-            font-weight: bold;
+            font-size: 14px;
+            font-weight: 700;
             cursor: pointer;
             text-decoration: none;
             text-align: center;
-            transition: 0.2s;
+            transition: transform .2s ease, background .2s ease, color .2s ease;
+            font-family: inherit;
         }
 
         .btn-cart {
-            background: #111;
-            color: white;
-            flex: 1;
+            background: #111827;
+            color: #FFFFFF;
+        }
+
+        .btn-cart:hover:not(:disabled) {
+            background: #F4B400;
+            color: #111827;
         }
 
         .btn-buy {
-            background: #2563eb;
-            color: white;
-            flex: 1;
+            background: #F4B400;
+            color: #111827;
         }
 
-        .btn-favorite {
-            width: 50px;
-            background: #f3f4f6;
-            color: #222;
-            font-size: 20px;
+        .btn-buy:hover:not(:disabled) {
+            background: #111827;
+            color: #FFFFFF;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            opacity: 0.92;
+        .btn-wishlist {
+            background: #FFFFFF;
+            color: #111827;
+            border: 1.5px solid #E5E7EB;
+        }
+
+        .btn-wishlist:hover {
+            border-color: #F4B400;
+            color: #92400E;
         }
 
         .btn:disabled {
-            background: #ccc;
+            background: #E5E7EB;
+            color: #9CA3AF;
             cursor: not-allowed;
             transform: none;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-1px);
         }
 
         /* ================= GUARANTEE ================= */
@@ -304,114 +485,137 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 12px;
-            margin-top: 25px;
+            margin-top: 26px;
         }
 
         .guarantee-item {
-            background: #f8f8f8;
-            padding: 13px;
-            border-radius: 10px;
+            background: #F8FAFC;
+            padding: 14px;
+            border-radius: 12px;
             text-align: center;
             font-size: 12px;
-            color: #555;
+            color: #6B7280;
         }
 
         .guarantee-icon {
             display: block;
-            font-size: 22px;
-            margin-bottom: 5px;
+            font-size: 20px;
+            margin-bottom: 6px;
         }
 
         /* ================= FOOTER ================= */
 
         footer {
-            background: #111;
-            color: white;
-            text-align: center;
-            padding: 30px;
-            margin-top: 70px;
+            background: #111827;
+            color: #FFFFFF;
+            padding: 48px 32px 24px;
+            margin-top: 60px;
         }
 
-        footer p {
-            color: #bbb;
+        .footer-grid {
+            max-width: 1240px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 36px;
+        }
+
+        .footer-brand h2 {
+            font-size: 17px;
+            margin: 0 0 10px;
+        }
+
+        .footer-brand p {
+            color: #9CA3AF;
+            font-size: 13.5px;
+            line-height: 1.7;
+            max-width: 320px;
+            margin: 0;
+        }
+
+        footer h4 {
+            font-size: 13.5px;
+            margin: 0 0 14px;
+            color: #E5E7EB;
+        }
+
+        footer a.footer-link {
+            display: block;
+            color: #9CA3AF;
+            text-decoration: none;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        footer a.footer-link:hover {
+            color: #FFFFFF;
+        }
+
+        .copyright {
+            max-width: 1240px;
+            margin: 32px auto 0;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,.08);
+            text-align: center;
+            color: #9CA3AF;
+            font-size: 12.5px;
         }
 
         /* ================= RESPONSIVE ================= */
 
-        @media (max-width: 850px) {
+        @media (max-width: 900px) {
 
-            .navbar {
-                padding: 0 5%;
-            }
-
-            .nav-menu {
-                gap: 15px;
-            }
-
-            .product-card {
+            .product-layout {
                 grid-template-columns: 1fr;
+                gap: 30px;
             }
 
             .product-image {
-                min-height: 400px;
-            }
-
-            .product-info {
-                padding: 35px 25px;
-            }
-
-            .product-title {
-                font-size: 30px;
-            }
-        }
-
-        @media (max-width: 600px) {
-
-            .navbar {
-                height: auto;
-                padding: 18px 5%;
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .nav-menu {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-
-            .container {
-                width: 94%;
-                margin-top: 25px;
-            }
-
-            .product-image {
-                min-height: 330px;
-                padding: 25px;
-            }
-
-            .product-info {
-                padding: 28px 20px;
+                min-height: 360px;
+                padding: 24px;
             }
 
             .product-title {
                 font-size: 27px;
             }
 
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+
+            .container {
+                padding: 28px 20px 60px;
+            }
+
+            .navbar-inner,
+            .flash,
+            footer {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
             .price {
-                font-size: 28px;
+                font-size: 25px;
             }
 
             .buttons {
-                flex-wrap: wrap;
+                flex-direction: column;
             }
 
-            .btn-cart,
-            .btn-buy {
-                flex: 1 1 45%;
+            .buttons form {
+                min-width: 0;
             }
 
             .guarantee {
                 grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 26px;
             }
         }
     </style>
@@ -419,34 +623,86 @@
 
 <body>
 
+@php
+    // Jumlah item di keranjang, dari session cart (dipakai untuk badge navbar).
+    // Asumsi struktur: session('cart') = [product_id => ['quantity' => n, ...]]
+    $cartCount = collect(session('cart', []))->sum(function ($item) {
+        return is_array($item) ? ($item['quantity'] ?? 0) : 0;
+    });
+@endphp
+
 <!-- ================= NAVBAR ================= -->
 
-<header class="navbar">
+<header class="navbar" id="navbar">
+    <div class="navbar-inner">
 
-    <div class="logo">
-        <div class="logo-icon">⚽</div>
-        Jersey Store
+        <a href="{{ route('home') }}" class="logo">
+            <img src="{{ asset('images/logo.png') }}" alt="Jersey Store" class="logo-icon">
+        </a>
+
+        <nav class="nav-links">
+            <a href="{{ route('home') }}">Home</a>
+            <a href="{{ route('public.products.index') }}" class="active">Produk</a>
+            <a href="{{ route('public.articles.index') }}">Artikel</a>
+            <a href="{{ route('contact') }}">Kontak</a>
+        </nav>
+
+        <div class="nav-right">
+
+            <a href="{{ route('wishlist.index') }}" class="icon-btn" title="Wishlist">
+                ♡
+            </a>
+
+            <a href="{{ route('cart.index') }}" class="icon-btn" title="Keranjang">
+                🛒
+                @if($cartCount > 0)
+                    <span class="icon-badge">{{ $cartCount }}</span>
+                @endif
+            </a>
+
+            <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+        </div>
+
     </div>
-
-    <nav class="nav-menu">
-        <a href="{{ url('/') }}">Home</a>
-        <a href="{{ url('/produk') }}">Produk</a>
-        <a href="{{ url('/articles') }}">Artikel</a>
-        <a href="{{ url('/kontak') }}">Kontak</a>
-    </nav>
-
 </header>
+
+<div class="mobile-menu" id="mobileMenu">
+    <a href="{{ route('home') }}">Home</a>
+    <a href="{{ route('public.products.index') }}" class="active">Produk</a>
+    <a href="{{ route('public.articles.index') }}">Artikel</a>
+    <a href="{{ route('contact') }}">Kontak</a>
+</div>
+
+
+<!-- ================= FLASH MESSAGE ================= -->
+
+@if(session('success') || session('error'))
+    <div class="flash">
+        @if(session('success'))
+            <div class="flash-box flash-success">{{ session('success') }}</div>
+        @endif
+
+        @if(session('error'))
+            <div class="flash-box flash-error">{{ session('error') }}</div>
+        @endif
+    </div>
+@endif
 
 
 <!-- ================= CONTENT ================= -->
 
 <main class="container">
 
-    <a href="{{ url('/produk') }}" class="back">
+    <a href="{{ route('public.products.index') }}" class="back">
         ← Kembali ke Katalog
     </a>
 
-    <div class="product-card">
+    <div class="product-layout">
 
         <!-- FOTO PRODUK -->
 
@@ -462,13 +718,8 @@
             @else
 
                 <div class="no-image">
-
-                    <div class="no-image-icon">
-                        👕
-                    </div>
-
+                    <div class="no-image-icon">👕</div>
                     <p>Foto produk belum tersedia</p>
-
                 </div>
 
             @endif
@@ -478,53 +729,23 @@
 
         <!-- INFORMASI PRODUK -->
 
-        <div class="product-info">
+        <div>
 
-            <span class="badge">
-                ⚽ JERSEY ORIGINAL
-            </span>
+            <span class="badge">Jersey Original</span>
 
-            <h1 class="product-title">
-                {{ $product->name }}
-            </h1>
-
-
-            <div class="rating">
-
-                <span class="stars">
-                    ★★★★★
-                </span>
-
-                <span>
-                    Produk Pilihan
-                </span>
-
-            </div>
-
+            <h1 class="product-title">{{ $product->name }}</h1>
 
             <div class="price">
                 Rp {{ number_format($product->price, 0, ',', '.') }}
             </div>
 
-
             @if($product->stock > 0)
-
-                <div class="stock available">
-                    ✓ {{ $product->stock }} tersedia
-                </div>
-
+                <div class="stock available">✓ {{ $product->stock }} tersedia</div>
             @else
-
-                <div class="stock empty">
-                    ✕ Stok habis
-                </div>
-
+                <div class="stock empty">✕ Stok habis</div>
             @endif
 
-
-            <h3 class="section-title">
-                Deskripsi Produk
-            </h3>
+            <h3 class="section-title">Deskripsi Produk</h3>
 
             <p class="description">
                 {{ $product->description ?: 'Jersey berkualitas dengan desain terbaru. Cocok digunakan untuk olahraga, koleksi, maupun aktivitas sehari-hari.' }}
@@ -537,15 +758,11 @@
 
                 @if($product->stock > 0)
 
-                    <label class="quantity-label">
-                        Jumlah
-                    </label>
+                    <label class="quantity-label">Jumlah</label>
 
                     <div class="quantity">
 
-                        <button type="button" onclick="kurang()">
-                            −
-                        </button>
+                        <button type="button" onclick="kurang()">−</button>
 
                         <input
                             type="number"
@@ -553,41 +770,45 @@
                             value="1"
                             min="1"
                             max="{{ $product->stock }}"
+                            oninput="syncQuantity()"
                         >
 
-                        <button type="button" onclick="tambah()">
-                            +
-                        </button>
+                        <button type="button" onclick="tambah()">+</button>
 
                     </div>
 
+                    <div class="buttons">
 
-                   <form action="{{ route('cart.add',$product) }}" method="POST">
+                        {{-- TAMBAH KERANJANG: route cart.add yang sudah ada --}}
+                        <form action="{{ route('cart.add', $product) }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="quantity" id="cart-quantity-input" value="1">
+                            <button type="submit" class="btn btn-cart">🛒 Tambah Keranjang</button>
+                        </form>
 
-    @csrf
+                        {{-- BELI SEKARANG: route checkout.buy yang sudah ada --}}
+                        <form action="{{ route('checkout.buy', $product) }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="quantity" id="buy-quantity-input" value="1">
+                            <button type="submit" class="btn btn-buy">⚡ Beli Sekarang</button>
+                        </form>
 
-    <input type="hidden"
-           name="quantity"
-           id="quantity-input"
-           value="1">
+                    </div>
 
-    <button class="btn btn-dark w-100 py-3 rounded-3">
-
-        🛒 Tambah Keranjang
-
-    </button>
-
-</form>
+                    {{-- WISHLIST: route wishlist.toggle yang sudah ada --}}
+                    <form action="{{ route('wishlist.toggle', $product) }}" method="POST" style="margin-top: 12px;">
+                        @csrf
+                        <button type="submit" class="btn btn-wishlist">♡ Tambah ke Wishlist</button>
+                    </form>
 
                 @else
 
-                    <button
-                        class="btn"
-                        style="width:100%; background:#ddd; color:#777;"
-                        disabled
-                    >
-                        Stok Produk Habis
-                    </button>
+                    <button class="btn" disabled>Stok Produk Habis</button>
+
+                    <form action="{{ route('wishlist.toggle', $product) }}" method="POST" style="margin-top: 12px;">
+                        @csrf
+                        <button type="submit" class="btn btn-wishlist">♡ Tambah ke Wishlist</button>
+                    </form>
 
                 @endif
 
@@ -597,22 +818,18 @@
             <!-- JAMINAN -->
 
             <div class="guarantee">
-
                 <div class="guarantee-item">
                     <span class="guarantee-icon">🚚</span>
                     Pengiriman Cepat
                 </div>
-
                 <div class="guarantee-item">
                     <span class="guarantee-icon">🛡️</span>
                     Produk Berkualitas
                 </div>
-
                 <div class="guarantee-item">
                     <span class="guarantee-icon">💬</span>
                     Layanan Pelanggan
                 </div>
-
             </div>
 
         </div>
@@ -626,13 +843,30 @@
 
 <footer>
 
-    <strong>
-        ⚽ Jersey Store
-    </strong>
+    <div class="footer-grid">
 
-    <p style="margin-top:8px;">
+        <div class="footer-brand">
+            <h2>Jersey Store</h2>
+            <p>Jersey pilihan untuk pecinta sepak bola.</p>
+        </div>
+
+        <div>
+            <h4>Shop</h4>
+            <a href="{{ route('public.products.index') }}" class="footer-link">Produk</a>
+            <a href="{{ route('public.articles.index') }}" class="footer-link">Artikel</a>
+        </div>
+
+        <div>
+            <h4>Company</h4>
+            <a href="{{ route('home') }}" class="footer-link">Home</a>
+            <a href="{{ route('contact') }}" class="footer-link">Kontak</a>
+        </div>
+
+    </div>
+
+    <div class="copyright">
         © {{ date('Y') }} Jersey Store. All Rights Reserved.
-    </p>
+    </div>
 
 </footer>
 
@@ -642,73 +876,49 @@
     const stock = {{ (int) $product->stock }};
 
     function kurang() {
-
         const input = document.getElementById('quantity');
-
         let jumlah = parseInt(input.value) || 1;
-
         if (jumlah > 1) {
             input.value = jumlah - 1;
         }
+        syncQuantity();
     }
 
-
     function tambah() {
-
         const input = document.getElementById('quantity');
-
         let jumlah = parseInt(input.value) || 1;
-
         if (jumlah < stock) {
             input.value = jumlah + 1;
         }
+        syncQuantity();
     }
 
+    // Menyalin nilai quantity ke hidden input di form
+    // "Tambah Keranjang" dan "Beli Sekarang" sebelum dikirim.
+    function syncQuantity() {
+        const input = document.getElementById('quantity');
+        let jumlah = parseInt(input.value) || 1;
 
-    function tambahKeranjang() {
+        if (jumlah < 1) jumlah = 1;
+        if (jumlah > stock) jumlah = stock;
 
-        const jumlah =
-            document.getElementById('quantity').value;
+        const cartInput = document.getElementById('cart-quantity-input');
+        const buyInput = document.getElementById('buy-quantity-input');
 
-        alert(
-            '🛒 {{ $product->name }} berhasil ditambahkan ke keranjang sebanyak ' +
-            jumlah +
-            ' item.'
-        );
-
-        /*
-         * Nanti bagian ini bisa kita sambungkan
-         * ke sistem Cart Laravel.
-         */
+        if (cartInput) cartInput.value = jumlah;
+        if (buyInput) buyInput.value = jumlah;
     }
 
-
-    function beliSekarang() {
-
-        const jumlah =
-            document.getElementById('quantity').value;
-
-        alert(
-            '⚡ Pembelian {{ $product->name }} sebanyak ' +
-            jumlah +
-            ' item siap diproses.'
-        );
-
-        /*
-         * Nanti bisa diarahkan ke halaman checkout.
-         */
-    }
-
-
-    function favorit() {
-
-        alert(
-            '❤️ Produk ditambahkan ke favorit!'
-        );
+    // Hamburger menu (mobile)
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    if (hamburgerBtn && mobileMenu) {
+        hamburgerBtn.addEventListener('click', function () {
+            mobileMenu.classList.toggle('open');
+        });
     }
 
 </script>
 
 </body>
 </html>
-```

@@ -55,7 +55,7 @@ Route::post('/keranjang/{product}', [CartController::class, 'add'])
 Route::patch('/keranjang/{product}', [CartController::class, 'update'])
     ->name('cart.update');
 
-// Hapus produk dari keranjang
+// Hapus produk
 Route::delete('/keranjang/{product}', [CartController::class, 'remove'])
     ->name('cart.remove');
 
@@ -68,9 +68,9 @@ Route::delete('/keranjang', [CartController::class, 'clear'])
 // BELI SEKARANG
 // =====================================================
 
-// Langsung menuju checkout dari halaman produk
-Route::post('/beli-sekarang/{product}', [CheckoutController::class, 'buyNow'])
-    ->name('checkout.buyNow');
+// Langsung memasukkan produk ke checkout
+Route::post('/beli-sekarang/{product}', [CheckoutController::class, 'buy'])
+    ->name('checkout.buy');
 
 
 // =====================================================
@@ -82,30 +82,80 @@ Route::get('/checkout', [CheckoutController::class, 'index'])
     ->name('checkout.index');
 
 // Proses checkout
-Route::post('/checkout', [CheckoutController::class, 'store'])
-    ->name('checkout.store');
+Route::post('/checkout', [CheckoutController::class, 'process'])
+    ->name('checkout.process');
 
 
 // =====================================================
 // WISHLIST
 // =====================================================
 
-// Wishlist
-Route::get('/wishlist', [CartController::class, 'wishlist'])
-    ->name('wishlist.index');
+// Halaman wishlist
+Route::get('/wishlist', function () {
 
-// Tambah/hapus wishlist
-Route::post('/wishlist/{product}', [CartController::class, 'toggleWishlist'])
-    ->name('wishlist.toggle');
+    $wishlist = session()->get('wishlist', []);
+
+    return view('wishlist.index', compact('wishlist'));
+
+})->name('wishlist.index');
+
+
+// Tambah / hapus wishlist
+Route::post('/wishlist/{product}', function (\App\Models\Product $product) {
+
+    $wishlist = session()->get('wishlist', []);
+
+    // Jika sudah ada → hapus
+    if (isset($wishlist[$product->id])) {
+
+        unset($wishlist[$product->id]);
+
+        session()->put('wishlist', $wishlist);
+
+        return back()->with(
+            'success',
+            'Produk dihapus dari wishlist.'
+        );
+    }
+
+
+    // Jika belum ada → tambahkan
+    $wishlist[$product->id] = [
+
+        'id' => $product->id,
+
+        'name' => $product->name,
+
+        'price' => (float) $product->price,
+
+        'image' => $product->image,
+
+    ];
+
+
+    session()->put(
+        'wishlist',
+        $wishlist
+    );
+
+
+    return back()->with(
+        'success',
+        'Produk ditambahkan ke wishlist.'
+    );
+
+})->name('wishlist.toggle');
 
 
 // =====================================================
 // ARTIKEL PUBLIK
 // =====================================================
 
+// Daftar artikel
 Route::get('/artikel', [PublicArticleController::class, 'index'])
     ->name('public.articles.index');
 
+// Detail artikel
 Route::get('/artikel/{article}', [PublicArticleController::class, 'show'])
     ->name('public.articles.show');
 
@@ -115,11 +165,16 @@ Route::get('/artikel/{article}', [PublicArticleController::class, 'show'])
 // =====================================================
 
 Route::get('/contact', function () {
+
     return view('contact');
+
 })->name('contact');
 
+
 Route::get('/kontak', function () {
+
     return view('contact');
+
 })->name('kontak');
 
 
@@ -132,12 +187,15 @@ Route::get('/kontak', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
+
     // =================================================
     // DASHBOARD
     // =================================================
 
     Route::get('/dashboard', function () {
+
         return view('dashboard');
+
     })->name('dashboard');
 
 
@@ -145,14 +203,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // KELOLA PRODUK
     // =================================================
 
-    Route::resource('products', ProductController::class);
+    Route::resource(
+        'products',
+        ProductController::class
+    );
 
 
     // =================================================
     // KELOLA ARTIKEL
     // =================================================
 
-    Route::resource('articles', ArticleController::class);
+    Route::resource(
+        'articles',
+        ArticleController::class
+    );
 
 });
 
