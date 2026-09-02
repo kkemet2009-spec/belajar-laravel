@@ -6,110 +6,144 @@
 
     <title>Kontak - Jersey Store</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+
     <style>
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-            background: #f7f8fa;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #FFFFFF;
             color: #171717;
             -webkit-font-smoothing: antialiased;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
         }
 
         a {
             font-family: inherit;
         }
 
-        /* ================= NAVBAR ================= */
+        /* ================= NAVBAR (sama persis dengan Home) ================= */
 
         .navbar {
             position: sticky;
             top: 0;
             z-index: 100;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            height: 74px;
-            padding: 0 5%;
-
-            background: rgba(17,24,39,.96);
-            backdrop-filter: blur(6px);
-
-            transition: box-shadow .25s ease, background .25s ease;
+            height: 80px;
+            background: #FFFFFF;
+            border-bottom: 1px solid #E5E7EB;
         }
 
-        .navbar.scrolled {
-            background: #111827;
-            box-shadow: 0 6px 18px rgba(0,0,0,.15);
+        .navbar-inner {
+            max-width: 1240px;
+            height: 100%;
+            margin: 0 auto;
+            padding: 0 32px;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
         }
 
         .logo {
+            justify-self: start;
             display: flex;
             align-items: center;
-            gap: 11px;
-            color: white;
+            gap: 10px;
+            color: #111827;
+            text-decoration: none;
             font-size: 18px;
             font-weight: 800;
-            letter-spacing: .3px;
         }
 
         .logo-icon {
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
-            background: #1f2937;
-            border: 1px solid rgba(255,255,255,.08);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
         }
 
         .nav-links {
+            justify-self: center;
             display: flex;
             align-items: center;
-            gap: 34px;
+            gap: 32px;
         }
 
         .nav-links a {
             position: relative;
-            color: rgba(255,255,255,.75);
+            color: #111827;
             text-decoration: none;
-            font-size: 14.5px;
-            font-weight: 600;
-            padding: 6px 0;
-            transition: color .2s ease;
-        }
-
-        .nav-links a:hover {
-            color: white;
+            font-size: 15px;
+            font-weight: 500;
+            padding-bottom: 6px;
         }
 
         .nav-links a.active {
-            color: white;
+            font-weight: 600;
+            color: #92400E;
         }
 
         .nav-links a.active::after {
             content: "";
             position: absolute;
-            left: 0;
-            right: 0;
-            bottom: -4px;
+            left: 0; right: 0; bottom: 0;
             height: 2px;
-            border-radius: 2px;
-            background: #facc15;
+            background: #F4B400;
         }
 
         .nav-right {
+            justify-self: end;
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 14px;
+        }
+
+        .icon-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: #F8FAFC;
+            color: #111827;
+            font-size: 16px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .icon-btn:hover {
+            background: #F1F5F9;
+        }
+
+        .icon-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            min-width: 17px;
+            height: 17px;
+            padding: 0 4px;
+            border-radius: 50px;
+            background: #F4B400;
+            color: #111827;
+            font-size: 10px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .hamburger {
@@ -125,15 +159,15 @@
         .hamburger span {
             width: 22px;
             height: 2px;
-            background: white;
-            border-radius: 2px;
+            background: #111827;
         }
 
         .mobile-menu {
             display: none;
             flex-direction: column;
-            background: #111827;
-            padding: 10px 5% 18px;
+            background: #FFFFFF;
+            border-bottom: 1px solid #E5E7EB;
+            padding: 8px 32px 16px;
         }
 
         .mobile-menu.open {
@@ -141,83 +175,76 @@
         }
 
         .mobile-menu a {
-            color: rgba(255,255,255,.8);
+            color: #111827;
             text-decoration: none;
             font-size: 15px;
-            font-weight: 600;
+            font-weight: 500;
             padding: 12px 0;
-            border-bottom: 1px solid rgba(255,255,255,.06);
+            border-bottom: 1px solid #E5E7EB;
         }
 
         .mobile-menu a.active {
-            color: #facc15;
+            color: #92400E;
+            font-weight: 700;
+        }
+
+        @media (max-width: 800px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .navbar-inner {
+                grid-template-columns: 1fr auto;
+            }
         }
 
         /* ================= HERO ================= */
 
         .hero {
-            position: relative;
-            overflow: hidden;
-
-            background: linear-gradient(135deg, #111827, #1f2937);
-            color: white;
+            background: #111827;
+            color: #FFFFFF;
             text-align: center;
-            padding: 70px 20px 78px;
-        }
-
-        .hero::before {
-            content: "";
-            position: absolute;
-            width: 260px;
-            height: 260px;
-            right: -90px;
-            top: -110px;
-            border-radius: 50%;
-            background: rgba(250,204,21,.06);
+            padding: 64px 32px 56px;
         }
 
         .hero-badge {
-            position: relative;
-            z-index: 2;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            display: inline-block;
+            margin-bottom: 16px;
+            padding: 7px 15px;
+            border-radius: 999px;
             background: rgba(255,255,255,.08);
-            border: 1px solid rgba(255,255,255,.14);
-            padding: 8px 16px;
-            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,.16);
             font-size: 12px;
             font-weight: 700;
             letter-spacing: .5px;
-            margin-bottom: 20px;
+            color: #F4B400;
         }
 
         .hero h1 {
-            position: relative;
-            z-index: 2;
-            font-size: 40px;
-            font-weight: 800;
-            letter-spacing: -.5px;
-            margin-bottom: 14px;
+            font-family: 'Playfair Display', serif;
+            font-size: 38px;
+            font-weight: 700;
+            margin: 0 0 14px;
         }
 
         .hero p {
-            position: relative;
-            z-index: 2;
-            max-width: 600px;
+            max-width: 560px;
             margin: 0 auto;
-            color: rgba(255,255,255,.72);
-            font-size: 15.5px;
+            color: rgba(255,255,255,.7);
+            font-size: 14.5px;
             line-height: 1.75;
         }
 
         /* ================= CONTAINER ================= */
 
         .container {
-            width: 90%;
-            max-width: 1140px;
+            max-width: 1240px;
             margin: 0 auto;
-            padding: 56px 0 80px;
+            padding: 56px 32px 90px;
         }
 
         .section-heading {
@@ -225,18 +252,19 @@
         }
 
         .section-heading h2 {
-            font-size: 21px;
-            font-weight: 800;
+            font-size: 20px;
+            font-weight: 700;
             color: #111827;
-            margin-bottom: 4px;
+            margin: 0 0 4px;
         }
 
         .section-heading p {
-            color: #6b7280;
             font-size: 13.5px;
+            color: #6B7280;
+            margin: 0;
         }
 
-        /* ================= STORE INFO ================= */
+        /* ================= INFO CARDS ================= */
 
         .info-grid {
             display: grid;
@@ -246,8 +274,8 @@
         }
 
         .info-card {
-            background: white;
-            border: 1px solid #eef0f3;
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
             border-radius: 16px;
             padding: 22px 20px;
             transition: transform .2s ease, box-shadow .2s ease;
@@ -262,7 +290,7 @@
             width: 42px;
             height: 42px;
             border-radius: 11px;
-            background: #f4f5f7;
+            background: #F8FAFC;
             color: #111827;
             display: flex;
             align-items: center;
@@ -273,16 +301,16 @@
 
         .info-card h3 {
             font-size: 14.5px;
-            font-weight: 750;
+            font-weight: 700;
             color: #111827;
-            margin-bottom: 6px;
+            margin: 0 0 6px;
         }
 
         .info-card p {
-            color: #6b7280;
+            color: #6B7280;
             font-size: 13px;
             line-height: 1.6;
-            margin-bottom: 12px;
+            margin: 0 0 14px;
         }
 
         .info-value {
@@ -294,7 +322,7 @@
 
         .info-note {
             font-size: 11px;
-            color: #b0b7c3;
+            color: #B0B7C3;
             font-style: italic;
             margin-bottom: 12px;
         }
@@ -303,8 +331,8 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 8px 14px;
-            border-radius: 8px;
+            padding: 9px 15px;
+            border-radius: 999px;
             font-size: 12.5px;
             font-weight: 700;
             text-decoration: none;
@@ -316,7 +344,7 @@
         }
 
         .mini-btn.whatsapp {
-            background: #16a34a;
+            background: #16A34A;
             color: white;
         }
 
@@ -334,24 +362,49 @@
         }
 
         .card {
-            background: white;
-            border: 1px solid #eef0f3;
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
             border-radius: 18px;
             padding: 30px;
         }
 
         .card h2 {
             font-size: 20px;
-            font-weight: 800;
+            font-weight: 700;
             color: #111827;
-            margin-bottom: 8px;
+            margin: 0 0 8px;
         }
 
         .card-description {
-            color: #6b7280;
+            color: #6B7280;
             font-size: 13.5px;
             line-height: 1.65;
-            margin-bottom: 24px;
+            margin: 0 0 24px;
+        }
+
+        /* ================= ALERT ================= */
+
+        .alert {
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 13.5px;
+            font-weight: 600;
+        }
+
+        .alert-success {
+            background: #DCFCE7;
+            color: #15803D;
+        }
+
+        .alert-error {
+            background: #FEE2E2;
+            color: #B91C1C;
+        }
+
+        .alert-error ul {
+            margin: 6px 0 0;
+            padding-left: 18px;
         }
 
         /* ================= FORM ================= */
@@ -378,19 +431,19 @@
         textarea {
             width: 100%;
             padding: 12px 14px;
-            border: 1px solid #e2e5ea;
+            border: 1px solid #E2E5EA;
             border-radius: 10px;
             font-size: 14px;
             font-family: inherit;
             outline: none;
-            background: #fafbfc;
+            background: #FAFBFC;
             transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
         }
 
         input:focus,
         textarea:focus {
             border-color: #111827;
-            background: white;
+            background: #FFFFFF;
             box-shadow: 0 0 0 3px rgba(17,24,39,.06);
         }
 
@@ -405,7 +458,7 @@
             background: #111827;
             color: white;
             padding: 14px;
-            border-radius: 10px;
+            border-radius: 999px;
             font-size: 14.5px;
             font-weight: 700;
             cursor: pointer;
@@ -414,24 +467,9 @@
         }
 
         .btn-submit:hover {
-            background: #1f2937;
+            background: #F4B400;
+            color: #111827;
             transform: translateY(-1px);
-        }
-
-        .form-status {
-            margin-top: 14px;
-            padding: 12px 14px;
-            border-radius: 10px;
-            background: #fef9c3;
-            border: 1px solid #fde68a;
-            color: #78350f;
-            font-size: 12.5px;
-            line-height: 1.6;
-            display: none;
-        }
-
-        .form-status.show {
-            display: block;
         }
 
         /* ================= MAP ================= */
@@ -443,141 +481,82 @@
             background:
                 repeating-linear-gradient(
                     45deg,
-                    #f4f5f7,
-                    #f4f5f7 10px,
-                    #eef0f3 10px,
-                    #eef0f3 20px
+                    #F4F5F7,
+                    #F4F5F7 10px,
+                    #EEF0F3 10px,
+                    #EEF0F3 20px
                 );
-            border: 1px dashed #d1d5db;
+            border: 1px dashed #D1D5DB;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
-            color: #9ca3af;
+            color: #9CA3AF;
             font-size: 13.5px;
             font-weight: 600;
             padding: 20px;
-        }
-
-        /* ================= WHY SECTION ================= */
-
-        .why-section {
-            margin-top: 60px;
-        }
-
-        .why-title {
-            text-align: center;
-            margin-bottom: 26px;
-        }
-
-        .why-title h2 {
-            font-size: 24px;
-            font-weight: 800;
-            color: #111827;
-            margin-bottom: 8px;
-        }
-
-        .why-title p {
-            color: #6b7280;
-            font-size: 14px;
-        }
-
-        .why-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
-        }
-
-        .why-card {
-            background: white;
-            padding: 26px 20px;
-            border-radius: 16px;
-            border: 1px solid #eef0f3;
-            text-align: center;
-            transition: transform .2s ease, box-shadow .2s ease;
-        }
-
-        .why-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 14px 28px rgba(15,23,42,.07);
-        }
-
-        .why-icon {
-            font-size: 30px;
-            margin-bottom: 12px;
-        }
-
-        .why-card h3 {
-            font-size: 15px;
-            font-weight: 750;
-            color: #111827;
-            margin-bottom: 8px;
-        }
-
-        .why-card p {
-            color: #6b7280;
-            font-size: 13px;
-            line-height: 1.6;
         }
 
         /* ================= FOOTER ================= */
 
         footer {
             background: #111827;
-            color: white;
-            padding: 46px 5% 24px;
+            color: #FFFFFF;
+            padding: 48px 32px 24px;
         }
 
         .footer-grid {
-            max-width: 1140px;
-            margin: auto;
+            max-width: 1240px;
+            margin: 0 auto;
             display: grid;
             grid-template-columns: 2fr 1fr 1fr;
-            gap: 40px;
+            gap: 36px;
         }
 
         .footer-brand h2 {
-            font-size: 18px;
-            margin-bottom: 12px;
+            font-size: 17px;
+            margin: 0 0 10px;
         }
 
         .footer-brand p {
-            color: #9ca3af;
-            line-height: 1.7;
-            max-width: 380px;
+            color: #9CA3AF;
             font-size: 13.5px;
+            line-height: 1.7;
+            max-width: 320px;
+            margin: 0;
         }
 
-        footer h3 {
-            font-size: 14px;
-            margin-bottom: 14px;
+        footer h4 {
+            font-size: 13.5px;
+            margin: 0 0 14px;
+            color: #E5E7EB;
         }
 
-        footer a {
+        footer a.footer-link {
             display: block;
-            color: #9ca3af;
+            color: #9CA3AF;
             text-decoration: none;
             margin-bottom: 10px;
-            font-size: 13.5px;
+            font-size: 13px;
         }
 
-        footer a:hover {
-            color: white;
+        footer a.footer-link:hover {
+            color: #FFFFFF;
         }
 
         .copyright {
-            max-width: 1140px;
+            max-width: 1240px;
             margin: 32px auto 0;
             padding-top: 20px;
             border-top: 1px solid rgba(255,255,255,.08);
             text-align: center;
-            color: #9ca3af;
+            color: #9CA3AF;
             font-size: 12.5px;
         }
 
         /* ================= RESPONSIVE ================= */
 
-        @media (max-width: 1000px) {
+        @media (max-width: 1024px) {
             .info-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -589,33 +568,31 @@
             .map-placeholder {
                 min-height: 220px;
             }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
         }
 
         @media (max-width: 800px) {
-
-            .nav-links {
-                display: none;
-            }
-
-            .hamburger {
-                display: flex;
-            }
-
             .hero h1 {
-                font-size: 30px;
-            }
-
-            .why-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-grid {
-                grid-template-columns: 1fr;
-                gap: 28px;
+                font-size: 29px;
             }
         }
 
-        @media (max-width: 560px) {
+        @media (max-width: 600px) {
+            .container,
+            .hero {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            .navbar-inner,
+            footer {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
             .info-grid {
                 grid-template-columns: 1fr;
             }
@@ -627,59 +604,80 @@
             .card {
                 padding: 22px;
             }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 26px;
+            }
         }
     </style>
 </head>
 
 <body>
 
+@php
+    $cartCount = collect(session('cart', []))->sum(function ($item) {
+        return is_array($item) ? ($item['quantity'] ?? 0) : 0;
+    });
+@endphp
+
 <!-- ================= NAVBAR ================= -->
 
 <header class="navbar" id="navbar">
+    <div class="navbar-inner">
 
-    <div class="logo">
-        <div class="logo-icon">⚽</div>
-        <span>Jersey Store</span>
+        <a href="{{ route('home') }}" class="logo">
+            <img src="{{ asset('images/logo.png') }}" alt="Jersey Store" class="logo-icon">
+        </a>
+
+        <nav class="nav-links">
+            <a href="{{ route('home') }}">Home</a>
+            <a href="{{ route('public.products.index') }}">Produk</a>
+            <a href="{{ route('public.articles.index') }}">Artikel</a>
+            <a href="{{ route('contact') }}" class="active">Kontak</a>
+        </nav>
+
+        <div class="nav-right">
+
+            <a href="{{ route('wishlist.index') }}" class="icon-btn" title="Wishlist">
+                ♡
+            </a>
+
+            <a href="{{ route('cart.index') }}" class="icon-btn" title="Keranjang">
+                🛒
+                @if($cartCount > 0)
+                    <span class="icon-badge">{{ $cartCount }}</span>
+                @endif
+            </a>
+
+            <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+        </div>
+
     </div>
-
-    <nav class="nav-links">
-        <a href="{{ url('/') }}">Home</a>
-        <a href="{{ url('/produk') }}">Produk</a>
-        <a href="{{ url('/artikel') }}">Artikel</a>
-        <a href="{{ url('/kontak') }}" class="active">Kontak</a>
-    </nav>
-
-    <div class="nav-right">
-        <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-    </div>
-
 </header>
 
 <div class="mobile-menu" id="mobileMenu">
-    <a href="{{ url('/') }}">Home</a>
-    <a href="{{ url('/produk') }}">Produk</a>
-    <a href="{{ url('/artikel') }}">Artikel</a>
-    <a href="{{ url('/kontak') }}" class="active">Kontak</a>
+    <a href="{{ route('home') }}">Home</a>
+    <a href="{{ route('public.products.index') }}">Produk</a>
+    <a href="{{ route('public.articles.index') }}">Artikel</a>
+    <a href="{{ route('contact') }}" class="active">Kontak</a>
 </div>
 
 
 <!-- ================= HERO ================= -->
 
 <section class="hero">
-
-    <div class="hero-badge">⚽ HUBUNGI KAMI</div>
-
+    <span class="hero-badge">Hubungi Kami</span>
     <h1>Hubungi Jersey Store</h1>
-
     <p>
-        Punya pertanyaan tentang produk, ukuran, pemesanan, atau ingin
+        Punya pertanyaan tentang produk, ukuran, pesanan, atau ingin
         mengetahui informasi lainnya? Kami siap membantu.
     </p>
-
 </section>
 
 
@@ -719,7 +717,7 @@
             <h3>Email</h3>
             <p>Gunakan email untuk pertanyaan atau kebutuhan lainnya.</p>
             <div class="info-value">Email Toko</div>
-            <a href="mailto:email@tokojersey.com" class="mini-btn email">
+            <a href="mailto:email@jerseystore.com" class="mini-btn email">
                 ✉️ Kirim Email
             </a>
         </div>
@@ -727,7 +725,7 @@
         {{-- ALAMAT --}}
         {{--
             TODO: ganti teks "Alamat Toko" di bawah dengan alamat asli toko
-            jika sudah tersedia di project.
+            jika sudah tersedia.
         --}}
         <div class="info-card">
             <div class="info-icon">📍</div>
@@ -743,8 +741,8 @@
             <h3>Jam Operasional</h3>
             <p>Waktu kami siap melayani kamu.</p>
             <div class="info-value">
-                Senin - Sabtu: 09.00 - 21.00<br>
-                Minggu: 10.00 - 18.00
+                Senin - Sabtu<br>
+                09.00 - 21.00
             </div>
         </div>
 
@@ -755,31 +753,32 @@
 
     <div class="main-grid">
 
-        {{-- FORM KIRIM PESAN --}}
+        {{-- FORM HUBUNGI KAMI --}}
         <div class="card">
 
-            <h2>Kirim Pesan</h2>
+            <h2>Hubungi Kami</h2>
 
             <p class="card-description">
                 Isi formulir di bawah ini dan sampaikan pertanyaan atau
                 kebutuhan kamu kepada kami.
             </p>
 
-            {{--
-                PENTING (backend belum tersedia):
-                Form ini baru berupa TAMPILAN. Belum ada route/controller
-                untuk memproses pengiriman pesan, jadi form belum benar-benar
-                mengirim data ke mana pun.
+            @if(session('success'))
+                <div class="alert alert-success">{{ session('success') }}</div>
+            @endif
 
-                Untuk mengaktifkannya nanti, dibutuhkan:
-                1. Route POST baru, misal: Route::post('/kontak', [ContactController::class, 'store']);
-                2. Controller untuk menyimpan/mengirim pesan (database atau email).
-                3. Ganti action="#" di bawah dengan route tersebut.
+            @if($errors->any())
+                <div class="alert alert-error">
+                    Periksa kembali data yang kamu isi:
+                    <ul>
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-                Sesuai instruksi, saya tidak membuat route/controller baru di sini.
-            --}}
-
-            <form action="#" method="POST" id="contactForm" onsubmit="handleContactForm(event)">
+            <form action="{{ route('contact.send') }}" method="POST">
 
                 @csrf
 
@@ -787,12 +786,12 @@
 
                     <div class="form-group">
                         <label for="name">Nama</label>
-                        <input type="text" id="name" name="name" placeholder="Masukkan nama kamu" required>
+                        <input type="text" id="name" name="name" value="{{ old('name') }}" placeholder="Masukkan nama kamu" required>
                     </div>
 
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" id="email" name="email" placeholder="contoh@email.com" required>
+                        <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder="contoh@email.com" required>
                     </div>
 
                 </div>
@@ -800,25 +799,23 @@
                 <div class="form-row">
 
                     <div class="form-group">
-                        <label for="whatsapp">Nomor WhatsApp</label>
-                        <input type="text" id="whatsapp" name="whatsapp" placeholder="08xxxxxxxxxx">
+                        <label for="phone">Nomor WhatsApp</label>
+                        <input type="text" id="phone" name="phone" value="{{ old('phone') }}" placeholder="08xxxxxxxxxx" required>
                     </div>
 
                     <div class="form-group">
                         <label for="subject">Subjek</label>
-                        <input type="text" id="subject" name="subject" placeholder="Contoh: Pertanyaan Produk" required>
+                        <input type="text" id="subject" name="subject" value="{{ old('subject') }}" placeholder="Contoh: Pertanyaan Produk" required>
                     </div>
 
                 </div>
 
                 <div class="form-group">
                     <label for="message">Pesan</label>
-                    <textarea id="message" name="message" placeholder="Tuliskan pesan kamu..." required></textarea>
+                    <textarea id="message" name="message" placeholder="Tuliskan pesan kamu...">{{ old('message') }}</textarea>
                 </div>
 
                 <button type="submit" class="btn-submit">Kirim Pesan</button>
-
-                <div class="form-status" id="formStatus"></div>
 
             </form>
 
@@ -833,46 +830,25 @@
                 Kunjungi kami langsung di lokasi toko.
             </p>
 
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15813.90234988375!2d110.36853153106239!3d-7.739271351319612!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a58e23d58705d%3A0xe3e3f1de06133d33!2sHotel%20Alana%20Yogyakarta%20Hotel%20%26%20Convention%20Center!5e0!3m2!1sid!2sid!4v1787282665798!5m2!1sid!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-            
+            {{--
+                TODO: Jika alamat dan koordinat toko sudah tersedia,
+                ganti div.map-placeholder di bawah dengan embed Google Maps, contoh:
+
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=..."
+                    width="100%" height="100%" style="border:0; border-radius:14px;"
+                    allowfullscreen loading="lazy">
+                </iframe>
+            --}}
+            <div class="map-placeholder">
+                <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m16!1m11!1m3!1d3!2d110.09091190046358!3d-7.537351261185795!2m2!1f0!2f90!3m2!1i1024!2i768!4f75!3m3!1m2!1s0x2e7a910a20ddffb9%3A0xfe61144fa3ee6700!2sJembatan%20Lingseng!4v1788147855252" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin">
+                </iframe>
+            </div>
 
         </div>
 
     </div>
-
-
-    <!-- ================= KEUNGGULAN ================= -->
-
-    <section class="why-section">
-
-        <div class="why-title">
-            <h2>Kenapa Menghubungi Kami?</h2>
-            <p>Kami berusaha memberikan pelayanan terbaik untuk pelanggan.</p>
-        </div>
-
-        <div class="why-grid">
-
-            <div class="why-card">
-                <div class="why-icon">⚡</div>
-                <h3>Respon Cepat</h3>
-                <p>Kami akan berusaha menjawab pertanyaan pelanggan secepat mungkin.</p>
-            </div>
-
-            <div class="why-card">
-                <div class="why-icon">🛍️</div>
-                <h3>Produk Berkualitas</h3>
-                <p>Koleksi jersey dipilih dengan memperhatikan kualitas dan kenyamanan.</p>
-            </div>
-
-            <div class="why-card">
-                <div class="why-icon">🤝</div>
-                <h3>Pelayanan Terbaik</h3>
-                <p>Kami siap membantu pelanggan mendapatkan produk yang sesuai kebutuhan.</p>
-            </div>
-
-        </div>
-
-    </section>
 
 </div>
 
@@ -884,66 +860,39 @@
     <div class="footer-grid">
 
         <div class="footer-brand">
-            <h2>⚽ Jersey Store</h2>
+            <h2>Jersey Store</h2>
             <p>Jersey pilihan untuk pecinta sepak bola.</p>
         </div>
 
         <div>
-            <h3>Navigasi</h3>
-            <a href="{{ url('/') }}">Home</a>
-            <a href="{{ url('/produk') }}">Produk</a>
-            <a href="{{ url('/artikel') }}">Artikel</a>
-            <a href="{{ url('/kontak') }}">Kontak</a>
+            <h4>Shop</h4>
+            <a href="{{ route('public.products.index') }}" class="footer-link">Produk</a>
+            <a href="{{ route('public.articles.index') }}" class="footer-link">Artikel</a>
         </div>
 
         <div>
-            <h3>Informasi</h3>
-            <a href="{{ url('/produk') }}">Koleksi Jersey</a>
-            <a href="{{ url('/artikel') }}">Artikel Terbaru</a>
-            <a href="{{ url('/kontak') }}">Hubungi Kami</a>
+            <h4>Company</h4>
+            <a href="{{ route('home') }}" class="footer-link">Home</a>
+            <a href="{{ route('contact') }}" class="footer-link">Kontak</a>
         </div>
 
     </div>
 
     <div class="copyright">
-        © {{ date('Y') }} Jersey Store. All rights reserved.
+        © {{ date('Y') }} Jersey Store. All Rights Reserved.
     </div>
 
 </footer>
 
 
 <script>
-
-    // Navbar shadow saat discroll
-    const navbar = document.getElementById('navbar');
-    window.addEventListener('scroll', function () {
-        if (window.scrollY > 10) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
-        }
-    });
-
-    // Hamburger menu (mobile)
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const mobileMenu = document.getElementById('mobileMenu');
-    hamburgerBtn.addEventListener('click', function () {
-        mobileMenu.classList.toggle('open');
-    });
-
-    // Form kirim pesan
-    // Backend/route pengiriman pesan belum tersedia, jadi form ini
-    // TIDAK berpura-pura berhasil mengirim. Ini hanya tampilan sementara.
-    function handleContactForm(event) {
-        event.preventDefault();
-
-        const status = document.getElementById('formStatus');
-        status.textContent =
-            'Form ini masih berupa tampilan — backend pengiriman pesan belum tersedia. ' +
-            'Untuk saat ini, silakan hubungi kami langsung melalui WhatsApp atau Email di atas.';
-        status.classList.add('show');
+    if (hamburgerBtn && mobileMenu) {
+        hamburgerBtn.addEventListener('click', function () {
+            mobileMenu.classList.toggle('open');
+        });
     }
-
 </script>
 
 </body>

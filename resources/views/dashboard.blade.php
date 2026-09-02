@@ -17,6 +17,64 @@
     } else {
         $greeting = 'Selamat Malam';
     }
+
+    $statusColors = [
+        'pending' => ['bg' => '#FEF3C7', 'text' => '#B45309'],
+        'processing' => ['bg' => '#DBEAFE', 'text' => '#1D4ED8'],
+        'shipped' => ['bg' => '#E0E7FF', 'text' => '#4338CA'],
+        'completed' => ['bg' => '#DCFCE7', 'text' => '#16A34A'],
+        'cancelled' => ['bg' => '#FEE2E2', 'text' => '#DC2626'],
+    ];
+
+    // ===== Grafik Penjualan (7 hari terakhir) =====
+    // Opsional: kirim $salesChartData dari controller berupa array asosiatif
+    // ['d/m' => total_penjualan_hari_itu, ...] sepanjang 7 hari terakhir.
+    // Jika tidak dikirim, chart tetap tampil aman dengan nilai 0 (tidak error).
+    if (isset($salesChartData) && count($salesChartData) > 0) {
+        $chartLabels = array_keys($salesChartData);
+        $chartValues = array_values($salesChartData);
+    } else {
+        $chartLabels = [];
+        $chartValues = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $chartLabels[] = now()->subDays($i)->format('d/m');
+            $chartValues[] = 0;
+        }
+    }
+
+    $chartMax = max(1, max($chartValues));
+    // Bulatkan atap grafik ke kelipatan rapi agar label sumbu Y enak dibaca
+    $niceTop = $chartMax <= 0 ? 1 : pow(10, floor(log10($chartMax)));
+    while ($niceTop * 5 < $chartMax) { $niceTop *= 2; }
+    $chartTop = max($niceTop * 5, $chartMax);
+
+    $chartW = 640;
+    $chartH = 200;
+    $chartPad = 8;
+    $stepX = count($chartValues) > 1 ? ($chartW - $chartPad * 2) / (count($chartValues) - 1) : 0;
+
+    $points = [];
+    foreach ($chartValues as $i => $v) {
+        $x = $chartPad + $i * $stepX;
+        $y = $chartH - (($v / $chartTop) * ($chartH - 20)) - 4;
+        $points[] = [$x, $y];
+    }
+
+    $linePath = '';
+    foreach ($points as $i => $p) {
+        $linePath .= ($i === 0 ? 'M' : ' L') . $p[0] . ' ' . $p[1];
+    }
+
+    $areaPath = $linePath;
+    if (count($points) > 0) {
+        $areaPath .= ' L' . $points[count($points) - 1][0] . ' ' . $chartH;
+        $areaPath .= ' L' . $points[0][0] . ' ' . $chartH . ' Z';
+    }
+
+    // Info Sistem (helper Laravel bawaan, bukan data baru dari DB)
+    $appVersion = config('app.version', '1.0.0');
+    $appEnv = ucfirst(app()->environment());
+    $serverTime = now()->translatedFormat('d M Y - H:i') . ' WIB';
 @endphp
 
 <style>
@@ -25,155 +83,153 @@
     }
 
     @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
     .fade-in {
-        animation: fadeInUp .45s ease both;
+        animation: fadeInUp .4s ease both;
     }
 
-    /* =========================
-       WELCOME
-    ========================= */
+    /* ========= HERO / RINGKASAN ========= */
 
-    .welcome-section {
+    .hero-card {
+        position: relative;
         display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 14px;
-        margin-bottom: 30px;
-    }
-
-    .welcome-section .eyebrow {
-        display: inline-flex;
         align-items: center;
-        gap: 6px;
-        margin-bottom: 8px;
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: .4px;
-        color: #9ca3af;
-        text-transform: uppercase;
+        justify-content: space-between;
+        gap: 20px;
+        background: #FFFFFF;
+        border: 1px solid #E7E9F1;
+        border-left: 4px solid #1F5EFF;
+        border-radius: 14px;
+        padding: 26px 30px;
+        margin-bottom: 22px;
+        box-shadow: 0 1px 2px rgba(16,24,40,.04);
+        overflow: hidden;
     }
 
-    .welcome-section h1 {
-        font-size: 27px;
+    .hero-text h1 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 23px;
         font-weight: 800;
-        letter-spacing: -.4px;
-        color: #111827;
+        letter-spacing: -.3px;
+        color: #12162B;
         margin-bottom: 6px;
     }
 
-    .welcome-section p {
-        color: #6b7280;
-        font-size: 14px;
+    .hero-text h1 svg {
+        color: #1F5EFF;
+        flex-shrink: 0;
     }
 
-    /* =========================
-       STATISTIC CARDS
-    ========================= */
+    .hero-text p {
+        color: #6B7280;
+        font-size: 13.5px;
+    }
+
+    .hero-illustration {
+        flex-shrink: 0;
+        opacity: .95;
+    }
+
+    .hero-illustration img {
+        display: block;
+        width: 120px;
+        height: auto;
+        object-fit: contain;
+    }
+
+    @media (max-width: 780px) {
+        .hero-illustration { display: none; }
+    }
+
+    /* ========= STATISTIC CARDS ========= */
 
     .stats-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 16px;
-        margin-bottom: 36px;
+        gap: 14px;
+        margin-bottom: 16px;
+    }
+
+    .stats-grid:nth-of-type(2) {
+        margin-bottom: 26px;
     }
 
     .stat-card {
         position: relative;
-        overflow: hidden;
-        background: white;
-        border-radius: 16px;
-        padding: 22px;
-        box-shadow: 0 4px 16px rgba(15,23,42,.04);
-        border: 1px solid #eef0f3;
-        transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-    }
-
-    .stat-card::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        width: 3px;
-        background: #e5e7eb;
-        transition: background .2s ease;
+        background: #FFFFFF;
+        border-radius: 12px;
+        padding: 18px;
+        box-shadow: 0 1px 2px rgba(16,24,40,.04);
+        border: 1px solid #E7E9F1;
+        transition: border-color .15s ease, box-shadow .15s ease;
     }
 
     .stat-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 14px 30px rgba(15,23,42,.09);
-        border-color: #e5e7eb;
-    }
-
-    .stat-card:hover::before {
-        background: #facc15;
+        border-color: #D3D8E5;
+        box-shadow: 0 4px 14px rgba(16,24,40,.06);
     }
 
     .stat-top {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 20px;
+        margin-bottom: 16px;
     }
 
     .stat-title {
-        color: #6b7280;
-        font-size: 12.5px;
-        font-weight: 700;
-        letter-spacing: .2px;
+        color: #6B7280;
+        font-size: 12px;
+        font-weight: 600;
     }
 
     .stat-icon {
         width: 40px;
         height: 40px;
-        border-radius: 11px;
+        border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 18px;
-        background: #f4f5f7;
+        background: #EEF3FF;
+        color: #1F5EFF;
         flex-shrink: 0;
     }
 
+    .stat-icon.purple { background: #F3F0FE; color: #7C3AED; }
+    .stat-icon.orange { background: #FEF3E2; color: #D97706; }
+    .stat-icon.green  { background: #E9FBF0; color: #16A34A; }
+
     .stat-number {
-        font-size: 30px;
+        font-size: 26px;
         font-weight: 800;
-        color: #111827;
+        color: #12162B;
         line-height: 1;
         margin-bottom: 6px;
+        letter-spacing: -.3px;
     }
 
     .stat-sub {
-        font-size: 12px;
-        color: #b0b7c3;
+        font-size: 11.5px;
+        color: #9AA1B2;
     }
 
-    /* =========================
-       SECTION TITLE
-    ========================= */
+    /* ========= SECTION TITLE ========= */
 
     .section-title-row {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 16px;
+        margin-bottom: 14px;
     }
 
     .section-title {
-        font-size: 18px;
-        font-weight: 800;
-        color: #111827;
+        font-size: 15.5px;
+        font-weight: 700;
+        color: #12162B;
         display: flex;
         align-items: center;
         gap: 8px;
@@ -183,135 +239,145 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-width: 22px;
-        height: 22px;
-        padding: 0 7px;
+        min-width: 20px;
+        height: 20px;
+        padding: 0 6px;
         border-radius: 20px;
-        background: #f4f5f7;
-        color: #6b7280;
-        font-size: 11.5px;
+        background: #F0F1F5;
+        color: #6B7280;
+        font-size: 11px;
         font-weight: 700;
+    }
+
+    .section-count.warn {
+        background: #FEE2E2;
+        color: #DC2626;
     }
 
     .section-link {
         display: inline-flex;
         align-items: center;
-        gap: 5px;
-        font-size: 13px;
-        font-weight: 700;
-        color: #111827;
+        gap: 4px;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #6B7280;
         text-decoration: none;
-        transition: gap .2s ease, color .2s ease;
+        transition: color .15s ease;
     }
 
     .section-link:hover {
-        gap: 8px;
-        color: #1d4ed8;
+        color: #1F5EFF;
     }
 
-    /* =========================
-       QUICK ACTIONS
-    ========================= */
+    .select-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #FFFFFF;
+        border: 1px solid #E7E9F1;
+        color: #12162B;
+        font-size: 12.5px;
+        font-weight: 600;
+        padding: 7px 12px;
+        border-radius: 8px;
+    }
 
-    .quick-grid {
+    /* ========= CHART CARD ========= */
+
+    .chart-orders-row {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        grid-template-columns: 2fr 1fr;
         gap: 16px;
-        margin-bottom: 42px;
+        margin-bottom: 28px;
+        align-items: start;
     }
 
-    .quick-card {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        background: white;
-        padding: 22px;
-        border-radius: 16px;
-        text-decoration: none;
-        color: #111827;
-        border: 1px solid #eef0f3;
-        box-shadow: 0 4px 16px rgba(15,23,42,.03);
-        transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    .chart-card {
+        background: #FFFFFF;
+        border: 1px solid #E7E9F1;
+        border-radius: 12px;
+        padding: 20px 22px;
+        box-shadow: 0 1px 2px rgba(16,24,40,.03);
     }
 
-    .quick-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 14px 28px rgba(15,23,42,.09);
-        border-color: #e5e7eb;
-    }
-
-    .quick-top {
+    .chart-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 14px;
+        margin-bottom: 18px;
     }
 
-    .quick-icon {
-        width: 38px;
-        height: 38px;
-        border-radius: 10px;
-        background: #111827;
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 17px;
+    .chart-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: #12162B;
     }
 
-    .quick-arrow {
-        font-size: 14px;
-        color: #d1d5db;
-        transition: transform .2s ease, color .2s ease;
-    }
-
-    .quick-card:hover .quick-arrow {
-        transform: translateX(3px);
-        color: #111827;
-    }
-
-    .quick-card h3 {
-        font-size: 14.5px;
-        font-weight: 750;
-        margin-bottom: 5px;
-    }
-
-    .quick-card p {
-        color: #6b7280;
+    .chart-title span {
+        font-weight: 400;
+        color: #9AA1B2;
         font-size: 12.5px;
-        line-height: 1.55;
+        margin-left: 4px;
     }
 
-    /* =========================
-       RECENT LIST (PRODUK / ARTIKEL)
-    ========================= */
+    .chart-svg-wrap {
+        display: flex;
+        gap: 10px;
+    }
+
+    .chart-y-labels {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        font-size: 11px;
+        color: #9AA1B2;
+        padding: 4px 0 22px;
+        text-align: right;
+        min-width: 34px;
+    }
+
+    .chart-x-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        color: #9AA1B2;
+        margin-top: 6px;
+        padding: 0 2px;
+    }
+
+    /* ========= RECENT LIST ========= */
 
     .recent-section {
-        margin-bottom: 42px;
+        margin-bottom: 28px;
+    }
+
+    .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
     }
 
     .recent-card {
-        background: white;
-        border-radius: 16px;
-        border: 1px solid #eef0f3;
-        box-shadow: 0 4px 16px rgba(15,23,42,.03);
+        background: #FFFFFF;
+        border-radius: 12px;
+        border: 1px solid #E7E9F1;
+        box-shadow: 0 1px 2px rgba(16,24,40,.03);
         overflow: hidden;
     }
 
     .recent-item {
         display: flex;
         align-items: center;
-        gap: 14px;
-        padding: 15px 20px;
-        border-bottom: 1px solid #f4f5f7;
+        gap: 13px;
+        padding: 13px 18px;
+        border-bottom: 1px solid #F0F1F5;
         text-decoration: none;
         color: inherit;
-        transition: background .15s ease, padding-left .15s ease;
+        transition: background .15s ease;
     }
 
     .recent-item:hover {
-        background: #fafbfc;
-        padding-left: 24px;
+        background: #FAFAFC;
     }
 
     .recent-item:last-child {
@@ -319,24 +385,22 @@
     }
 
     .recent-thumb {
-        width: 50px;
-        height: 50px;
-        border-radius: 10px;
+        width: 40px;
+        height: 40px;
+        border-radius: 9px;
         overflow: hidden;
-        background: #f1f5f9;
+        background: #EEF3FF;
+        color: #1F5EFF;
         flex-shrink: 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 19px;
-        color: #9ca3af;
     }
 
     .recent-thumb img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        display: block;
     }
 
     .recent-info {
@@ -345,18 +409,18 @@
     }
 
     .recent-info h4 {
-        font-size: 13.5px;
-        font-weight: 700;
-        color: #111827;
-        margin-bottom: 3px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #12162B;
+        margin-bottom: 2px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
 
     .recent-info span {
-        font-size: 12px;
-        color: #9ca3af;
+        font-size: 11.5px;
+        color: #9AA1B2;
     }
 
     .recent-meta {
@@ -365,261 +429,171 @@
     }
 
     .recent-price {
-        font-size: 13px;
+        font-size: 12.5px;
         font-weight: 700;
-        color: #111827;
+        color: #12162B;
         margin-bottom: 4px;
-    }
-
-    .recent-chevron {
-        color: #d1d5db;
-        font-size: 14px;
-        transition: transform .15s ease, color .15s ease;
-        flex-shrink: 0;
-    }
-
-    .recent-item:hover .recent-chevron {
-        transform: translateX(2px);
-        color: #111827;
     }
 
     .badge {
         display: inline-block;
-        padding: 3px 9px;
+        padding: 3px 8px;
         border-radius: 6px;
-        font-size: 10.5px;
+        font-size: 10px;
         font-weight: 700;
     }
 
-    .badge-in {
-        background: #dcfce7;
-        color: #16a34a;
+    .badge-in { background: #DCFCE7; color: #16A34A; }
+    .badge-out { background: #FEE2E2; color: #DC2626; }
+
+    .badge-unread {
+        background: #FEE2E2;
+        color: #DC2626;
     }
 
-    .badge-out {
-        background: #fee2e2;
-        color: #dc2626;
+    .badge-read {
+        background: #F0F1F5;
+        color: #6B7280;
     }
 
     .recent-empty {
-        padding: 46px 20px;
+        padding: 36px 20px;
         text-align: center;
     }
 
     .recent-empty .icon {
-        width: 52px;
-        height: 52px;
-        margin: 0 auto 14px;
-        border-radius: 14px;
-        background: #f4f5f7;
+        width: 42px;
+        height: 42px;
+        margin: 0 auto 12px;
+        border-radius: 11px;
+        background: #F0F1F5;
+        color: #9AA1B2;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 24px;
     }
 
     .recent-empty h4 {
-        font-size: 14.5px;
+        font-size: 13.5px;
         font-weight: 700;
-        color: #111827;
-        margin-bottom: 5px;
+        color: #12162B;
+        margin-bottom: 4px;
     }
 
     .recent-empty p {
-        font-size: 12.5px;
-        color: #9ca3af;
-        margin-bottom: 18px;
+        font-size: 12px;
+        color: #9AA1B2;
+        margin-bottom: 12px;
     }
 
     .btn-small {
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        padding: 9px 16px;
-        border-radius: 8px;
-        background: #111827;
+        background: #1F5EFF;
         color: white;
         text-decoration: none;
         font-size: 12.5px;
-        font-weight: 700;
-        transition: background .2s ease, transform .2s ease;
+        font-weight: 600;
+        padding: 8px 14px;
+        border-radius: 8px;
     }
 
-    .btn-small:hover {
-        background: #1f2937;
-        transform: translateY(-1px);
-    }
+    /* ========= INFO SISTEM BAR ========= */
 
-    /* =========================
-       INFO GRID (AKTIVITAS / STATUS)
-    ========================= */
-
-    .info-grid {
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-        gap: 16px;
-    }
-
-    .info-card {
-        background: white;
-        border-radius: 16px;
-        padding: 22px;
-        border: 1px solid #eef0f3;
-        box-shadow: 0 4px 16px rgba(15,23,42,.03);
-    }
-
-    .info-card h3 {
-        margin-bottom: 16px;
-        font-size: 15px;
-        font-weight: 750;
-        color: #111827;
-    }
-
-    .activity {
+    .info-bar {
         display: flex;
         align-items: center;
-        gap: 13px;
-        padding: 12px 0;
-        border-bottom: 1px solid #f4f5f7;
+        background: #FFFFFF;
+        border: 1px solid #E7E9F1;
+        border-radius: 12px;
+        padding: 18px 26px;
+        box-shadow: 0 1px 2px rgba(16,24,40,.03);
+        gap: 34px;
+        flex-wrap: wrap;
     }
 
-    .activity:last-child {
-        border-bottom: none;
+    .info-bar-title {
+        font-size: 13.5px;
+        font-weight: 700;
+        color: #12162B;
+        flex-basis: 100%;
+        margin-bottom: 4px;
     }
 
-    .activity-icon {
+    .info-bar-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .info-bar-icon {
         width: 36px;
         height: 36px;
-        background: #f4f5f7;
         border-radius: 9px;
+        background: #F0F1F5;
+        color: #6B7280;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
     }
 
-    .activity-text strong {
-        display: block;
-        margin-bottom: 3px;
-        font-size: 13.5px;
-        color: #111827;
+    .info-bar-item .label {
+        font-size: 11.5px;
+        color: #9AA1B2;
+        margin-bottom: 2px;
     }
 
-    .activity-text small {
-        color: #9ca3af;
-        font-size: 12px;
-    }
-
-    .system-status {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 12px 14px;
-        background: #f4f5f7;
-        border-radius: 10px;
-        color: #111827;
+    .info-bar-item .value {
         font-size: 13px;
         font-weight: 700;
-        margin-bottom: 14px;
+        color: #12162B;
     }
-
-    .status-dot {
-        width: 8px;
-        height: 8px;
-        background: #16a34a;
-        border-radius: 50%;
-        flex-shrink: 0;
-        box-shadow: 0 0 0 3px rgba(22,163,74,.15);
-    }
-
-    .system-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 11px 0;
-        border-bottom: 1px solid #f4f5f7;
-        font-size: 13px;
-    }
-
-    .system-item:last-child {
-        border-bottom: none;
-    }
-
-    .system-item .label {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        color: #6b7280;
-    }
-
-    .system-item .value {
-        font-weight: 700;
-        color: #111827;
-    }
-
-    /* =========================
-       RESPONSIVE
-    ========================= */
 
     @media (max-width: 1100px) {
-
-        .stats-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .info-grid {
-            grid-template-columns: 1fr;
-        }
+        .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        .two-col { grid-template-columns: 1fr; }
+        .chart-orders-row { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 650px) {
-
-        .stats-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .quick-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .welcome-section h1 {
-            font-size: 22px;
-        }
-
-        .stat-number {
-            font-size: 25px;
-        }
-
-        .recent-meta {
-            text-align: left;
-        }
+        .stats-grid { grid-template-columns: 1fr; }
+        .hero-text h1 { font-size: 19px; }
+        .stat-number { font-size: 23px; }
+        .recent-meta { text-align: left; }
+        .info-bar { gap: 20px; }
     }
 </style>
 
 
-{{-- =========================
-     WELCOME
-========================= --}}
+{{-- ========= HERO / RINGKASAN ========= --}}
 
-<div class="welcome-section fade-in">
-    <div>
-        <div class="eyebrow">⚽ Jersey Store Admin</div>
-        <h1>{{ $greeting }}, Admin 👋</h1>
-        <p>Kelola produk, artikel, dan konten toko dari satu tempat.</p>
+<div class="hero-card fade-in">
+    <div class="hero-text">
+        <h1>
+            Ringkasan Performa Toko
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 7 13.5 15.5 8.5 10.5 2 17"></path><path d="M16 7h6v6"></path></svg>
+        </h1>
+        <p>{{ $greeting }}, Admin — kelola produk, artikel, pesanan, dan pesan masuk dari satu tempat.</p>
+    </div>
+
+    <div class="hero-illustration">
+        <img src="{{ asset('images/dashboard-hero-illustration.png') }}" alt="Jersey Store" width="120" height="110">
     </div>
 </div>
 
 
-{{-- =========================
-     STATISTIK
-========================= --}}
+{{-- ========= STATISTIK (lama) ========= --}}
 
 <div class="stats-grid">
 
     <div class="stat-card fade-in">
         <div class="stat-top">
             <div class="stat-title">Total Produk</div>
-            <div class="stat-icon">⚽</div>
+            <div class="stat-icon">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23Z"></path></svg>
+            </div>
         </div>
         <div class="stat-number">{{ $totalProducts ?? 0 }}</div>
         <div class="stat-sub">Jersey dalam katalog</div>
@@ -628,7 +602,9 @@
     <div class="stat-card fade-in">
         <div class="stat-top">
             <div class="stat-title">Total Artikel</div>
-            <div class="stat-icon">📰</div>
+            <div class="stat-icon purple">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"></path><path d="M14 3v5h5"></path><path d="M9 13h6"></path><path d="M9 17h6"></path></svg>
+            </div>
         </div>
         <div class="stat-number">{{ $totalArticles ?? 0 }}</div>
         <div class="stat-sub">Artikel dipublikasikan</div>
@@ -637,7 +613,9 @@
     <div class="stat-card fade-in">
         <div class="stat-top">
             <div class="stat-title">Total Stok</div>
-            <div class="stat-icon">📦</div>
+            <div class="stat-icon orange">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 8-9-5-9 5 9 5 9-5Z"></path><path d="m3 8 9 5 9-5"></path><path d="M3 16l9 5 9-5"></path><path d="M3 12l9 5 9-5"></path></svg>
+            </div>
         </div>
         <div class="stat-number">{{ $totalStock ?? 0 }}</div>
         <div class="stat-sub">Unit di seluruh produk</div>
@@ -646,7 +624,9 @@
     <div class="stat-card fade-in">
         <div class="stat-top">
             <div class="stat-title">Produk Tersedia</div>
-            <div class="stat-icon">✅</div>
+            <div class="stat-icon green">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+            </div>
         </div>
         <div class="stat-number">{{ $availableProducts ?? 0 }}</div>
         <div class="stat-sub">Siap dijual</div>
@@ -655,77 +635,282 @@
 </div>
 
 
-{{-- =========================
-     AKSI CEPAT
-========================= --}}
+{{-- ========= STATISTIK (baru: order & pesan) ========= --}}
 
-<div class="section-title-row">
-    <h2 class="section-title">Aksi Cepat</h2>
-</div>
+<div class="stats-grid">
 
-<div class="quick-grid">
-
-    <a href="{{ route('products.create') }}" class="quick-card">
-        <div class="quick-top">
-            <div class="quick-icon">➕</div>
-            <div class="quick-arrow">→</div>
+    <div class="stat-card fade-in">
+        <div class="stat-top">
+            <div class="stat-title">Total Pesanan</div>
+            <div class="stat-icon">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><path d="M3 6h18"></path><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+            </div>
         </div>
-        <h3>Tambah Produk</h3>
-        <p>Tambahkan jersey baru ke katalog produk.</p>
-    </a>
+        <div class="stat-number">{{ $totalOrders ?? 0 }}</div>
+        <div class="stat-sub">Seluruh pesanan masuk</div>
+    </div>
 
-    <a href="{{ route('articles.create') }}" class="quick-card">
-        <div class="quick-top">
-            <div class="quick-icon">📝</div>
-            <div class="quick-arrow">→</div>
+    <div class="stat-card fade-in">
+        <div class="stat-top">
+            <div class="stat-title">Pesanan Pending</div>
+            <div class="stat-icon orange">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 3"></path></svg>
+            </div>
         </div>
-        <h3>Tulis Artikel</h3>
-        <p>Buat artikel atau berita terbaru tentang jersey.</p>
-    </a>
+        <div class="stat-number">{{ $pendingOrders ?? 0 }}</div>
+        <div class="stat-sub">Menunggu diproses</div>
+    </div>
 
-    <a href="{{ route('products.index') }}" class="quick-card">
-        <div class="quick-top">
-            <div class="quick-icon">🗂️</div>
-            <div class="quick-arrow">→</div>
+    <div class="stat-card fade-in">
+        <div class="stat-top">
+            <div class="stat-title">Total Pendapatan</div>
+            <div class="stat-icon green">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22"></path><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            </div>
         </div>
-        <h3>Lihat Produk</h3>
-        <p>Kelola seluruh produk yang sudah ditambahkan.</p>
-    </a>
+        <div class="stat-number" style="font-size:20px;">
+            Rp {{ number_format($totalRevenue ?? 0, 0, ',', '.') }}
+        </div>
+        <div class="stat-sub">Di luar pesanan dibatalkan</div>
+    </div>
 
-    <a href="{{ route('articles.index') }}" class="quick-card">
-        <div class="quick-top">
-            <div class="quick-icon">📚</div>
-            <div class="quick-arrow">→</div>
+    <div class="stat-card fade-in">
+        <div class="stat-top">
+            <div class="stat-title">Pesan Belum Dibaca</div>
+            <div class="stat-icon purple">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"></path></svg>
+            </div>
         </div>
-        <h3>Lihat Artikel</h3>
-        <p>Kelola seluruh artikel yang sudah dibuat.</p>
-    </a>
-
-    <a href="{{ url('/produk') }}" target="_blank" class="quick-card">
-        <div class="quick-top">
-            <div class="quick-icon">🌐</div>
-            <div class="quick-arrow">→</div>
-        </div>
-        <h3>Lihat Website</h3>
-        <p>Buka tampilan website publik Jersey Store.</p>
-    </a>
+        <div class="stat-number">{{ $unreadMessages ?? 0 }}</div>
+        <div class="stat-sub">Dari halaman Kontak</div>
+    </div>
 
 </div>
 
 
-{{--
-    =========================
-    PRODUK TERBARU
-    =========================
-    Menampilkan data dari variabel $recentProducts.
-    Jika controller belum mengirim variabel ini, otomatis
-    tampil empty state (tidak ada query database dari Blade).
+{{-- ========= GRAFIK PENJUALAN + PESANAN TERBARU ========= --}}
 
-    Agar section ini menampilkan produk sungguhan, tambahkan
-    di controller dashboard:
-    $recentProducts = Product::latest()->take(5)->get();
-    lalu kirim ke view melalui compact('recentProducts', ...).
---}}
+<div class="chart-orders-row recent-section">
+
+    {{-- GRAFIK PENJUALAN --}}
+    <div class="chart-card fade-in">
+
+        <div class="chart-header">
+            <div class="chart-title">
+                Grafik Penjualan <span>(7 Hari Terakhir)</span>
+            </div>
+            <div class="select-pill">
+                7 Hari
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+            </div>
+        </div>
+
+        <div class="chart-svg-wrap">
+
+            <div class="chart-y-labels" style="height: {{ $chartH }}px;">
+                <span>Rp {{ number_format($chartTop, 0, ',', '.') }}</span>
+                <span>Rp {{ number_format($chartTop * 0.75, 0, ',', '.') }}</span>
+                <span>Rp {{ number_format($chartTop * 0.5, 0, ',', '.') }}</span>
+                <span>Rp {{ number_format($chartTop * 0.25, 0, ',', '.') }}</span>
+                <span>0</span>
+            </div>
+
+            <div style="flex:1; min-width:0;">
+                <svg viewBox="0 0 {{ $chartW }} {{ $chartH }}" width="100%" height="{{ $chartH }}" preserveAspectRatio="none">
+                    <defs>
+                        <linearGradient id="salesFill" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#1F5EFF" stop-opacity="0.18"/>
+                            <stop offset="100%" stop-color="#1F5EFF" stop-opacity="0"/>
+                        </linearGradient>
+                    </defs>
+
+                    @for ($g = 0; $g <= 4; $g++)
+                        <line x1="0" y1="{{ $g * ($chartH - 20) / 4 }}" x2="{{ $chartW }}" y2="{{ $g * ($chartH - 20) / 4 }}" stroke="#F0F1F5" stroke-width="1"></line>
+                    @endfor
+
+                    @if(count($points) > 0)
+                        <path d="{{ $areaPath }}" fill="url(#salesFill)"></path>
+                        <path d="{{ $linePath }}" fill="none" stroke="#1F5EFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+
+                        @foreach ($points as $p)
+                            <circle cx="{{ $p[0] }}" cy="{{ $p[1] }}" r="3.5" fill="#FFFFFF" stroke="#1F5EFF" stroke-width="2.2"></circle>
+                        @endforeach
+                    @endif
+                </svg>
+
+                <div class="chart-x-labels">
+                    @foreach ($chartLabels as $label)
+                        <span>{{ $label }}</span>
+                    @endforeach
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    {{-- PESANAN TERBARU --}}
+    <div>
+
+        <div class="section-title-row">
+            <h2 class="section-title">
+                Pesanan Terbaru
+                @isset($recentOrders)
+                    <span class="section-count">{{ $recentOrders->count() }}</span>
+                @endisset
+            </h2>
+
+            @isset($recentOrders)
+                @if($recentOrders->count() > 0)
+                    <a href="{{ route('admin.orders.index') }}" class="section-link">Lihat Semua &rarr;</a>
+                @endif
+            @endisset
+        </div>
+
+        <div class="recent-card">
+
+            @isset($recentOrders)
+
+                @if($recentOrders->count() > 0)
+
+                    @foreach($recentOrders as $order)
+
+                        <a href="{{ route('admin.orders.show', $order) }}" class="recent-item">
+
+                            <div class="recent-thumb">
+                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><path d="M3 6h18"></path><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                            </div>
+
+                            <div class="recent-info">
+                                <h4>{{ $order->order_number }}</h4>
+                                <span>{{ $order->customer_name }}</span>
+                            </div>
+
+                            <div class="recent-meta">
+                                <div class="recent-price">
+                                    Rp {{ number_format($order->total, 0, ',', '.') }}
+                                </div>
+                                @php $sc = $statusColors[$order->status] ?? ['bg' => '#F0F1F5', 'text' => '#6B7280']; @endphp
+                                <span class="badge" style="background: {{ $sc['bg'] }}; color: {{ $sc['text'] }};">
+                                    {{ ucfirst($order->status) }}
+                                </span>
+                            </div>
+
+                        </a>
+
+                    @endforeach
+
+                @else
+
+                    <div class="recent-empty">
+                        <div class="icon">
+                            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><path d="M3 6h18"></path><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                        </div>
+                        <h4>Belum ada pesanan</h4>
+                        <p>Pesanan dari checkout akan muncul di sini.</p>
+                    </div>
+
+                @endif
+
+            @else
+
+                <div class="recent-empty">
+                    <div class="icon">
+                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><path d="M3 6h18"></path><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                    </div>
+                    <h4>Belum ada pesanan</h4>
+                    <p>Pesanan dari checkout akan muncul di sini.</p>
+                </div>
+
+            @endisset
+
+        </div>
+
+    </div>
+
+</div>
+
+
+{{-- ========= PESAN MASUK ========= --}}
+
+<div class="recent-section">
+
+    <div class="section-title-row">
+        <h2 class="section-title">
+            Pesan Masuk
+            @isset($unreadMessages)
+                @if($unreadMessages > 0)
+                    <span class="section-count warn">{{ $unreadMessages }} baru</span>
+                @endif
+            @endisset
+        </h2>
+
+        @isset($recentMessages)
+            @if($recentMessages->count() > 0)
+                <a href="{{ route('admin.messages.index') }}" class="section-link">Lihat Semua &rarr;</a>
+            @endif
+        @endisset
+    </div>
+
+    <div class="recent-card">
+
+        @isset($recentMessages)
+
+            @if($recentMessages->count() > 0)
+
+                @foreach($recentMessages as $message)
+
+                    <a href="{{ route('admin.messages.show', $message) }}" class="recent-item">
+
+                        <div class="recent-thumb">
+                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"></path></svg>
+                        </div>
+
+                        <div class="recent-info">
+                            <h4>{{ $message->name }}</h4>
+                            <span>{{ $message->subject }}</span>
+                        </div>
+
+                        <div class="recent-meta">
+                            <span class="badge {{ $message->status === 'unread' ? 'badge-unread' : 'badge-read' }}">
+                                {{ $message->status === 'unread' ? 'Baru' : 'Dibaca' }}
+                            </span>
+                        </div>
+
+                    </a>
+
+                @endforeach
+
+            @else
+
+                <div class="recent-empty">
+                    <div class="icon">
+                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"></path></svg>
+                    </div>
+                    <h4>Belum ada pesan</h4>
+                    <p>Pesan dari halaman Kontak akan muncul di sini.</p>
+                </div>
+
+            @endif
+
+        @else
+
+            <div class="recent-empty">
+                <div class="icon">
+                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"></path></svg>
+                </div>
+                <h4>Belum ada pesan</h4>
+                <p>Pesan dari halaman Kontak akan muncul di sini.</p>
+            </div>
+
+        @endisset
+
+    </div>
+
+</div>
+
+
+{{-- ========= PRODUK TERBARU (dipertahankan, tidak diubah) ========= --}}
 
 <div class="recent-section">
 
@@ -739,7 +924,7 @@
 
         @isset($recentProducts)
             @if($recentProducts->count() > 0)
-                <a href="{{ route('products.index') }}" class="section-link">Lihat Semua →</a>
+                <a href="{{ route('products.index') }}" class="section-link">Lihat Semua &rarr;</a>
             @endif
         @endisset
     </div>
@@ -758,7 +943,7 @@
                             @if($product->image)
                                 <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}">
                             @else
-                                👕
+                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23Z"></path></svg>
                             @endif
                         </div>
 
@@ -776,8 +961,6 @@
                             </span>
                         </div>
 
-                        <div class="recent-chevron">→</div>
-
                     </a>
 
                 @endforeach
@@ -785,7 +968,9 @@
             @else
 
                 <div class="recent-empty">
-                    <div class="icon">📦</div>
+                    <div class="icon">
+                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 8-9-5-9 5 9 5 9-5Z"></path><path d="m3 8 9 5 9-5"></path><path d="M3 16l9 5 9-5"></path><path d="M3 12l9 5 9-5"></path></svg>
+                    </div>
                     <h4>Belum ada produk</h4>
                     <p>Tambahkan produk pertama Anda.</p>
                     <a href="{{ route('products.create') }}" class="btn-small">+ Tambah Produk</a>
@@ -796,10 +981,11 @@
         @else
 
             <div class="recent-empty">
-                <div class="icon">📦</div>
+                <div class="icon">
+                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 8-9-5-9 5 9 5 9-5Z"></path><path d="m3 8 9 5 9-5"></path><path d="M3 16l9 5 9-5"></path><path d="M3 12l9 5 9-5"></path></svg>
+                </div>
                 <h4>Belum ada produk</h4>
                 <p>Tambahkan produk pertama Anda.</p>
-                <a href="{{ route('products.create') }}" class="btn-small">+ Tambah Produk</a>
             </div>
 
         @endisset
@@ -809,14 +995,7 @@
 </div>
 
 
-{{--
-    =========================
-    ARTIKEL TERBARU
-    =========================
-    Sama seperti section produk, menampilkan $recentArticles
-    jika sudah dikirim dari controller. Contoh di controller:
-    $recentArticles = Article::latest()->take(5)->get();
---}}
+{{-- ========= ARTIKEL TERBARU (dipertahankan, tidak diubah) ========= --}}
 
 <div class="recent-section">
 
@@ -830,7 +1009,7 @@
 
         @isset($recentArticles)
             @if($recentArticles->count() > 0)
-                <a href="{{ route('articles.index') }}" class="section-link">Lihat Semua →</a>
+                <a href="{{ route('articles.index') }}" class="section-link">Lihat Semua &rarr;</a>
             @endif
         @endisset
     </div>
@@ -849,7 +1028,7 @@
                             @if($article->image)
                                 <img src="{{ asset('storage/' . $article->image) }}" alt="{{ $article->title }}">
                             @else
-                                📰
+                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"></path><path d="M14 3v5h5"></path><path d="M9 13h6"></path><path d="M9 17h6"></path></svg>
                             @endif
                         </div>
 
@@ -858,8 +1037,6 @@
                             <span>{{ $article->created_at->format('d M Y') }}</span>
                         </div>
 
-                        <div class="recent-chevron">→</div>
-
                     </a>
 
                 @endforeach
@@ -867,10 +1044,11 @@
             @else
 
                 <div class="recent-empty">
-                    <div class="icon">📰</div>
+                    <div class="icon">
+                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"></path><path d="M14 3v5h5"></path><path d="M9 13h6"></path><path d="M9 17h6"></path></svg>
+                    </div>
                     <h4>Belum ada artikel</h4>
                     <p>Mulai buat artikel pertama Anda.</p>
-                    <a href="{{ route('articles.create') }}" class="btn-small">+ Tambah Artikel</a>
                 </div>
 
             @endif
@@ -878,10 +1056,11 @@
         @else
 
             <div class="recent-empty">
-                <div class="icon">📰</div>
+                <div class="icon">
+                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"></path><path d="M14 3v5h5"></path><path d="M9 13h6"></path><path d="M9 17h6"></path></svg>
+                </div>
                 <h4>Belum ada artikel</h4>
                 <p>Mulai buat artikel pertama Anda.</p>
-                <a href="{{ route('articles.create') }}" class="btn-small">+ Tambah Artikel</a>
             </div>
 
         @endisset
@@ -891,66 +1070,40 @@
 </div>
 
 
-{{-- =========================
-     AKTIVITAS & STATUS
-========================= --}}
+{{-- ========= INFORMASI SISTEM ========= --}}
 
-<div class="info-grid">
+<div class="info-bar fade-in">
 
-    <div class="info-card">
+    <div class="info-bar-title">Informasi Sistem</div>
 
-        <h3>📋 Aktivitas Admin</h3>
-
-        <div class="activity">
-            <div class="activity-icon">⚽</div>
-            <div class="activity-text">
-                <strong>Kelola Produk</strong>
-                <small>Tambahkan, edit, atau hapus produk jersey.</small>
-            </div>
+    <div class="info-bar-item">
+        <div class="info-bar-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 18 6-6-6-6"></path><path d="m8 6-6 6 6 6"></path></svg>
         </div>
-
-        <div class="activity">
-            <div class="activity-icon">📰</div>
-            <div class="activity-text">
-                <strong>Kelola Artikel</strong>
-                <small>Buat dan kelola artikel Jersey Store.</small>
-            </div>
+        <div>
+            <div class="label">Versi Aplikasi</div>
+            <div class="value">{{ $appVersion }}</div>
         </div>
-
-        <div class="activity">
-            <div class="activity-icon">🌐</div>
-            <div class="activity-text">
-                <strong>Website Publik</strong>
-                <small>Pengunjung dapat melihat katalog jersey.</small>
-            </div>
-        </div>
-
     </div>
 
-    <div class="info-card">
-
-        <h3>⚙️ Status Sistem</h3>
-
-        <div class="system-status">
-            <div class="status-dot"></div>
-            Sistem Online
+    <div class="info-bar-item">
+        <div class="info-bar-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="8" rx="2"></rect><rect x="2" y="13" width="20" height="8" rx="2"></rect><line x1="6" y1="7" x2="6.01" y2="7"></line><line x1="6" y1="17" x2="6.01" y2="17"></line></svg>
         </div>
-
-        <div class="system-item">
-            <div class="label">🌐 Website</div>
-            <div class="value">Online</div>
+        <div>
+            <div class="label">Lingkungan</div>
+            <div class="value">{{ $appEnv }}</div>
         </div>
+    </div>
 
-        <div class="system-item">
-            <div class="label">🗄️ Database</div>
-            <div class="value">Terhubung</div>
+    <div class="info-bar-item">
+        <div class="info-bar-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
         </div>
-
-        <div class="system-item">
-            <div class="label">👤 Admin</div>
-            <div class="value">Aktif</div>
+        <div>
+            <div class="label">Waktu Server</div>
+            <div class="value">{{ $serverTime }}</div>
         </div>
-
     </div>
 
 </div>

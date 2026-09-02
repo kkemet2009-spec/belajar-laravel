@@ -177,31 +177,92 @@
             font-weight: 700;
         }
 
-        /* ================= HERO ================= */
+        /* ================= HERO (FULL-WIDTH SLIDER) ================= */
 
         .hero {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            overflow: hidden;
             background: #F1F1EF;
-            color: #171717;
+            color: #FFFFFF;
         }
 
-        .hero-inner {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+        .hero-slides {
+            position: absolute;
+            inset: 0;
+        }
+
+        .hero-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            z-index: 1;
+            transition: opacity 1s ease;
+        }
+
+        .hero-slide.active {
+            opacity: 1;
+            z-index: 2;
+        }
+
+        .hero-slide-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+            transform: scale(1);
+            transition: transform 6s ease;
+        }
+
+        .hero-slide.active .hero-slide-img {
+            transform: scale(1.02);
+        }
+
+        .hero-slide-fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
             align-items: center;
-            min-height: 560px;
+            justify-content: center;
+            background: linear-gradient(135deg, #111827, #1F2937);
+            color: rgba(255,255,255,.28);
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 3;
+            background: linear-gradient(to right, rgba(0,0,0,.65), rgba(0,0,0,.25), rgba(0,0,0,.05));
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 4;
+            max-width: 1400px;
+            height: 100%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            padding: 0 6%;
         }
 
         .hero-text {
-            padding: 40px 5% 40px 6%;
+            max-width: 460px;
         }
 
         .hero-label {
             display: block;
             font-size: 15px;
             font-weight: 500;
-            color: #4B5563;
+            color: rgba(255,255,255,.82);
             margin-bottom: 14px;
         }
 
@@ -211,13 +272,13 @@
             line-height: 1.05;
             font-weight: 700;
             letter-spacing: -.01em;
-            color: #171717;
+            color: #FFFFFF;
             margin: 0 0 22px;
         }
 
         .hero p {
             max-width: 400px;
-            color: #4B5563;
+            color: rgba(255,255,255,.82);
             font-size: 15.5px;
             line-height: 1.7;
             margin: 0 0 32px;
@@ -241,7 +302,7 @@
             letter-spacing: .3px;
             text-transform: uppercase;
             text-decoration: none;
-            transition: transform .2s ease, background .2s ease, border-color .2s ease;
+            transition: transform .2s ease, background .2s ease, border-color .2s ease, color .2s ease;
         }
 
         .btn-primary {
@@ -265,31 +326,82 @@
             transform: translateY(-2px);
         }
 
-        .hero-visual {
-            position: relative;
-            height: 100%;
-            min-height: 460px;
-            overflow: hidden;
+        /* Tombol di dalam hero perlu kontras terhadap foto gelap,
+           jadi warnanya di-override khusus di dalam .hero saja —
+           class .btn-primary/.btn-outline aslinya (dipakai di CTA
+           "Explore Collection" bagian bawah) tidak ikut berubah. */
+
+        .hero .btn-primary {
+            background: #F5B400;
+            color: #171717;
         }
 
-        .hero-visual img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: top center;
+        .hero .btn-primary:hover {
+            background: #FFFFFF;
+            transform: translateY(-2px);
         }
 
-        .hero-visual-fallback {
-            width: 100%;
-            height: 100%;
-            min-height: 460px;
+        .hero .btn-outline {
+            border-color: rgba(255,255,255,.55);
+            color: #FFFFFF;
+        }
+
+        .hero .btn-outline:hover {
+            border-color: #FFFFFF;
+            background: rgba(255,255,255,.1);
+        }
+
+        .hero-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 5;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.14);
+            border: 1px solid rgba(255,255,255,.4);
+            color: #FFFFFF;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #E5E7EB;
-            color: #9CA3AF;
-            font-size: 14px;
-            text-align: center;
+            cursor: pointer;
+            transition: background .2s ease, border-color .2s ease;
+        }
+
+        .hero-arrow:hover {
+            background: rgba(255,255,255,.28);
+            border-color: rgba(255,255,255,.7);
+        }
+
+        .hero-arrow-prev { left: 24px; }
+        .hero-arrow-next { right: 24px; }
+
+        .hero-dots {
+            position: absolute;
+            left: 50%;
+            bottom: 22px;
+            transform: translateX(-50%);
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hero-dot {
+            width: 9px;
+            height: 9px;
+            padding: 0;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255,255,255,.45);
+            cursor: pointer;
+            transition: background .2s ease, transform .2s ease;
+        }
+
+        .hero-dot.active {
+            background: #F5B400;
+            transform: scale(1.3);
         }
 
         /* ================= SECTION HEADING ================= */
@@ -451,9 +563,13 @@
             padding: 56px 48px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
             gap: 32px;
             flex-wrap: wrap;
+        }
+
+        .club-banner-text {
+            text-align: center;
         }
 
         .club-banner-text span {
@@ -477,11 +593,7 @@
             color: rgba(255,255,255,.65);
             font-size: 14px;
             max-width: 440px;
-            margin: 0;
-        }
-
-        .club-banner .btn-primary {
-            flex-shrink: 0;
+            margin: 0 auto;
         }
 
         /* ================= WHY JERSEY STORE ================= */
@@ -625,7 +737,7 @@
             margin: 0;
         }
 
-        /* ================= CTA ================= */
+        /* ================= CTA (FIND YOUR NEXT JERSEY) ================= */
 
         .cta-section {
             max-width: 1240px;
@@ -643,18 +755,15 @@
         .cta-section p {
             color: #64748B;
             font-size: 14.5px;
-            margin: 0 0 26px;
+            margin: 0;
         }
 
-        .btn-cta {
-            display: inline-block;
-            padding: 14px 26px;
-            border-radius: 10px;
-            background: #F4B400;
-            color: #111827;
-            text-decoration: none;
-            font-size: 13.5px;
-            font-weight: 800;
+        /* ================= EXPLORE COLLECTION CTA (BOTTOM) ================= */
+
+        .explore-cta-section {
+            max-width: 1240px;
+            margin: 0 auto;
+            text-align: center;
         }
 
         /* ================= FOOTER ================= */
@@ -718,18 +827,8 @@
 
         @media (max-width: 1024px) {
 
-            .hero-inner {
-                grid-template-columns: 1fr;
-                min-height: 0;
-            }
-
-            .hero-visual {
-                order: -1;
-                min-height: 340px;
-            }
-
-            .hero-visual-fallback {
-                min-height: 340px;
+            .hero {
+                height: 540px;
             }
 
             .hero h1 {
@@ -771,12 +870,24 @@
 
         @media (max-width: 640px) {
 
+            .hero {
+                height: 480px;
+            }
+
+            .hero-content {
+                padding: 0 20px;
+            }
+
             .hero-text {
-                padding: 36px 20px;
+                max-width: 100%;
             }
 
             .hero h1 {
-                font-size: 36px;
+                font-size: 34px;
+            }
+
+            .hero p {
+                max-width: 100%;
             }
 
             .hero-buttons {
@@ -786,6 +897,18 @@
 
             .hero-buttons a {
                 justify-content: center;
+            }
+
+            .hero-arrow {
+                width: 36px;
+                height: 36px;
+            }
+
+            .hero-arrow-prev { left: 12px; }
+            .hero-arrow-next { right: 12px; }
+
+            .hero-dots {
+                bottom: 14px;
             }
 
             .section {
@@ -823,10 +946,6 @@
 </head>
 
 <body>
-
-@php
-    $heroProduct = $products->first();
-@endphp
 
 <!-- ================= NAVBAR ================= -->
 
@@ -872,11 +991,43 @@
 </div>
 
 
-<!-- ================= HERO ================= -->
+<!-- ================= HERO (FULL-WIDTH SLIDER) ================= -->
+{{--
+    Sumber gambar: $heroProducts (dikirim dari HomeController, terpisah dari
+    $products yang dipakai section "Featured Collection" di bawah).
+    Kalau produk tidak punya gambar, tampilkan fallback gradient (bukan
+    broken image). Tombol tetap memakai route yang sudah ada.
+--}}
 
-<section class="hero">
-    <div class="hero-inner">
+<section class="hero" id="heroSlider">
 
+    <div class="hero-slides">
+
+        @forelse($heroProducts as $index => $heroItem)
+
+            <div class="hero-slide {{ $index === 0 ? 'active' : '' }}" data-index="{{ $index }}">
+
+                @if($heroItem->image)
+                    <img src="{{ asset('storage/' . $heroItem->image) }}" alt="{{ $heroItem->name }}" class="hero-slide-img">
+                @else
+                    <div class="hero-slide-fallback">Jersey Store</div>
+                @endif
+
+            </div>
+
+        @empty
+
+            <div class="hero-slide active" data-index="0">
+                <div class="hero-slide-fallback">Jersey Store</div>
+            </div>
+
+        @endforelse
+
+    </div>
+
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
         <div class="hero-text reveal">
             <span class="hero-label">Koleksi Jersey 2026</span>
 
@@ -892,18 +1043,31 @@
                 <a href="{{ route('public.articles.index') }}" class="btn-outline">Explore Articles</a>
             </div>
         </div>
+    </div>
 
-        <div class="hero-visual reveal">
+    @if($heroProducts->count() > 1)
 
-            @if($heroProduct && $heroProduct->image)
-                <img src="{{ asset('storage/' . $heroProduct->image) }}" alt="{{ $heroProduct->name }}">
-            @else
-                <div class="hero-visual-fallback">Gambar produk<br>belum tersedia</div>
-            @endif
+        <button type="button" class="hero-arrow hero-arrow-prev" id="heroPrev" aria-label="Gambar sebelumnya">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
+        </button>
+
+        <button type="button" class="hero-arrow hero-arrow-next" id="heroNext" aria-label="Gambar berikutnya">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>
+        </button>
+
+        <div class="hero-dots" id="heroDots">
+
+            @foreach($heroProducts as $index => $heroItem)
+                <button type="button"
+                        class="hero-dot {{ $index === 0 ? 'active' : '' }}"
+                        data-index="{{ $index }}"
+                        aria-label="Ke gambar {{ $index + 1 }}"></button>
+            @endforeach
 
         </div>
 
-    </div>
+    @endif
+
 </section>
 
 
@@ -964,6 +1128,8 @@
 
 
 <!-- ================= SHOP BY CLUB ================= -->
+{{-- Tombol "Explore Collection" dipindahkan ke bawah, tepat sebelum footer.
+     Judul & deskripsi section ini tetap dipertahankan seperti semula. --}}
 
 <section class="section" style="padding-top: 0;">
 
@@ -974,8 +1140,6 @@
             <h2>Temukan Jersey Klub Favoritmu</h2>
             <p>Jelajahi seluruh koleksi jersey dari berbagai klub yang tersedia di Jersey Store.</p>
         </div>
-
-        <a href="{{ route('public.products.index') }}" class="btn-primary">Explore Collection</a>
 
     </div>
 
@@ -1092,14 +1256,28 @@
 </section>
 
 
-<!-- ================= CTA ================= -->
+<!-- ================= CTA (FIND YOUR NEXT JERSEY) ================= -->
+{{-- Tombol kuning "Shop Collection" dihapus. Judul & deskripsi tetap dipertahankan. --}}
 
 <section class="section">
 
     <div class="cta-section reveal">
         <h2>Find Your Next Jersey</h2>
         <p>Temukan jersey yang paling mewakili gaya dan klub favoritmu.</p>
-        <a href="{{ route('public.products.index') }}" class="btn-cta">Shop Collection</a>
+    </div>
+
+</section>
+
+
+<!-- ================= EXPLORE COLLECTION (CTA UTAMA, SEBELUM FOOTER) ================= -->
+{{-- Tombol "Explore Collection" dari section SHOP BY CLUB dipindahkan ke sini.
+     Route, class (.btn-primary), dan teks tombol sama persis seperti sebelumnya —
+     hanya posisinya yang berubah. --}}
+
+<section class="section explore-cta-wrapper" style="padding-top: 0;">
+
+    <div class="explore-cta-section reveal">
+        <a href="{{ route('public.products.index') }}" class="btn-primary">Explore Collection</a>
     </div>
 
 </section>
@@ -1159,6 +1337,82 @@
     } else {
         revealEls.forEach(function (el) { el.classList.add('is-visible'); });
     }
+</script>
+
+<script>
+    // ============================================================
+    // HERO SLIDER — vanilla JS, tanpa dependency tambahan
+    // ============================================================
+    (function () {
+
+        var slider = document.getElementById('heroSlider');
+        if (!slider) return;
+
+        var slides = slider.querySelectorAll('.hero-slide');
+        var dots = slider.querySelectorAll('.hero-dot');
+        var prevBtn = document.getElementById('heroPrev');
+        var nextBtn = document.getElementById('heroNext');
+
+        var total = slides.length;
+        if (total <= 1) return; // cuma 1 slide, tidak perlu slider aktif
+
+        var current = 0;
+        var intervalTime = 4500; // 4.5 detik
+        var timer = null;
+
+        function goTo(index) {
+            slides[current].classList.remove('active');
+            if (dots[current]) dots[current].classList.remove('active');
+
+            current = (index + total) % total;
+
+            slides[current].classList.add('active');
+            if (dots[current]) dots[current].classList.add('active');
+        }
+
+        function next() { goTo(current + 1); }
+        function prev() { goTo(current - 1); }
+
+        function start() {
+            stop();
+            timer = setInterval(next, intervalTime);
+        }
+
+        function stop() {
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+            }
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', function () {
+                next();
+                start();
+            });
+        }
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', function () {
+                prev();
+                start();
+            });
+        }
+
+        dots.forEach(function (dot) {
+            dot.addEventListener('click', function () {
+                goTo(parseInt(dot.getAttribute('data-index'), 10));
+                start();
+            });
+        });
+
+        // pause saat mouse di atas hero, lanjut lagi saat keluar
+        slider.addEventListener('mouseenter', stop);
+        slider.addEventListener('mouseleave', start);
+
+        start();
+
+    })();
 </script>
 
 </body>

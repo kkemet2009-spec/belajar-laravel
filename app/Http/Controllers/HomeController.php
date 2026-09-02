@@ -13,6 +13,27 @@ class HomeController extends Controller
 
         $articles = Article::latest()->take(3)->get();
 
-        return view('home', compact('products', 'articles'));
+        // ================================================================
+        // DATA UNTUK HERO SLIDER (BARU)
+        // ------------------------------------------------------------------
+        // Diambil terpisah dari $products di atas supaya query & jumlah
+        // produk yang tampil di section "Featured Collection" tidak berubah
+        // sedikit pun. Prioritaskan produk yang punya gambar, maksimal 6
+        // (sesuai kebutuhan slider: minimal 4-6 gambar).
+        // ================================================================
+
+        $heroProducts = Product::whereNotNull('image')
+            ->where('image', '!=', '')
+            ->latest()
+            ->take(6)
+            ->get();
+
+        // Fallback: kalau belum ada produk yang punya gambar sama sekali,
+        // pakai $products yang sudah diambil di atas (tidak query ulang).
+        if ($heroProducts->isEmpty()) {
+            $heroProducts = $products;
+        }
+
+        return view('home', compact('products', 'articles', 'heroProducts'));
     }
 }

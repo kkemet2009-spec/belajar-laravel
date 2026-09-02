@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class CheckoutController extends Controller
 {
@@ -15,53 +17,24 @@ class CheckoutController extends Controller
 
     public function index()
     {
+        // Ambil keranjang dari session
         $cart = session()->get('cart', []);
 
-        /*
-        |--------------------------------------------------------------------------
-        | CEK APAKAH ADA PESANAN TERAKHIR
-        |--------------------------------------------------------------------------
-        */
-
-        $lastOrder = session()->get('last_order');
-
-        /*
-        |--------------------------------------------------------------------------
-        | Jika tidak ada cart dan tidak ada pesanan terakhir
-        |--------------------------------------------------------------------------
-        */
-
-        if (empty($cart) && !$lastOrder) {
-            return redirect()
-                ->route('public.products.index')
-                ->with(
-                    'error',
-                    'Keranjang masih kosong.'
-                );
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | Hitung total
-        |--------------------------------------------------------------------------
-        */
-
+        // Hitung total
         $total = 0;
 
         foreach ($cart as $item) {
-            $total +=
-                (float) $item['price']
-                * (int) $item['quantity'];
+            $total += (float) $item['price'] * (int) $item['quantity'];
         }
 
-        return view(
-            'checkout.index',
-            compact(
-                'cart',
-                'total',
-                'lastOrder'
-            )
-        );
+        // Ambil pesanan terakhir jika ada
+        $lastOrder = session()->get('last_order');
+
+        return view('checkout.index', compact(
+            'cart',
+            'total',
+            'lastOrder'
+        ));
     }
 
 
@@ -69,19 +42,11 @@ class CheckoutController extends Controller
     |--------------------------------------------------------------------------
     | BELI SEKARANG
     |--------------------------------------------------------------------------
-    |
-    | Tombol "Beli Sekarang" dari halaman detail produk.
-    |
     */
 
     public function buyNow(Product $product)
     {
-        /*
-        |--------------------------------------------------------------------------
-        | Cek stok
-        |--------------------------------------------------------------------------
-        */
-
+        // Cek stok
         if ($product->stock <= 0) {
             return back()->with(
                 'error',
@@ -89,15 +54,7 @@ class CheckoutController extends Controller
             );
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | Buat cart baru khusus untuk Beli Sekarang
-        |--------------------------------------------------------------------------
-        |
-        | Kita tidak mencampur produk ini dengan keranjang sebelumnya.
-        |
-        */
-
+        // Buat keranjang baru
         $cart = [];
 
         $cart[$product->id] = [
@@ -108,27 +65,14 @@ class CheckoutController extends Controller
             'quantity' => 1,
         ];
 
-        session()->put(
-            'cart',
-            $cart
-        );
+        // Simpan ke session
+        session()->put('cart', $cart);
 
-        /*
-        |--------------------------------------------------------------------------
-        | Hapus pesanan terakhir
-        |--------------------------------------------------------------------------
-        */
-
+        // Hapus pesanan terakhir agar checkout baru tidak
+        // menampilkan pesanan lama
         session()->forget('last_order');
 
-        /*
-        |--------------------------------------------------------------------------
-        | Arahkan ke checkout
-        |--------------------------------------------------------------------------
-        */
-
-        return redirect()
-            ->route('checkout.index');
+        return redirect()->route('checkout.index');
     }
 
 
@@ -138,7 +82,7 @@ class CheckoutController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function store(Request $request)
+    public function process(Request $request)
     {
         /*
         |--------------------------------------------------------------------------
@@ -146,7 +90,7 @@ class CheckoutController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $validated = $request->validate([
+        $request->validate([
             'name' => [
                 'required',
                 'string',
@@ -168,28 +112,28 @@ class CheckoutController extends Controller
             'payment_method' => [
                 'required',
                 'string',
-                'max:50',
+                'in:cod,transfer',
             ],
+        ], [
+            'name.required' => 'Nama lengkap wajib diisi.',
+
+            'phone.required' => 'Nomor WhatsApp wajib diisi.',
+
+            'address.required' => 'Alamat lengkap wajib diisi.',
+
+            'payment_method.required' => 'Silakan pilih metode pembayaran.',
+
+            'payment_method.in' => 'Metode pembayaran tidak valid.',
         ]);
 
 
         /*
         |--------------------------------------------------------------------------
-        | Ambil cart
+        | AMBIL CART
         |--------------------------------------------------------------------------
         */
 
-        $cart = session()->get(
-            'cart',
-            []
-        );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Cek cart kosong
-        |--------------------------------------------------------------------------
-        */
+        $cart = session()->get('cart', []);
 
         if (empty($cart)) {
             return redirect()
@@ -203,15 +147,13 @@ class CheckoutController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Cek stok terbaru
+        | CEK STOK
         |--------------------------------------------------------------------------
         */
 
         foreach ($cart as $item) {
 
-            $product = Product::find(
-                $item['id']
-            );
+            $product = Product::find($item['id']);
 
             if (!$product) {
                 return back()->with(
@@ -220,15 +162,10 @@ class CheckoutController extends Controller
                 );
             }
 
-            if (
-                $product->stock
-                < $item['quantity']
-            ) {
+            if ($product->stock < $item['quantity']) {
                 return back()->with(
                     'error',
-                    'Stok produk "' .
-                    $product->name .
-                    '" tidak mencukupi.'
+                    'Stok produk "' . $product->name . '" tidak mencukupi.'
                 );
             }
         }
@@ -236,118 +173,131 @@ class CheckoutController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Hitung total
+        | HITUNG TOTAL
         |--------------------------------------------------------------------------
         */
 
         $total = 0;
 
         foreach ($cart as $item) {
-
             $total +=
                 (float) $item['price']
-                * (int) $item['quantity'];
+                *
+                (int) $item['quantity'];
         }
 
 
         /*
         |--------------------------------------------------------------------------
-        | Nomor pesanan
+        | NOMOR PESANAN
         |--------------------------------------------------------------------------
         */
 
         $orderNumber =
-            'DEV-' .
-            now()->format('YmdHis') .
-            '-' .
-            random_int(
-                100,
-                999
-            );
+            'JS-'
+            . date('Ymd')
+            . '-'
+            . strtoupper(Str::random(5));
 
 
         /*
         |--------------------------------------------------------------------------
-        | DATA PESANAN
+        | SIMPAN ORDER
         |--------------------------------------------------------------------------
         */
 
-        $order = [
+        $order = Order::create([
+            'order_number' => $orderNumber,
 
-            'order_number' =>
-                $orderNumber,
+            'customer_name' => $request->name,
 
-            'name' =>
-                $validated['name'],
+            'phone' => $request->phone,
 
-            'phone' =>
-                $validated['phone'],
+            'address' => $request->address,
 
-            'address' =>
-                $validated['address'],
+            'total' => $total,
 
-            'payment_method' =>
-                $validated['payment_method'],
-
-            'cart' =>
-                $cart,
-
-            'total' =>
-                $total,
-
-            'created_at' =>
-                now(),
-        ];
+            'status' => 'pending',
+        ]);
 
 
         /*
         |--------------------------------------------------------------------------
-        | Simpan pesanan sementara
-        |--------------------------------------------------------------------------
-        */
-
-        session()->put(
-            'last_order',
-            $order
-        );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Kurangi stok
+        | SIMPAN ORDER ITEM + KURANGI STOK
         |--------------------------------------------------------------------------
         */
 
         foreach ($cart as $item) {
 
-            $product = Product::find(
+            // Simpan item pesanan
+            $order->items()->create([
+                'product_id' => $item['id'],
+
+                'product_name' => $item['name'],
+
+                'price' => $item['price'],
+
+                'quantity' => $item['quantity'],
+
+                'subtotal' =>
+                    (float) $item['price']
+                    *
+                    (int) $item['quantity'],
+            ]);
+
+
+            // Kurangi stok
+            Product::where(
+                'id',
                 $item['id']
+            )->decrement(
+                'stock',
+                $item['quantity']
             );
-
-            if ($product) {
-
-                $product->decrement(
-                    'stock',
-                    $item['quantity']
-                );
-            }
         }
 
 
         /*
         |--------------------------------------------------------------------------
-        | Kosongkan keranjang
+        | SIMPAN LAST ORDER
         |--------------------------------------------------------------------------
+        |
+        | payment_method DITAMBAHKAN di sini.
+        |
         */
 
-        session()->forget(
-            'cart'
-        );
+        session()->put('last_order', [
+
+            'order_number' => $orderNumber,
+
+            'name' => $request->name,
+
+            'phone' => $request->phone,
+
+            'address' => $request->address,
+
+            'payment_method' => $request->payment_method,
+
+            'cart' => $cart,
+
+            'total' => $total,
+
+            'created_at' => now(),
+        ]);
 
 
         /*
         |--------------------------------------------------------------------------
-        | Kembali ke checkout
+        | HAPUS CART
+        |--------------------------------------------------------------------------
+        */
+
+        session()->forget('cart');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | KEMBALI KE CHECKOUT
         |--------------------------------------------------------------------------
         */
 

@@ -468,6 +468,17 @@
             color: #92400E;
         }
 
+        .btn-wishlist-active {
+            background: #FEF2F2;
+            border-color: #FCA5A5;
+            color: #B91C1C;
+        }
+
+        .btn-wishlist-active:hover {
+            border-color: #F87171;
+            color: #991B1B;
+        }
+
         .btn:disabled {
             background: #E5E7EB;
             color: #9CA3AF;
@@ -625,10 +636,13 @@
 
 @php
     // Jumlah item di keranjang, dari session cart (dipakai untuk badge navbar).
-    // Asumsi struktur: session('cart') = [product_id => ['quantity' => n, ...]]
     $cartCount = collect(session('cart', []))->sum(function ($item) {
         return is_array($item) ? ($item['quantity'] ?? 0) : 0;
     });
+
+    // Status wishlist produk ini, dibaca langsung dari session yang sama
+    // dipakai oleh CartController::toggleWishlist() — tidak ada logic baru.
+    $inWishlist = array_key_exists($product->id, session('wishlist', []));
 @endphp
 
 <!-- ================= NAVBAR ================= -->
@@ -786,8 +800,8 @@
                             <button type="submit" class="btn btn-cart">🛒 Tambah Keranjang</button>
                         </form>
 
-                        {{-- BELI SEKARANG: route checkout.buy yang sudah ada --}}
-                        <form action="{{ route('checkout.buy', $product) }}" method="POST">
+                        {{-- BELI SEKARANG: route checkout.buyNow yang sudah ada --}}
+                        <form action="{{ route('checkout.buyNow', $product) }}" method="POST">
                             @csrf
                             <input type="hidden" name="quantity" id="buy-quantity-input" value="1">
                             <button type="submit" class="btn btn-buy">⚡ Beli Sekarang</button>
@@ -798,7 +812,9 @@
                     {{-- WISHLIST: route wishlist.toggle yang sudah ada --}}
                     <form action="{{ route('wishlist.toggle', $product) }}" method="POST" style="margin-top: 12px;">
                         @csrf
-                        <button type="submit" class="btn btn-wishlist">♡ Tambah ke Wishlist</button>
+                        <button type="submit" class="btn btn-wishlist {{ $inWishlist ? 'btn-wishlist-active' : '' }}">
+                            {{ $inWishlist ? '♥ Hapus dari Wishlist' : '♡ Tambah ke Wishlist' }}
+                        </button>
                     </form>
 
                 @else
@@ -807,7 +823,9 @@
 
                     <form action="{{ route('wishlist.toggle', $product) }}" method="POST" style="margin-top: 12px;">
                         @csrf
-                        <button type="submit" class="btn btn-wishlist">♡ Tambah ke Wishlist</button>
+                        <button type="submit" class="btn btn-wishlist {{ $inWishlist ? 'btn-wishlist-active' : '' }}">
+                            {{ $inWishlist ? '♥ Hapus dari Wishlist' : '♡ Tambah ke Wishlist' }}
+                        </button>
                     </form>
 
                 @endif

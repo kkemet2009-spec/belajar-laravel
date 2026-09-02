@@ -1,196 +1,1388 @@
-@extends('layouts.app')
+{{-- =========================================================
+     CHECKOUT PAGE - JERSEY STORE
+     resources/views/checkout/index.blade.php
+========================================================= --}}
 
-@section('content')
+<!DOCTYPE html>
+<html lang="id">
 
-<div class="min-h-screen bg-[#FAFAF8] py-10 md:py-16">
+<head>
+    <meta charset="UTF-8">
 
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-        {{-- HEADER --}}
-        <div class="mb-10">
-            <div class="mb-3 flex items-center gap-2 text-sm text-gray-500">
-                <a href="{{ route('home') }}" class="transition hover:text-[#92400E]">
+    <title>Checkout - Jersey Store</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fb;
+            color: #111827;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button,
+        input,
+        textarea {
+            font-family: inherit;
+        }
+
+        /* =====================================================
+           NAVBAR
+        ===================================================== */
+
+        .navbar {
+            width: 100%;
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1150px;
+            margin: auto;
+            min-height: 78px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 21px;
+            font-weight: 800;
+            color: #111827;
+        }
+
+        .brand img {
+            width: 42px;
+            height: 42px;
+            object-fit: contain;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-menu a {
+            font-size: 15px;
+            font-weight: 600;
+            color: #374151;
+            transition: 0.2s;
+        }
+
+        .nav-menu a:hover {
+            color: #111827;
+        }
+
+        .dashboard-btn {
+            background: #111827 !important;
+            color: white !important;
+            padding: 12px 22px;
+            border-radius: 30px;
+        }
+
+        .dashboard-btn:hover {
+            background: #000000 !important;
+        }
+
+        /* =====================================================
+           CONTAINER
+        ===================================================== */
+
+        .container {
+            max-width: 1150px;
+            margin: auto;
+            padding: 30px 20px 70px;
+        }
+
+        /* =====================================================
+           BREADCRUMB
+        ===================================================== */
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 15px;
+        }
+
+        .breadcrumb a {
+            color: #111827;
+            font-weight: 600;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: #111827;
+        }
+
+        .page-header p {
+            color: #6b7280;
+            font-size: 16px;
+        }
+
+        /* =====================================================
+           ALERT
+        ===================================================== */
+
+        .alert {
+            padding: 15px 18px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .alert-success {
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+
+        .validation-errors {
+            margin-bottom: 25px;
+            padding: 18px 20px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 12px;
+            color: #991b1b;
+        }
+
+        .validation-errors strong {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .validation-errors ul {
+            padding-left: 20px;
+        }
+
+        /* =====================================================
+           CHECKOUT GRID
+        ===================================================== */
+
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.7fr) minmax(320px, 0.9fr);
+            gap: 28px;
+            align-items: start;
+        }
+
+        /* =====================================================
+           CARD
+        ===================================================== */
+
+        .card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 22px;
+            padding: 30px;
+            box-shadow: 0 8px 30px rgba(17, 24, 39, 0.04);
+        }
+
+        .card + .card {
+            margin-top: 24px;
+        }
+
+        /* =====================================================
+           SECTION TITLE
+        ===================================================== */
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 8px;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #111827;
+            color: #ffffff;
+
+            font-size: 14px;
+            font-weight: 800;
+
+            flex-shrink: 0;
+        }
+
+        .section-title h2 {
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .section-description {
+            margin-left: 54px;
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        /* =====================================================
+           FORM
+        ===================================================== */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #374151;
+        }
+
+        .required {
+            color: #dc2626;
+        }
+
+        .form-control {
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 12px;
+            padding: 14px 15px;
+
+            font-size: 15px;
+            color: #111827;
+            background: #ffffff;
+
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: #111827;
+            box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.08);
+        }
+
+        textarea.form-control {
+            min-height: 130px;
+            resize: vertical;
+        }
+
+        .form-control::placeholder {
+            color: #9ca3af;
+        }
+
+        /* =====================================================
+           PAYMENT
+        ===================================================== */
+
+        .payment-options {
+            display: grid;
+            gap: 12px;
+        }
+
+        .payment-option {
+            position: relative;
+        }
+
+        .payment-option input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .payment-label {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+
+            padding: 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 14px;
+
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .payment-label:hover {
+            border-color: #9ca3af;
+            background: #fafafa;
+        }
+
+        .payment-option input:checked + .payment-label {
+            border-color: #111827;
+            background: #f9fafb;
+            box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.06);
+        }
+
+        .payment-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+
+            background: #f3f4f6;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .payment-info strong {
+            display: block;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .payment-info span {
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .radio-circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #d1d5db;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        .payment-option input:checked + .payment-label .radio-circle {
+            border: 6px solid #111827;
+        }
+
+        /* =====================================================
+           ORDER SUMMARY
+        ===================================================== */
+
+        .summary-card {
+            position: sticky;
+            top: 100px;
+        }
+
+        .summary-title {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 24px;
+        }
+
+        .product-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .product-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .product-image {
+            width: 72px;
+            height: 72px;
+
+            border-radius: 13px;
+
+            background: #f3f4f6;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-image-placeholder {
+            font-size: 27px;
+            color: #9ca3af;
+        }
+
+        .product-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .product-name {
+            font-weight: 700;
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 5px;
+
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-quantity {
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .product-price {
+            font-size: 14px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .divider {
+            border: 0;
+            border-top: 1px solid #e5e7eb;
+            margin: 22px 0;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 14px;
+
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .price-row strong {
+            color: #374151;
+        }
+
+        .shipping-free {
+            color: #059669 !important;
+            font-weight: 700;
+        }
+
+        .total-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+
+            padding-top: 20px;
+            border-top: 2px solid #111827;
+            margin-top: 20px;
+        }
+
+        .total-label {
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .total-price {
+            font-size: 25px;
+            font-weight: 900;
+            color: #111827;
+        }
+
+        /* =====================================================
+           BUTTON
+        ===================================================== */
+
+        .submit-button {
+            width: 100%;
+            border: 0;
+
+            background: #111827;
+            color: #ffffff;
+
+            padding: 16px 20px;
+            border-radius: 14px;
+
+            font-size: 16px;
+            font-weight: 800;
+
+            cursor: pointer;
+            transition: 0.2s;
+
+            margin-top: 25px;
+        }
+
+        .submit-button:hover {
+            background: #000000;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(17, 24, 39, 0.15);
+        }
+
+        .submit-button:active {
+            transform: translateY(0);
+        }
+
+        .back-cart {
+            display: block;
+            text-align: center;
+
+            margin-top: 16px;
+
+            color: #6b7280;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .back-cart:hover {
+            color: #111827;
+        }
+
+        .secure-info {
+            margin-top: 20px;
+            padding: 13px;
+
+            background: #f9fafb;
+            border-radius: 12px;
+
+            color: #6b7280;
+            font-size: 12px;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        /* =====================================================
+           EMPTY CART
+        ===================================================== */
+
+        .empty-cart {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 22px;
+            padding: 60px 25px;
+            text-align: center;
+        }
+
+        .empty-cart-icon {
+            font-size: 55px;
+            margin-bottom: 18px;
+        }
+
+        .empty-cart h2 {
+            font-size: 25px;
+            margin-bottom: 8px;
+        }
+
+        .empty-cart p {
+            color: #6b7280;
+            margin-bottom: 25px;
+        }
+
+        .shop-button {
+            display: inline-block;
+            background: #111827;
+            color: #ffffff;
+            padding: 13px 22px;
+            border-radius: 12px;
+            font-weight: 700;
+        }
+
+        /* =====================================================
+           SUCCESS ORDER
+        ===================================================== */
+
+        .success-card {
+            background: #ffffff;
+            border: 1px solid #d1fae5;
+            border-radius: 22px;
+            padding: 45px 30px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .success-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+
+            margin: 0 auto 20px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #ecfdf5;
+            color: #059669;
+
+            font-size: 35px;
+        }
+
+        .success-card h2 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .success-card p {
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+
+        .order-number {
+            display: inline-block;
+            padding: 12px 18px;
+
+            background: #f3f4f6;
+            border-radius: 10px;
+
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        .footer {
+            background: #111827;
+            color: #ffffff;
+            padding: 25px 20px;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .footer span {
+            color: #9ca3af;
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 900px) {
+
+            .checkout-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-card {
+                position: static;
+            }
+
+            .nav-menu {
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 700px) {
+
+            .nav-container {
+                min-height: auto;
+                padding-top: 15px;
+                padding-bottom: 15px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-menu {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .page-header h1 {
+                font-size: 29px;
+            }
+
+            .card {
+                padding: 22px;
+                border-radius: 17px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+            .section-description {
+                margin-left: 0;
+                margin-top: 8px;
+            }
+
+            .total-price {
+                font-size: 21px;
+            }
+        }
+
+        @media (max-width: 450px) {
+
+            .nav-menu a {
+                font-size: 13px;
+            }
+
+            .dashboard-btn {
+                padding: 10px 15px;
+            }
+
+            .container {
+                padding-left: 13px;
+                padding-right: 13px;
+            }
+
+            .product-image {
+                width: 62px;
+                height: 62px;
+            }
+
+            .product-price {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+    {{-- =====================================================
+         NAVBAR
+    ====================================================== --}}
+
+    <header class="navbar">
+
+        <div class="nav-container">
+
+            <a href="{{ route('home') }}" class="brand">
+
+                @if(file_exists(public_path('images/logo.png')))
+                    <img
+                        src="{{ asset('images/logo.png') }}"
+                        alt="Jersey Store">
+                @else
+                    <span style="font-size:30px;">⚽</span>
+                @endif
+
+                <span>Jersey Store</span>
+
+            </a>
+
+
+            <nav class="nav-menu">
+
+                <a href="{{ route('home') }}">
                     Home
                 </a>
 
-                <span>/</span>
+                <a href="{{ route('public.products.index') }}">
+                    Produk
+                </a>
 
-                <span class="text-gray-900">
-                    Checkout
-                </span>
-            </div>
+                <a href="{{ route('public.articles.index') }}">
+                    Artikel
+                </a>
 
-            <h1 class="text-3xl font-bold tracking-tight text-[#111827] md:text-4xl" style="font-family: 'Playfair Display', serif;">
-                Checkout
-            </h1>
+                <a href="{{ route('contact') }}">
+                    Kontak
+                </a>
 
-            <p class="mt-2 text-sm text-gray-500 md:text-base">
-                Lengkapi informasi pengiriman untuk menyelesaikan pesanan kamu.
-            </p>
+                @auth
+                    <a
+                        href="{{ route('dashboard') }}"
+                        class="dashboard-btn">
+                        Dashboard
+                    </a>
+                @endauth
+
+            </nav>
+
+        </div>
+
+    </header>
+
+
+    {{-- =====================================================
+         MAIN
+    ====================================================== --}}
+
+    <main class="container">
+
+
+        {{-- =================================================
+             BREADCRUMB
+        ================================================== --}}
+
+        <div class="breadcrumb">
+
+            <a href="{{ route('home') }}">
+                Home
+            </a>
+
+            <span>/</span>
+
+            <span>Checkout</span>
+
         </div>
 
 
-        {{-- SUCCESS MESSAGE --}}
-        @if(session('success'))
-            <div class="mb-6 rounded-2xl border border-green-200 bg-green-50 px-5 py-4 text-sm text-green-700">
-                <div class="flex items-center gap-3">
-                    <span class="flex h-8 w-8 items-center justify-center rounded-full bg-green-100">
-                        ✓
-                    </span>
+        {{-- =================================================
+             PAGE HEADER
+        ================================================== --}}
 
-                    <span>
-                        {{ session('success') }}
-                    </span>
-                </div>
+        <div class="page-header">
+
+            <h1>
+                Checkout
+            </h1>
+
+            <p>
+                Lengkapi informasi pengiriman dan pembayaran
+                untuk menyelesaikan pesanan.
+            </p>
+
+        </div>
+
+
+        {{-- =================================================
+             SUCCESS MESSAGE
+        ================================================== --}}
+
+        @if(session('success'))
+
+            <div class="alert alert-success">
+                ✓ {{ session('success') }}
             </div>
+
         @endif
 
 
-        {{-- ERROR MESSAGE --}}
+        {{-- =================================================
+             ERROR MESSAGE
+        ================================================== --}}
+
         @if(session('error'))
-            <div class="mb-6 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">
+
+            <div class="alert alert-error">
                 {{ session('error') }}
             </div>
+
         @endif
 
 
-        {{-- VALIDATION ERRORS --}}
+        {{-- =================================================
+             VALIDATION ERRORS
+        ================================================== --}}
+
         @if($errors->any())
-            <div class="mb-6 rounded-2xl border border-red-200 bg-red-50 p-5">
-                <p class="mb-2 font-medium text-red-700">
-                    Periksa kembali data berikut:
+
+            <div class="validation-errors">
+
+                <strong>
+                    Ada data yang perlu diperbaiki:
+                </strong>
+
+                <ul>
+
+                    @foreach($errors->all() as $error)
+
+                        <li>
+                            {{ $error }}
+                        </li>
+
+                    @endforeach
+
+                </ul>
+
+            </div>
+
+        @endif
+
+
+        {{-- =================================================
+             SUCCESS ORDER DETAIL
+        ================================================== --}}
+
+        @if(session('success') && session('last_order'))
+
+            @php
+                $lastOrder = session('last_order');
+            @endphp
+
+            <div class="success-card">
+
+                <div class="success-icon">
+                    ✓
+                </div>
+
+                <h2>
+                    Pesanan Berhasil!
+                </h2>
+
+                <p>
+                    Terima kasih, pesanan kamu sudah berhasil dibuat.
                 </p>
 
-                <ul class="list-inside list-disc space-y-1 text-sm text-red-600">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+                <div class="order-number">
+
+                    Nomor Pesanan:
+                    {{ $lastOrder['order_number'] ?? '-' }}
+
+                </div>
+
             </div>
+
         @endif
 
 
-        {{-- PESANAN BERHASIL --}}
-        @if($lastOrder)
+        {{-- =================================================
+             EMPTY CART
+        ================================================== --}}
 
-            <div class="mx-auto max-w-3xl">
+        @if(empty($cart))
 
-                <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+            <div class="empty-cart">
 
-                    {{-- Success Header --}}
-                    <div class="border-b border-gray-100 px-6 py-8 text-center md:px-10">
+                <div class="empty-cart-icon">
+                    🛒
+                </div>
 
-                        <div class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-2xl text-green-600">
-                            ✓
+                <h2>
+                    Keranjang Masih Kosong
+                </h2>
+
+                <p>
+                    Silakan pilih jersey terlebih dahulu
+                    sebelum melakukan checkout.
+                </p>
+
+                <a
+                    href="{{ route('public.products.index') }}"
+                    class="shop-button">
+
+                    Lihat Produk
+
+                </a>
+
+            </div>
+
+
+        @else
+
+
+            {{-- =================================================
+                 CHECKOUT GRID
+            ================================================== --}}
+
+            <div class="checkout-grid">
+
+
+                {{-- =============================================
+                     LEFT SIDE
+                ============================================== --}}
+
+                <div>
+
+
+                    {{-- =========================================
+                         INFORMASI PENGIRIMAN
+                    ========================================== --}}
+
+                    <div class="card">
+
+                        <div class="section-title">
+
+                            <div class="step-number">
+                                01
+                            </div>
+
+                            <h2>
+                                Informasi Pengiriman
+                            </h2>
+
                         </div>
 
-                        <h2 class="text-2xl font-bold text-[#111827]" style="font-family: 'Playfair Display', serif;">
-                            Pesanan Berhasil Dibuat
+                        <p class="section-description">
+                            Masukkan data penerima pesanan.
+                        </p>
+
+
+                        <form
+                            action="{{ route('checkout.store') }}"
+                            method="POST"
+                            id="checkoutForm">
+
+                            @csrf
+
+
+                            <div class="form-grid">
+
+
+                                {{-- Nama --}}
+
+                                <div class="form-group">
+
+                                    <label for="name">
+
+                                        Nama Lengkap
+                                        <span class="required">*</span>
+
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="name"
+                                        name="name"
+                                        class="form-control"
+                                        placeholder="Masukkan nama lengkap"
+                                        value="{{ old('name') }}"
+                                        maxlength="100"
+                                        required>
+
+                                </div>
+
+
+                                {{-- WhatsApp --}}
+
+                                <div class="form-group">
+
+                                    <label for="phone">
+
+                                        Nomor WhatsApp
+                                        <span class="required">*</span>
+
+                                    </label>
+
+                                    <input
+                                        type="tel"
+                                        id="phone"
+                                        name="phone"
+                                        class="form-control"
+                                        placeholder="Contoh: 081234567890"
+                                        value="{{ old('phone') }}"
+                                        maxlength="30"
+                                        required>
+
+                                </div>
+
+
+                                {{-- Alamat --}}
+
+                                <div class="form-group full">
+
+                                    <label for="address">
+
+                                        Alamat Lengkap
+                                        <span class="required">*</span>
+
+                                    </label>
+
+                                    <textarea
+                                        id="address"
+                                        name="address"
+                                        class="form-control"
+                                        placeholder="Nama jalan, nomor rumah, desa/kelurahan, kecamatan, kabupaten/kota, provinsi"
+                                        maxlength="500"
+                                        required>{{ old('address') }}</textarea>
+
+                                </div>
+
+                            </div>
+
+
+                            {{-- =================================
+                                 METODE PEMBAYARAN
+                            ================================== --}}
+
+                            <div style="margin-top: 15px;">
+
+                                <div class="section-title">
+
+                                    <div class="step-number">
+                                        02
+                                    </div>
+
+                                    <h2>
+                                        Metode Pembayaran
+                                    </h2>
+
+                                </div>
+
+                                <p class="section-description">
+                                    Pilih metode pembayaran yang kamu inginkan.
+                                </p>
+
+
+                                <div class="payment-options">
+
+
+                                    {{-- COD --}}
+
+                                    <div class="payment-option">
+
+                                        <input
+                                            type="radio"
+                                            id="cod"
+                                            name="payment_method"
+                                            value="cod"
+                                            {{ old('payment_method', 'cod') === 'cod' ? 'checked' : '' }}
+                                            required>
+
+                                        <label
+                                            for="cod"
+                                            class="payment-label">
+
+                                            <div class="payment-icon">
+                                                💵
+                                            </div>
+
+                                            <div class="payment-info">
+
+                                                <strong>
+                                                    Cash on Delivery (COD)
+                                                </strong>
+
+                                                <span>
+                                                    Bayar ketika pesanan sampai.
+                                                </span>
+
+                                            </div>
+
+                                            <div class="radio-circle"></div>
+
+                                        </label>
+
+                                    </div>
+
+
+                                    {{-- Transfer --}}
+
+                                    <div class="payment-option">
+
+                                        <input
+                                            type="radio"
+                                            id="transfer"
+                                            name="payment_method"
+                                            value="transfer"
+                                            {{ old('payment_method') === 'transfer' ? 'checked' : '' }}>
+
+                                        <label
+                                            for="transfer"
+                                            class="payment-label">
+
+                                            <div class="payment-icon">
+                                                🏦
+                                            </div>
+
+                                            <div class="payment-info">
+
+                                                <strong>
+                                                    Transfer Bank
+                                                </strong>
+
+                                                <span>
+                                                    Transfer melalui rekening bank.
+                                                </span>
+
+                                            </div>
+
+                                            <div class="radio-circle"></div>
+
+                                        </label>
+
+                                    </div>
+
+
+                                    {{-- QRIS --}}
+
+                                    <div class="payment-option">
+
+                                        <input
+                                            type="radio"
+                                            id="qris"
+                                            name="payment_method"
+                                            value="qris"
+                                            {{ old('payment_method') === 'qris' ? 'checked' : '' }}>
+
+                                        <label
+                                            for="qris"
+                                            class="payment-label">
+
+                                            <div class="payment-icon">
+                                                📱
+                                            </div>
+
+                                            <div class="payment-info">
+
+                                                <strong>
+                                                    QRIS
+                                                </strong>
+
+                                                <span>
+                                                    Bayar menggunakan QRIS.
+                                                </span>
+
+                                            </div>
+
+                                            <div class="radio-circle"></div>
+
+                                        </label>
+
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+
+                {{-- =============================================
+                     RIGHT SIDE - ORDER SUMMARY
+                ============================================== --}}
+
+                <div>
+
+
+                    <div class="card summary-card">
+
+                        <h2 class="summary-title">
+                            Ringkasan Pesanan
                         </h2>
 
-                        <p class="mt-2 text-sm text-gray-500">
-                            Terima kasih sudah berbelanja di Jersey Store.
-                        </p>
 
-                    </div>
+                        {{-- =====================================
+                             PRODUCTS
+                        ====================================== --}}
 
+                        <div class="product-list">
 
-                    {{-- Order Number --}}
-                    <div class="bg-[#FAFAF8] px-6 py-6 text-center md:px-10">
+                            @foreach($cart as $item)
 
-                        <p class="text-xs font-medium uppercase tracking-wider text-gray-500">
-                            Nomor Pesanan
-                        </p>
+                                @php
 
-                        <p class="mt-2 text-xl font-bold tracking-wide text-[#92400E]">
-                            {{ $lastOrder['order_number'] }}
-                        </p>
+                                    /*
+                                     * Menentukan URL gambar produk.
+                                     *
+                                     * Data image biasanya berupa:
+                                     * products/nama-file.jpg
+                                     *
+                                     * sehingga URL:
+                                     * /storage/products/nama-file.jpg
+                                     */
 
-                    </div>
+                                    $image = $item['image'] ?? null;
 
+                                    if ($image) {
 
-                    {{-- Customer --}}
-                    <div class="px-6 py-7 md:px-10">
+                                        $image = ltrim($image, '/');
 
-                        <h3 class="mb-5 text-lg font-bold text-[#111827]">
-                            Informasi Pengiriman
-                        </h3>
+                                        if (
+                                            str_starts_with($image, 'http://') ||
+                                            str_starts_with($image, 'https://')
+                                        ) {
 
-                        <div class="space-y-4 text-sm">
+                                            $imageUrl = $image;
 
-                            <div class="flex justify-between gap-6 border-b border-gray-100 pb-4">
-                                <span class="text-gray-500">
-                                    Nama
-                                </span>
+                                        } elseif (
+                                            str_starts_with($image, 'storage/')
+                                        ) {
 
-                                <span class="text-right font-medium text-gray-900">
-                                    {{ $lastOrder['name'] }}
-                                </span>
-                            </div>
+                                            $imageUrl = asset($image);
 
-                            <div class="flex justify-between gap-6 border-b border-gray-100 pb-4">
-                                <span class="text-gray-500">
-                                    WhatsApp
-                                </span>
+                                        } else {
 
-                                <span class="text-right font-medium text-gray-900">
-                                    {{ $lastOrder['phone'] }}
-                                </span>
-                            </div>
+                                            $imageUrl = asset('storage/' . $image);
 
-                            <div class="flex justify-between gap-6 border-b border-gray-100 pb-4">
-                                <span class="text-gray-500">
-                                    Metode Pembayaran
-                                </span>
+                                        }
 
-                                <span class="text-right font-medium text-gray-900">
-                                    {{ $lastOrder['payment_method'] }}
-                                </span>
-                            </div>
+                                    } else {
 
-                            <div>
-                                <span class="text-gray-500">
-                                    Alamat
-                                </span>
+                                        $imageUrl = null;
 
-                                <p class="mt-2 leading-6 text-gray-900">
-                                    {{ $lastOrder['address'] }}
-                                </p>
-                            </div>
+                                    }
 
-                        </div>
-
-                    </div>
+                                @endphp
 
 
-                    {{-- Order Items --}}
-                    <div class="border-t border-gray-100 px-6 py-7 md:px-10">
+                                <div class="product-item">
 
-                        <h3 class="mb-5 text-lg font-bold text-[#111827]">
-                            Detail Pesanan
-                        </h3>
 
-                        <div class="space-y-5">
+                                    {{-- FOTO PRODUK --}}
 
-                            @foreach($lastOrder['cart'] as $item)
+                                    <div class="product-image">
 
-                                <div class="flex gap-4">
-
-                                    {{-- Image --}}
-                                    <div class="h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-gray-100">
-
-                                        @if(!empty($item['image']))
+                                        @if($imageUrl)
 
                                             <img
-                                                src="{{ asset('storage/' . $item['image']) }}"
-                                                alt="{{ $item['name'] }}"
-                                                class="h-full w-full object-cover"
-                                            >
+                                                src="{{ $imageUrl }}"
+                                                alt="{{ $item['name'] ?? 'Produk' }}"
+                                                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+
+                                            <div
+                                                class="product-image-placeholder"
+                                                style="display:none;">
+                                                👕
+                                            </div>
 
                                         @else
 
-                                            <div class="flex h-full w-full items-center justify-center text-xs text-gray-400">
-                                                No Image
+                                            <div class="product-image-placeholder">
+                                                👕
                                             </div>
 
                                         @endif
@@ -198,35 +1390,42 @@
                                     </div>
 
 
-                                    {{-- Product --}}
-                                    <div class="min-w-0 flex-1">
+                                    {{-- INFO PRODUK --}}
 
-                                        <h4 class="font-medium text-gray-900">
-                                            {{ $item['name'] }}
-                                        </h4>
+                                    <div class="product-info">
 
-                                        <p class="mt-1 text-sm text-gray-500">
-                                            {{ $item['quantity'] }} ×
-                                            Rp {{ number_format($item['price'], 0, ',', '.') }}
-                                        </p>
+                                        <div class="product-name">
 
-                                    </div>
+                                            {{ $item['name'] ?? 'Produk' }}
 
+                                        </div>
 
-                                    {{-- Subtotal --}}
-                                    <div class="text-right">
+                                        <div class="product-quantity">
 
-                                        <p class="font-semibold text-gray-900">
+                                            {{ $item['quantity'] ?? 1 }}
+                                            ×
                                             Rp
-                                            {{ number_format(
-                                                $item['price'] * $item['quantity'],
-                                                0,
-                                                ',',
-                                                '.'
-                                            ) }}
-                                        </p>
+                                            {{ number_format($item['price'] ?? 0, 0, ',', '.') }}
+
+                                        </div>
 
                                     </div>
+
+
+                                    {{-- HARGA --}}
+
+                                    <div class="product-price">
+
+                                        Rp
+                                        {{ number_format(
+                                            ($item['price'] ?? 0) * ($item['quantity'] ?? 1),
+                                            0,
+                                            ',',
+                                            '.'
+                                        ) }}
+
+                                    </div>
+
 
                                 </div>
 
@@ -235,449 +1434,128 @@
                         </div>
 
 
-                        {{-- Total --}}
-                        <div class="mt-7 border-t border-gray-200 pt-5">
+                        <hr class="divider">
 
-                            <div class="flex items-center justify-between">
 
-                                <span class="text-base font-medium text-gray-600">
-                                    Total Pembayaran
-                                </span>
+                        {{-- =====================================
+                             SUBTOTAL
+                        ====================================== --}}
 
-                                <span class="text-2xl font-bold text-[#111827]">
-                                    Rp {{ number_format($lastOrder['total'], 0, ',', '.') }}
-                                </span>
+                        <div class="price-row">
+
+                            <span>
+                                Subtotal
+                            </span>
+
+                            <strong>
+
+                                Rp
+                                {{ number_format($total, 0, ',', '.') }}
+
+                            </strong>
+
+                        </div>
+
+
+                        {{-- =====================================
+                             SHIPPING
+                        ====================================== --}}
+
+                        <div class="price-row">
+
+                            <span>
+                                Pengiriman
+                            </span>
+
+                            <strong class="shipping-free">
+                                Gratis
+                            </strong>
+
+                        </div>
+
+
+                        {{-- =====================================
+                             TOTAL
+                        ====================================== --}}
+
+                        <div class="total-row">
+
+                            <div class="total-label">
+                                Total
+                            </div>
+
+                            <div class="total-price">
+
+                                Rp
+                                {{ number_format($total, 0, ',', '.') }}
 
                             </div>
 
                         </div>
 
-                    </div>
+
+                        {{-- =====================================
+                             SUBMIT
+                        ====================================== --}}
+
+                        <button
+                            type="submit"
+                            form="checkoutForm"
+                            class="submit-button">
+
+                            🛍️ Buat Pesanan
+
+                        </button>
 
 
-                    {{-- Actions --}}
-                    <div class="flex flex-col gap-3 border-t border-gray-100 bg-[#FAFAF8] px-6 py-6 sm:flex-row md:px-10">
+                        {{-- BACK CART --}}
 
                         <a
-                            href="{{ route('public.products.index') }}"
-                            class="flex-1 rounded-full bg-[#111827] px-6 py-3.5 text-center text-sm font-semibold text-white transition hover:bg-[#F4B400] hover:text-[#111827]"
-                        >
-                            Lanjut Belanja
+                            href="{{ route('cart.index') }}"
+                            class="back-cart">
+
+                            ← Kembali ke Keranjang
+
                         </a>
 
-                        <a
-                            href="{{ route('home') }}"
-                            class="flex-1 rounded-full border border-gray-300 bg-white px-6 py-3.5 text-center text-sm font-semibold text-gray-900 transition hover:border-[#F4B400] hover:text-[#92400E]"
-                        >
-                            Kembali ke Home
-                        </a>
+
+                        {{-- SECURITY INFO --}}
+
+                        <div class="secure-info">
+
+                            🔒 Data pesanan kamu akan diproses
+                            dengan aman.
+
+                        </div>
 
                     </div>
 
                 </div>
+
 
             </div>
 
 
-        {{-- CHECKOUT FORM --}}
-        @else
-
-            <form
-                action="{{ route('checkout.store') }}"
-                method="POST"
-            >
-
-                @csrf
-
-
-                <div class="grid gap-8 lg:grid-cols-3">
-
-                    {{-- LEFT --}}
-                    <div class="space-y-6 lg:col-span-2">
-
-                        {{-- Customer Information --}}
-                        <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm md:p-8">
-
-                            <div class="mb-7">
-
-                                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#92400E]">
-                                    01
-                                </p>
-
-                                <h2 class="mt-2 text-xl font-bold text-[#111827]">
-                                    Informasi Pengiriman
-                                </h2>
-
-                                <p class="mt-1 text-sm text-gray-500">
-                                    Masukkan data penerima pesanan.
-                                </p>
-
-                            </div>
-
-
-                            <div class="grid gap-5 md:grid-cols-2">
-
-                                {{-- Name --}}
-                                <div class="md:col-span-2">
-
-                                    <label
-                                        for="name"
-                                        class="mb-2 block text-sm font-medium text-gray-800"
-                                    >
-                                        Nama Lengkap
-                                    </label>
-
-                                    <input
-                                        type="text"
-                                        id="name"
-                                        name="name"
-                                        value="{{ old('name') }}"
-                                        required
-                                        placeholder="Masukkan nama lengkap"
-                                        class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#F4B400] focus:ring-2 focus:ring-[#F4B400]/20"
-                                    >
-
-                                </div>
-
-
-                                {{-- Phone --}}
-                                <div class="md:col-span-2">
-
-                                    <label
-                                        for="phone"
-                                        class="mb-2 block text-sm font-medium text-gray-800"
-                                    >
-                                        Nomor WhatsApp
-                                    </label>
-
-                                    <input
-                                        type="tel"
-                                        id="phone"
-                                        name="phone"
-                                        value="{{ old('phone') }}"
-                                        required
-                                        placeholder="Contoh: 081234567890"
-                                        class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#F4B400] focus:ring-2 focus:ring-[#F4B400]/20"
-                                    >
-
-                                </div>
-
-
-                                {{-- Address --}}
-                                <div class="md:col-span-2">
-
-                                    <label
-                                        for="address"
-                                        class="mb-2 block text-sm font-medium text-gray-800"
-                                    >
-                                        Alamat Lengkap
-                                    </label>
-
-                                    <textarea
-                                        id="address"
-                                        name="address"
-                                        rows="5"
-                                        required
-                                        placeholder="Nama jalan, nomor rumah, desa/kelurahan, kecamatan, kabupaten/kota, provinsi"
-                                        class="w-full resize-none rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#F4B400] focus:ring-2 focus:ring-[#F4B400]/20"
-                                    >{{ old('address') }}</textarea>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-                        {{-- Payment --}}
-                        <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm md:p-8">
-
-                            <div class="mb-7">
-
-                                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#92400E]">
-                                    02
-                                </p>
-
-                                <h2 class="mt-2 text-xl font-bold text-[#111827]">
-                                    Metode Pembayaran
-                                </h2>
-
-                                <p class="mt-1 text-sm text-gray-500">
-                                    Pilih metode pembayaran yang tersedia.
-                                </p>
-
-                            </div>
-
-
-                            <div class="space-y-3">
-
-                                {{-- Transfer Bank --}}
-                                <label class="group flex cursor-pointer items-center gap-4 rounded-xl border border-gray-200 p-4 transition hover:border-[#F4B400]">
-
-                                    <input
-                                        type="radio"
-                                        name="payment_method"
-                                        value="Transfer Bank"
-                                        {{ old('payment_method') === 'Transfer Bank' ? 'checked' : '' }}
-                                        required
-                                        class="h-4 w-4 accent-[#F4B400]"
-                                    >
-
-                                    <div class="flex-1">
-
-                                        <p class="font-medium text-gray-900">
-                                            Transfer Bank
-                                        </p>
-
-                                        <p class="mt-1 text-xs text-gray-500">
-                                            Pembayaran melalui transfer bank.
-                                        </p>
-
-                                    </div>
-
-                                </label>
-
-
-                                {{-- QRIS --}}
-                                <label class="group flex cursor-pointer items-center gap-4 rounded-xl border border-gray-200 p-4 transition hover:border-[#F4B400]">
-
-                                    <input
-                                        type="radio"
-                                        name="payment_method"
-                                        value="QRIS"
-                                        {{ old('payment_method') === 'QRIS' ? 'checked' : '' }}
-                                        class="h-4 w-4 accent-[#F4B400]"
-                                    >
-
-                                    <div class="flex-1">
-
-                                        <p class="font-medium text-gray-900">
-                                            QRIS
-                                        </p>
-
-                                        <p class="mt-1 text-xs text-gray-500">
-                                            Bayar menggunakan QRIS.
-                                        </p>
-
-                                    </div>
-
-                                </label>
-
-
-                                {{-- COD --}}
-                                <label class="group flex cursor-pointer items-center gap-4 rounded-xl border border-gray-200 p-4 transition hover:border-[#F4B400]">
-
-                                    <input
-                                        type="radio"
-                                        name="payment_method"
-                                        value="COD"
-                                        {{ old('payment_method') === 'COD' ? 'checked' : '' }}
-                                        class="h-4 w-4 accent-[#F4B400]"
-                                    >
-
-                                    <div class="flex-1">
-
-                                        <p class="font-medium text-gray-900">
-                                            COD
-                                        </p>
-
-                                        <p class="mt-1 text-xs text-gray-500">
-                                            Bayar saat pesanan diterima.
-                                        </p>
-
-                                    </div>
-
-                                </label>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    {{-- RIGHT --}}
-                    <div class="lg:col-span-1">
-
-                        <div class="sticky top-24 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm md:p-7">
-
-                            <div class="mb-6">
-
-                                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#92400E]">
-                                    03
-                                </p>
-
-                                <h2 class="mt-2 text-xl font-bold text-[#111827]">
-                                    Ringkasan Pesanan
-                                </h2>
-
-                            </div>
-
-
-                            {{-- Products --}}
-                            <div class="max-h-[420px] space-y-5 overflow-y-auto pr-1">
-
-                                @foreach($cart as $item)
-
-                                    <div class="flex gap-3">
-
-                                        <div class="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-gray-100">
-
-                                            @if(!empty($item['image']))
-
-                                                <img
-                                                    src="{{ asset('storage/' . $item['image']) }}"
-                                                    alt="{{ $item['name'] }}"
-                                                    class="h-full w-full object-cover"
-                                                >
-
-                                            @else
-
-                                                <div class="flex h-full w-full items-center justify-center text-[10px] text-gray-400">
-                                                    No Image
-                                                </div>
-
-                                            @endif
-
-                                            <span class="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#111827] px-1 text-[10px] font-semibold text-white">
-                                                {{ $item['quantity'] }}
-                                            </span>
-
-                                        </div>
-
-
-                                        <div class="min-w-0 flex-1">
-
-                                            <p class="line-clamp-2 text-sm font-medium text-gray-900">
-                                                {{ $item['name'] }}
-                                            </p>
-
-                                            <p class="mt-1 text-xs text-gray-500">
-                                                Rp {{ number_format($item['price'], 0, ',', '.') }}
-                                            </p>
-
-                                        </div>
-
-
-                                        <p class="text-sm font-semibold text-gray-900">
-                                            Rp
-                                            {{ number_format(
-                                                $item['price'] * $item['quantity'],
-                                                0,
-                                                ',',
-                                                '.'
-                                            ) }}
-                                        </p>
-
-                                    </div>
-
-                                @endforeach
-
-                            </div>
-
-
-                            {{-- Summary --}}
-                            <div class="mt-7 space-y-4 border-t border-gray-200 pt-6">
-
-                                <div class="flex justify-between text-sm">
-
-                                    <span class="text-gray-500">
-                                        Subtotal
-                                    </span>
-
-                                    <span class="font-medium text-gray-900">
-                                        Rp {{ number_format($total, 0, ',', '.') }}
-                                    </span>
-
-                                </div>
-
-
-                                <div class="flex justify-between text-sm">
-
-                                    <span class="text-gray-500">
-                                        Pengiriman
-                                    </span>
-
-                                    <span class="font-medium text-green-600">
-                                        Gratis
-                                    </span>
-
-                                </div>
-
-
-                                <div class="flex items-end justify-between border-t border-gray-200 pt-5">
-
-                                    <div>
-
-                                        <p class="text-sm text-gray-500">
-                                            Total
-                                        </p>
-
-                                        <p class="mt-1 text-2xl font-bold text-[#111827]">
-                                            Rp {{ number_format($total, 0, ',', '.') }}
-                                        </p>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-
-                            {{-- Submit --}}
-                            <button
-                                type="submit"
-                                class="mt-7 w-full rounded-full bg-[#111827] px-6 py-4 text-sm font-semibold text-white transition hover:bg-[#F4B400] hover:text-[#111827] focus:outline-none focus:ring-2 focus:ring-[#F4B400] focus:ring-offset-2"
-                            >
-                                Konfirmasi Pesanan
-                            </button>
-
-
-                            {{-- Back --}}
-                            <a
-                                href="{{ route('cart.index') }}"
-                                class="mt-3 block w-full rounded-full border border-gray-300 bg-white px-6 py-3.5 text-center text-sm font-semibold text-gray-800 transition hover:border-[#F4B400] hover:text-[#92400E]"
-                            >
-                                Kembali ke Keranjang
-                            </a>
-
-
-                            {{-- Trust --}}
-                            <div class="mt-6 border-t border-gray-100 pt-5">
-
-                                <div class="space-y-3 text-xs text-gray-500">
-
-                                    <div class="flex items-center gap-3">
-                                        <span class="text-base">🔒</span>
-                                        <span>Data kamu diproses dengan aman.</span>
-                                    </div>
-
-                                    <div class="flex items-center gap-3">
-                                        <span class="text-base">🚚</span>
-                                        <span>Pengiriman aman dan terpercaya.</span>
-                                    </div>
-
-                                    <div class="flex items-center gap-3">
-                                        <span class="text-base">💬</span>
-                                        <span>Customer service siap membantu.</span>
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </form>
-
         @endif
 
-    </div>
 
-</div>
+    </main>
 
-@endsection
+
+    {{-- =====================================================
+         FOOTER
+    ====================================================== --}}
+
+    <footer class="footer">
+
+        Jersey Store
+        <span>
+            © {{ date('Y') }}. All rights reserved.
+        </span>
+
+    </footer>
+
+
+</body>
+
+</html>

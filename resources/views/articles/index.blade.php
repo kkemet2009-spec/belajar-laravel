@@ -1,760 +1,601 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+@extends('layouts.admin')
 
-    <title>Kelola Artikel - Jersey Store</title>
+@section('title', 'Kelola Artikel')
+@section('page-title', 'Kelola Artikel')
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+@section('content')
 
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: #f4f6f9;
-            color: #222;
-        }
+<style>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        gap: 20px;
+    }
 
-        /* ================= SIDEBAR ================= */
+    .page-header h1 {
+        font-size: 28px;
+        color: #111827;
+        margin-bottom: 6px;
+    }
 
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 260px;
-            height: 100vh;
-            background: #111;
-            color: white;
-            padding: 28px 18px;
-            z-index: 1000;
-        }
+    .page-header p {
+        color: #6b7280;
+        margin: 0;
+    }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 0 10px 30px;
-            border-bottom: 1px solid #2d2d2d;
-        }
+    .btn-add {
+        background: #2563eb;
+        color: white;
+        text-decoration: none;
+        padding: 12px 18px;
+        border-radius: 10px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: .2s;
+        white-space: nowrap;
+    }
 
-        .logo-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #2563eb, #7c3aed);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 21px;
-        }
+    .btn-add:hover {
+        background: #1d4ed8;
+        transform: translateY(-2px);
+    }
 
-        .logo h2 {
-            font-size: 20px;
-            white-space: nowrap;
-        }
+    /* ALERT */
 
-        .menu-title {
-            color: #999;
-            font-size: 12px;
-            margin: 25px 10px 12px;
-            text-transform: uppercase;
-            letter-spacing: .5px;
-        }
+    .alert-success {
+        background: #dcfce7;
+        color: #166534;
+        border: 1px solid #bbf7d0;
+        padding: 14px 18px;
+        border-radius: 10px;
+        margin-bottom: 22px;
+    }
 
-        .menu {
-            display: flex;
-            flex-direction: column;
-            gap: 7px;
-        }
+    .alert-error {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+        padding: 14px 18px;
+        border-radius: 10px;
+        margin-bottom: 22px;
+    }
 
-        .menu a {
-            display: flex;
-            align-items: center;
-            gap: 13px;
-            padding: 14px 16px;
-            border-radius: 10px;
-            color: #ddd;
-            text-decoration: none;
-            font-size: 15px;
-            transition: .2s;
-        }
+    /* TABLE CARD */
 
-        .menu a:hover {
-            background: #1f1f1f;
-            color: white;
-        }
+    .article-card {
+        background: white;
+        border-radius: 16px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 5px 20px rgba(0,0,0,.05);
+        overflow: hidden;
+    }
 
-        .menu a.active {
-            background: #2563eb;
-            color: white;
-        }
+    .card-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
-        .menu-icon {
-            width: 23px;
-            text-align: center;
-            font-size: 18px;
-        }
+    .card-header h2 {
+        margin: 0;
+        font-size: 19px;
+        color: #111827;
+    }
 
-        .admin-box {
-            position: absolute;
-            left: 18px;
-            right: 18px;
-            bottom: 75px;
-            background: #1d1d1d;
-            border: 1px solid #303030;
-            border-radius: 11px;
-            padding: 14px;
-        }
+    .article-count {
+        color: #6b7280;
+        font-size: 14px;
+    }
 
-        .admin-box small {
-            color: #999;
-        }
+    .table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
 
-        .admin-box strong {
-            display: block;
-            margin-top: 5px;
-            font-size: 14px;
-        }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 900px;
+    }
 
-        .logout {
-            position: absolute;
-            left: 18px;
-            right: 18px;
-            bottom: 18px;
-        }
+    thead {
+        background: #f9fafb;
+    }
 
-        .logout button {
-            width: 100%;
-            border: none;
-            background: #ef2b2d;
-            color: white;
-            padding: 13px;
-            border-radius: 9px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 14px;
-        }
+    th {
+        text-align: left;
+        padding: 15px 18px;
+        font-size: 13px;
+        color: #4b5563;
+        text-transform: uppercase;
+        border-bottom: 1px solid #e5e7eb;
+        white-space: nowrap;
+    }
 
-        .logout button:hover {
-            background: #d91f21;
-        }
+    td {
+        padding: 18px;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+    }
 
-        /* ================= MAIN ================= */
+    tbody tr {
+        transition: .15s;
+    }
 
-        .main {
-            margin-left: 260px;
-            min-height: 100vh;
-        }
+    tbody tr:hover {
+        background: #f9fafb;
+    }
 
-        .topbar {
-            height: 76px;
-            background: white;
-            border-bottom: 1px solid #e5e7eb;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 34px;
-        }
+    tbody tr:last-child td {
+        border-bottom: none;
+    }
 
-        .topbar h1 {
-            font-size: 21px;
-        }
+    /* ARTICLE */
 
-        .online {
-            background: #e9fbf2;
-            color: #15945d;
-            padding: 9px 15px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: bold;
-        }
+    .article-info {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-width: 300px;
+    }
 
-        .content {
-            padding: 38px 34px 60px;
-        }
+    .article-image {
+        width: 62px;
+        height: 62px;
+        border-radius: 10px;
+        object-fit: cover;
+        background: #f3f4f6;
+        border: 1px solid #e5e7eb;
+        flex-shrink: 0;
+    }
 
-        /* ================= HEADER ================= */
+    .article-no-image {
+        width: 62px;
+        height: 62px;
+        border-radius: 10px;
+        background: #f3f4f6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 25px;
+        flex-shrink: 0;
+    }
+
+    .article-title {
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 5px;
+    }
+
+    .article-slug {
+        font-size: 12px;
+        color: #9ca3af;
+    }
+
+    .article-excerpt {
+        max-width: 300px;
+        color: #6b7280;
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    /* CATEGORY */
+
+    .category-badge {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        background: #eff6ff;
+        color: #2563eb;
+        white-space: nowrap;
+    }
+
+    /* ACTION */
+
+    .actions {
+        display: flex;
+        gap: 7px;
+        flex-wrap: wrap;
+    }
+
+    .btn-action {
+        border: none;
+        text-decoration: none;
+        padding: 8px 11px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: .15s;
+    }
+
+    .btn-detail {
+        background: #eff6ff;
+        color: #2563eb;
+    }
+
+    .btn-detail:hover {
+        background: #dbeafe;
+    }
+
+    .btn-edit {
+        background: #fef3c7;
+        color: #b45309;
+    }
+
+    .btn-edit:hover {
+        background: #fde68a;
+    }
+
+    .btn-delete {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    .btn-delete:hover {
+        background: #fecaca;
+    }
+
+    /* EMPTY */
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+    }
+
+    .empty-icon {
+        font-size: 55px;
+        margin-bottom: 15px;
+    }
+
+    .empty-state h3 {
+        margin-bottom: 8px;
+        color: #111827;
+    }
+
+    .empty-state p {
+        color: #6b7280;
+        margin-bottom: 20px;
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 700px) {
 
         .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .page-header h2 {
-            font-size: 28px;
-            margin-bottom: 7px;
-        }
-
-        .page-header p {
-            color: #777;
-            font-size: 15px;
+            align-items: flex-start;
+            flex-direction: column;
         }
 
         .btn-add {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #111;
-            color: white;
-            text-decoration: none;
-            padding: 13px 19px;
-            border-radius: 9px;
-            font-weight: bold;
-            transition: .2s;
-        }
-
-        .btn-add:hover {
-            background: #2563eb;
-        }
-
-        /* ================= ALERT ================= */
-
-        .alert {
-            padding: 14px 18px;
-            border-radius: 10px;
-            margin-bottom: 22px;
-            font-size: 14px;
-        }
-
-        .alert-success {
-            background: #dcfce7;
-            color: #15803d;
-            border: 1px solid #bbf7d0;
-        }
-
-        .alert-error {
-            background: #fee2e2;
-            color: #b91c1c;
-            border: 1px solid #fecaca;
-        }
-
-        /* ================= CARD ================= */
-
-        .card {
-            background: white;
-            border-radius: 14px;
-            box-shadow: 0 5px 20px rgba(0,0,0,.05);
-            overflow: hidden;
+            width: 100%;
+            justify-content: center;
         }
 
         .card-header {
-            padding: 21px 24px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 16px;
         }
 
-        .card-header h3 {
-            font-size: 18px;
+        .article-card {
+            border-radius: 12px;
         }
+    }
+</style>
 
-        .total {
-            color: #777;
-            font-size: 14px;
-        }
 
-        /* ================= TABLE ================= */
+{{-- ============================
+     HEADER
+============================= --}}
 
-        .table-wrapper {
-            overflow-x: auto;
-        }
+<div class="page-header">
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+    <div>
 
-        th {
-            background: #111;
-            color: white;
-            text-align: left;
-            padding: 16px 18px;
-            font-size: 13px;
-            white-space: nowrap;
-        }
+        <h1>
+            Kelola Artikel
+        </h1>
 
-        td {
-            padding: 19px 18px;
-            border-bottom: 1px solid #eee;
-            vertical-align: middle;
-            font-size: 14px;
-        }
+        <p>
+            Kelola semua artikel dan berita Jersey Store.
+        </p>
 
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        tr:hover td {
-            background: #fafafa;
-        }
-
-        .number {
-            width: 55px;
-            font-weight: bold;
-            color: #666;
-        }
-
-        .title {
-            font-weight: bold;
-            color: #222;
-            margin-bottom: 6px;
-        }
-
-        .slug {
-            color: #999;
-            font-size: 12px;
-        }
-
-        .description {
-            color: #666;
-            max-width: 350px;
-            line-height: 1.5;
-        }
-
-        .date {
-            color: #555;
-            white-space: nowrap;
-        }
-
-        /* ================= BUTTON ================= */
-
-        .actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 7px;
-            min-width: 190px;
-        }
-
-        .btn {
-            border: none;
-            text-decoration: none;
-            padding: 10px 13px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: bold;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .btn-detail {
-            background: #e8f0ff;
-            color: #2563eb;
-        }
-
-        .btn-edit {
-            background: #fff1c7;
-            color: #b77900;
-        }
-
-        .btn-delete {
-            background: #fee2e2;
-            color: #dc2626;
-        }
-
-        .btn:hover {
-            opacity: .8;
-        }
-
-        .delete-form {
-            display: inline;
-        }
-
-        /* ================= EMPTY ================= */
-
-        .empty {
-            text-align: center;
-            padding: 60px 20px;
-            color: #777;
-        }
-
-        .empty-icon {
-            font-size: 45px;
-            margin-bottom: 15px;
-        }
-
-        .empty h3 {
-            color: #333;
-            margin-bottom: 7px;
-        }
-
-        /* ================= RESPONSIVE ================= */
-
-        @media (max-width: 900px) {
-
-            .sidebar {
-                width: 220px;
-            }
-
-            .main {
-                margin-left: 220px;
-            }
-
-            .page-header {
-                align-items: flex-start;
-                gap: 20px;
-            }
-
-            .actions {
-                min-width: 130px;
-            }
-
-        }
-
-        @media (max-width: 700px) {
-
-            .sidebar {
-                width: 70px;
-                padding: 20px 10px;
-            }
-
-            .logo {
-                justify-content: center;
-                padding-left: 0;
-                padding-right: 0;
-            }
-
-            .logo h2,
-            .menu-title,
-            .menu span,
-            .admin-box,
-            .logout button {
-                display: none;
-            }
-
-            .menu a {
-                justify-content: center;
-                padding: 14px 8px;
-            }
-
-            .main {
-                margin-left: 70px;
-            }
-
-            .topbar {
-                padding: 0 18px;
-            }
-
-            .content {
-                padding: 25px 15px;
-            }
-
-            .page-header {
-                flex-direction: column;
-            }
-
-            .btn-add {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-<!-- ================= SIDEBAR ================= -->
-
-<aside class="sidebar">
-
-    <div class="logo">
-        <div class="logo-icon">⚽</div>
-        <h2>Jersey Store</h2>
     </div>
 
-    <div class="menu-title">
-        Menu Admin
+
+    <a
+        href="{{ route('articles.create') }}"
+        class="btn-add"
+    >
+        ➕ Tambah Artikel
+    </a>
+
+</div>
+
+
+{{-- ============================
+     SUCCESS MESSAGE
+============================= --}}
+
+@if(session('success'))
+
+    <div class="alert-success">
+        ✅ {{ session('success') }}
     </div>
 
-    <nav class="menu">
+@endif
 
-        <a href="{{ url('/dashboard') }}">
-            <span class="menu-icon">📊</span>
-            <span>Dashboard</span>
-        </a>
 
-        <a href="{{ route('products.index') }}">
-            <span class="menu-icon">⚽</span>
-            <span>Kelola Produk</span>
-        </a>
+{{-- ============================
+     ERROR MESSAGE
+============================= --}}
 
-        <a href="{{ route('articles.index') }}" class="active">
-            <span class="menu-icon">📰</span>
-            <span>Kelola Artikel</span>
-        </a>
+@if(session('error'))
 
-        <a href="{{ url('/produk') }}">
-            <span class="menu-icon">🌐</span>
-            <span>Lihat Website</span>
-        </a>
-
-        <a href="{{ url('/artikel') }}">
-            <span class="menu-icon">📚</span>
-            <span>Artikel Publik</span>
-        </a>
-
-    </nav>
-
-    <div class="admin-box">
-        <small>Login sebagai</small>
-        <strong>Administrator</strong>
+    <div class="alert-error">
+        ❌ {{ session('error') }}
     </div>
 
-    <div class="logout">
-        <form action="{{ route('logout') }}" method="POST">
-            @csrf
-
-            <button type="submit">
-                🚪 Logout
-            </button>
-        </form>
-    </div>
-
-</aside>
+@endif
 
 
-<!-- ================= MAIN ================= -->
+{{-- ============================
+     ARTICLE TABLE
+============================= --}}
 
-<main class="main">
+<div class="article-card">
 
-    <!-- TOPBAR -->
+    <div class="card-header">
 
-    <header class="topbar">
+        <h2>
+            📰 Daftar Artikel
+        </h2>
 
-        <h1>Kelola Artikel</h1>
-
-        <div class="online">
-            ● Sistem Online
+        <div class="article-count">
+            {{ $articles->count() }} artikel
         </div>
 
-    </header>
+    </div>
 
 
-    <!-- CONTENT -->
+    @if($articles->count() > 0)
 
-    <section class="content">
+        <div class="table-wrapper">
 
-        <!-- PAGE HEADER -->
+            <table>
 
-        <div class="page-header">
+                <thead>
 
-            <div>
-                <h2>Artikel Jersey Store</h2>
+                    <tr>
 
-                <p>
-                    Kelola artikel dan berita seputar dunia jersey.
-                </p>
+                        <th style="width: 60px;">
+                            No
+                        </th>
+
+                        <th>
+                            Artikel
+                        </th>
+
+                        <th>
+                            Kategori
+                        </th>
+
+                        <th>
+                            Tanggal
+                        </th>
+
+                        <th>
+                            Aksi
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    @foreach($articles as $article)
+
+                        <tr>
+
+                            {{-- NO --}}
+
+                            <td>
+                                {{ $loop->iteration }}
+                            </td>
+
+
+                            {{-- ARTIKEL --}}
+
+                            <td>
+
+                                <div class="article-info">
+
+
+                                    {{-- GAMBAR --}}
+
+                                    @if($article->image)
+
+                                        <img
+                                            src="{{ asset('storage/' . $article->image) }}"
+                                            alt="{{ $article->title }}"
+                                            class="article-image"
+                                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                                        >
+
+                                        <div
+                                            class="article-no-image"
+                                            style="display:none;"
+                                        >
+                                            📰
+                                        </div>
+
+                                    @else
+
+                                        <div class="article-no-image">
+                                            📰
+                                        </div>
+
+                                    @endif
+
+
+                                    {{-- INFO ARTIKEL --}}
+
+                                    <div>
+
+                                        <div class="article-title">
+                                            {{ $article->title }}
+                                        </div>
+
+                                        <div class="article-slug">
+                                            {{ $article->slug }}
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+                            {{-- KATEGORI --}}
+
+                            <td>
+
+                                @if(!empty($article->category))
+
+                                    <span class="category-badge">
+                                        {{ $article->category }}
+                                    </span>
+
+                                @else
+
+                                    <span class="category-badge">
+                                        Artikel
+                                    </span>
+
+                                @endif
+
+                            </td>
+
+
+                            {{-- TANGGAL --}}
+
+                            <td>
+
+                                {{ $article->created_at
+                                    ? $article->created_at->format('d/m/Y')
+                                    : '-' }}
+
+                            </td>
+
+
+                            {{-- AKSI --}}
+
+                            <td>
+
+                                <div class="actions">
+
+
+                                    {{-- DETAIL --}}
+
+                                    <a
+                                        href="{{ route('articles.show', $article->id) }}"
+                                        class="btn-action btn-detail"
+                                    >
+                                        👁 Detail
+                                    </a>
+
+
+                                    {{-- EDIT --}}
+
+                                    <a
+                                        href="{{ route('articles.edit', $article->id) }}"
+                                        class="btn-action btn-edit"
+                                    >
+                                        ✏️ Edit
+                                    </a>
+
+
+                                    {{-- HAPUS --}}
+
+                                    <form
+                                        action="{{ route('articles.destroy', $article->id) }}"
+                                        method="POST"
+                                        onsubmit="return confirm('Apakah kamu yakin ingin menghapus artikel {{ addslashes($article->title) }}?');"
+                                        style="display:inline;"
+                                    >
+
+                                        @csrf
+
+                                        @method('DELETE')
+
+                                        <button
+                                            type="submit"
+                                            class="btn-action btn-delete"
+                                        >
+                                            🗑 Hapus
+                                        </button>
+
+                                    </form>
+
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    @endforeach
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    @else
+
+
+        {{-- TIDAK ADA ARTIKEL --}}
+
+        <div class="empty-state">
+
+            <div class="empty-icon">
+                📰
             </div>
+
+            <h3>
+                Belum Ada Artikel
+            </h3>
+
+            <p>
+                Kamu belum menambahkan artikel.
+            </p>
 
             <a
                 href="{{ route('articles.create') }}"
                 class="btn-add"
+                style="display:inline-flex;"
             >
-                ＋ Tambah Artikel
+                ➕ Tambah Artikel
             </a>
 
         </div>
 
+    @endif
 
-        <!-- SUCCESS -->
+</div>
 
-        @if(session('success'))
-
-            <div class="alert alert-success">
-                ✅ {{ session('success') }}
-            </div>
-
-        @endif
-
-
-        <!-- ERROR -->
-
-        @if(session('error'))
-
-            <div class="alert alert-error">
-                ❌ {{ session('error') }}
-            </div>
-
-        @endif
-
-
-        <!-- ARTICLE CARD -->
-
-        <div class="card">
-
-            <div class="card-header">
-
-                <h3>📰 Daftar Artikel</h3>
-
-                <div class="total">
-                    {{ $articles->count() }} artikel
-                </div>
-
-            </div>
-
-
-            @if($articles->count() > 0)
-
-                <div class="table-wrapper">
-
-                    <table>
-
-                        <thead>
-
-                            <tr>
-                                <th>No</th>
-                                <th>Judul Artikel</th>
-                                <th>Deskripsi</th>
-                                <th>Tanggal</th>
-                                <th>Aksi</th>
-                            </tr>
-
-                        </thead>
-
-                        <tbody>
-
-                            @foreach($articles as $article)
-
-                                <tr>
-
-                                    <td class="number">
-                                        {{ $loop->iteration }}
-                                    </td>
-
-
-                                    <td>
-
-                                        <div class="title">
-                                            {{ $article->title }}
-                                        </div>
-
-                                        <div class="slug">
-                                            /{{ $article->slug }}
-                                        </div>
-
-                                    </td>
-
-
-                                    <td>
-
-                                        <div class="description">
-
-                                            {{ \Illuminate\Support\Str::limit($article->description ?? $article->content ?? '-', 100) }}
-
-                                        </div>
-
-                                    </td>
-
-
-                                    <td class="date">
-
-                                        {{ $article->created_at
-                                            ? $article->created_at->format('d M Y')
-                                            : '-' }}
-
-                                    </td>
-
-
-                                    <td>
-
-                                        <div class="actions">
-
-                                            <!-- DETAIL -->
-
-                                            <a
-                                                href="{{ route('articles.show', $article->id) }}"
-                                                class="btn btn-detail"
-                                            >
-                                                👁 Detail
-                                            </a>
-
-
-                                            <!-- EDIT -->
-
-                                            <a
-                                                href="{{ route('articles.edit', $article->id) }}"
-                                                class="btn btn-edit"
-                                            >
-                                                ✏️ Edit
-                                            </a>
-
-
-                                            <!-- HAPUS -->
-
-                                            <form
-                                                action="{{ route('articles.destroy', $article->id) }}"
-                                                method="POST"
-                                                class="delete-form"
-                                                onsubmit="return confirm('Apakah Anda yakin ingin menghapus artikel ini?');"
-                                            >
-
-                                                @csrf
-                                                @method('DELETE')
-
-                                                <button
-                                                    type="submit"
-                                                    class="btn btn-delete"
-                                                >
-                                                    🗑 Hapus
-                                                </button>
-
-                                            </form>
-
-                                        </div>
-
-                                    </td>
-
-                                </tr>
-
-                            @endforeach
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-            @else
-
-                <div class="empty">
-
-                    <div class="empty-icon">
-                        📰
-                    </div>
-
-                    <h3>Belum ada artikel</h3>
-
-                    <p>
-                        Silakan tambahkan artikel pertama Anda.
-                    </p>
-
-                    <br>
-
-                    <a
-                        href="{{ route('articles.create') }}"
-                        class="btn-add"
-                    >
-                        ＋ Tambah Artikel
-                    </a>
-
-                </div>
-
-            @endif
-
-        </div>
-
-    </section>
-
-</main>
-
-
-</body>
-</html>
+@endsection

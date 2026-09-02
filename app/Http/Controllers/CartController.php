@@ -124,7 +124,7 @@ class CartController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | HAPUS PRODUK
+    | HAPUS PRODUK DARI KERANJANG
     |--------------------------------------------------------------------------
     */
 
@@ -170,7 +170,10 @@ class CartController extends Controller
     {
         $wishlist = session()->get('wishlist', []);
 
-        return view('wishlist.index', compact('wishlist'));
+        return view(
+            'wishlist.index',
+            compact('wishlist')
+        );
     }
 
 
@@ -184,17 +187,33 @@ class CartController extends Controller
     {
         $wishlist = session()->get('wishlist', []);
 
+        /*
+        |----------------------------------------------------------------------
+        | Jika produk sudah ada → hapus
+        |----------------------------------------------------------------------
+        */
+
         if (isset($wishlist[$product->id])) {
 
             unset($wishlist[$product->id]);
 
-            session()->put('wishlist', $wishlist);
+            session()->put(
+                'wishlist',
+                $wishlist
+            );
 
             return back()->with(
                 'success',
                 'Produk dihapus dari wishlist.'
             );
         }
+
+
+        /*
+        |----------------------------------------------------------------------
+        | Jika belum ada → tambahkan
+        |----------------------------------------------------------------------
+        */
 
         $wishlist[$product->id] = [
             'id' => $product->id,
@@ -203,7 +222,10 @@ class CartController extends Controller
             'image' => $product->image,
         ];
 
-        session()->put('wishlist', $wishlist);
+        session()->put(
+            'wishlist',
+            $wishlist
+        );
 
         return back()->with(
             'success',

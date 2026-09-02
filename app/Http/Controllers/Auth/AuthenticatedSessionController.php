@@ -12,7 +12,7 @@ use Illuminate\View\View;
 class AuthenticatedSessionController extends Controller
 {
     /**
-     * Display the login view.
+     * Tampilkan halaman login.
      */
     public function create(): View
     {
@@ -20,7 +20,7 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
-     * Handle an incoming authentication request.
+     * Proses login.
      */
     public function store(LoginRequest $request): RedirectResponse
     {
@@ -28,20 +28,25 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        return redirect()->intended(route('dashboard'));
     }
 
     /**
-     * Destroy an authenticated session.
+     * Logout pengguna.
      */
     public function destroy(Request $request): RedirectResponse
     {
+        // Logout dari guard web
         Auth::guard('web')->logout();
 
+        // Hapus session lama
         $request->session()->invalidate();
 
+        // Buat CSRF token baru
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        // Setelah logout langsung kembali ke halaman LOGIN
+        // bukan ke halaman Home publik
+        return redirect()->route('login');
     }
 }

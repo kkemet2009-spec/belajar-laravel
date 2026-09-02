@@ -318,4 +318,65 @@ h6 {
     .product-price {
         font-size: 20px;
     }
+    .product-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.product-actions form {
+    margin: 0;
+}
+
+.btn-cart,
+.btn-buy,
+.btn-wishlist {
+    width: 100%;
+    min-height: 48px;
+    border-radius: 14px;
+    border: none;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.btn-cart {
+    background: #111827;
+    color: white;
+}
+
+.btn-cart:hover {
+    background: #000000;
+    transform: translateY(-2px);
+}
+
+.btn-buy {
+    background: #f5b400;
+    color: #111111;
+}
+
+.btn-buy:hover {
+    background: #e0a500;
+    transform: translateY(-2px);
+}
+
+.btn-wishlist {
+    margin-top: 12px;
+    background: white;
+    color: #111827;
+    border: 1px solid #dfe3e8;
+}
+
+.btn-wishlist:hover {
+    border-color: #111827;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 700px) {
+    .product-actions {
+        grid-template-columns: 1fr;
+    }
+}
 }

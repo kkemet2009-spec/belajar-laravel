@@ -6,142 +6,271 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
-    .login-screen {
-        --js-charcoal:      #12141A;
-        --js-charcoal-soft: #1B1E26;
-        --js-accent:        #16C784;
-        --js-accent-dark:   #0FA968;
-        --js-accent-soft:   rgba(22, 199, 132, 0.12);
-        --js-gray-300:      #2A2E38;
-        --js-gray-500:      #7C8394;
-        --js-white:         #FFFFFF;
-        --js-error:         #F2555A;
-        --js-error-soft:    rgba(242, 85, 90, 0.10);
-        --js-success:       #16C784;
-        --js-success-soft:  rgba(22, 199, 132, 0.10);
-        --js-transition: 220ms cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .login-screen {
-        min-height: 640px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 64px 20px;
-        position: relative;
-        isolation: isolate;
-        overflow: hidden;
-        font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-        background:
-            radial-gradient(circle at 15% 10%, rgba(22,199,132,0.10), transparent 40%),
-            radial-gradient(circle at 85% 90%, rgba(22,199,132,0.06), transparent 45%),
-            linear-gradient(180deg, #0C0D11 0%, #12141A 100%);
-    }
-
-    /* Faint pitch center-circle, subtle sporting motif, kept quiet */
-    .login-screen::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 780px;
-        height: 780px;
-        border: 1px solid rgba(255, 255, 255, 0.035);
-        border-radius: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 0;
-        pointer-events: none;
-    }
-
-    .login-screen::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 1180px;
-        height: 1180px;
-        border: 1px solid rgba(255, 255, 255, 0.02);
-        border-radius: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 0;
-        pointer-events: none;
-    }
-
-    .login-card {
-        position: relative;
-        z-index: 1;
-        width: 100%;
-        max-width: 408px;
-        background: var(--js-charcoal-soft);
-        border: 1px solid rgba(255, 255, 255, 0.06);
-        border-radius: 20px;
-        padding: 40px 36px;
-        box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.55);
+    * {
         box-sizing: border-box;
     }
 
-    /* Signature: thin jersey-stripe accent bar on top of the card */
-    .login-card__stripe {
-        position: absolute;
-        top: 0;
-        left: 28px;
-        right: 28px;
-        height: 3px;
-        border-radius: 0 0 4px 4px;
-        background: linear-gradient(90deg, var(--js-accent) 0%, transparent 50%, var(--js-accent) 100%);
-        opacity: 0.85;
+    .login-page {
+        height: 100vh;
+        display: grid;
+        grid-template-columns: 1.05fr 1fr;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
     }
 
-    .login-brand {
+    /* ================= LEFT: STADIUM PANEL ================= */
+
+    .login-visual {
+        position: relative;
+        overflow-y: auto;
+        background:
+            radial-gradient(circle at 20% 15%, rgba(59,130,246,.25), transparent 45%),
+            radial-gradient(circle at 80% 85%, rgba(37,99,235,.18), transparent 50%),
+            linear-gradient(180deg, #06152F 0%, #0B2447 55%, #0F3460 100%);
+        color: #FFFFFF;
+        padding: 28px 40px;
         display: flex;
         flex-direction: column;
-        align-items: center;
-        text-align: center;
-        margin-bottom: 28px;
+        justify-content: space-between;
+        gap: 12px;
     }
 
-    .login-brand__logo {
-        display: inline-flex;
+    /* Stadium light beams — pure CSS */
+    .stadium-light {
+        position: absolute;
+        top: -60px;
+        width: 3px;
+        height: 340px;
+        background: linear-gradient(180deg, rgba(255,255,255,.55), transparent);
+        filter: blur(1px);
+        opacity: .5;
+        animation: glow 4s ease-in-out infinite alternate;
+    }
+
+    .stadium-light.l1 { left: 8%; transform: rotate(18deg); animation-delay: 0s; }
+    .stadium-light.l2 { left: 20%; transform: rotate(10deg); animation-delay: .6s; }
+    .stadium-light.l3 { right: 22%; transform: rotate(-10deg); animation-delay: 1.2s; }
+    .stadium-light.l4 { right: 8%; transform: rotate(-18deg); animation-delay: 1.8s; }
+
+    @keyframes glow {
+        from { opacity: .25; }
+        to { opacity: .6; }
+    }
+
+    /* Floating particles */
+    .particle {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: rgba(255,255,255,.5);
+        animation: floatUp 6s linear infinite;
+    }
+
+    @keyframes floatUp {
+        from { transform: translateY(0); opacity: 0; }
+        10% { opacity: .8; }
+        90% { opacity: .3; }
+        to { transform: translateY(-140px); opacity: 0; }
+    }
+
+    /* Pitch strip at the bottom */
+    .pitch-strip {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 120px;
+        background: linear-gradient(180deg, transparent, rgba(6,78,59,.55));
+    }
+
+    .login-visual > * {
+        position: relative;
+        z-index: 2;
+    }
+
+    .visual-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .visual-brand img {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        object-fit: cover;
+        flex-shrink: 0;
+    }
+
+    .visual-brand-text .name {
+        font-size: 17px;
+        font-weight: 800;
+        letter-spacing: .5px;
+    }
+
+    .visual-brand-text .subname {
+        font-size: 11.5px;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        color: #93C5FD;
+        margin-top: 1px;
+    }
+
+    /* Jersey illustration slot — replace with a real photo/illustration
+       later if you have one. This is a simple CSS/SVG placeholder,
+       intentionally without any third-party brand logo. */
+    .visual-illustration {
+        display: flex;
         align-items: center;
         justify-content: center;
-        width: 52px;
-        height: 52px;
-        border-radius: 14px;
-        background: var(--js-accent-soft);
-        color: var(--js-accent);
-        font-size: 1.35rem;
-        margin-bottom: 16px;
+        margin: 0;
     }
 
-    .login-brand__name {
-        font-family: 'Space Grotesk', sans-serif;
+    .jersey-badge {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: rgba(255,255,255,.06);
+        border: 1px solid rgba(255,255,255,.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: floatSoft 4.5s ease-in-out infinite;
+    }
+
+    @keyframes floatSoft {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .visual-heading h1 {
+        font-size: 25px;
+        font-weight: 800;
+        letter-spacing: -.5px;
+        margin: 0 0 4px;
+        color: #FFFFFF;
+        line-height: 1.25;
+    }
+
+    .visual-heading .highlight {
+        color: #60A5FA;
+    }
+
+    .visual-heading p.desc {
+        color: rgba(255,255,255,.72);
+        font-size: 12.5px;
+        line-height: 1.6;
+        max-width: 380px;
+        margin: 8px 0 0;
+    }
+
+    .visual-features {
+        display: flex;
+        gap: 10px;
+        margin-top: 16px;
+    }
+
+    .feature-box {
+        flex: 1;
+        background: rgba(255,255,255,.05);
+        border: 1px solid rgba(255,255,255,.08);
+        border-radius: 12px;
+        padding: 10px 8px;
+        text-align: center;
+    }
+
+    .feature-icon {
+        width: 26px;
+        height: 26px;
+        margin: 0 auto 6px;
+        border-radius: 8px;
+        background: rgba(59,130,246,.18);
+        color: #60A5FA;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .feature-box h4 {
+        font-size: 11.5px;
         font-weight: 700;
-        font-size: 1.15rem;
-        letter-spacing: 0.02em;
-        color: var(--js-white);
+        color: #FFFFFF;
+        margin: 0 0 2px;
     }
 
-    .login-brand__name strong {
-        color: var(--js-accent);
+    .feature-box p {
+        font-size: 9.5px;
+        color: rgba(255,255,255,.6);
+        line-height: 1.35;
+        margin: 0;
     }
 
-    .login-brand__title {
-        margin-top: 18px;
-        font-family: 'Space Grotesk', sans-serif;
-        font-weight: 700;
-        font-size: 1.5rem;
-        color: var(--js-white);
+    .visual-trust {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: rgba(255,255,255,.5);
     }
 
-    .login-brand__subtitle {
-        margin-top: 6px;
-        font-size: 0.88rem;
-        color: var(--js-gray-500);
-        line-height: 1.5;
+    /* ================= RIGHT: LOGIN CARD ================= */
+
+    .login-side {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #F8FAFC;
+        padding: 24px 24px;
+        overflow-y: auto;
+    }
+
+    .login-card {
+        width: 100%;
+        max-width: 380px;
+        background: #FFFFFF;
+        border-radius: 22px;
+        box-shadow: 0 20px 60px -15px rgba(15,23,42,.15);
+        padding: 30px 32px;
+        opacity: 0;
+        transform: translateY(14px);
+        animation: cardIn .55s ease forwards;
+    }
+
+    @keyframes cardIn {
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .login-badge {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        margin: 0 auto 14px;
+        background: linear-gradient(160deg, #2563EB, #1D4ED8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #FFFFFF;
+        font-weight: 800;
+        box-shadow: 0 10px 24px -6px rgba(37,99,235,.45);
+    }
+
+    .login-card h1 {
+        text-align: center;
+        font-size: 21px;
+        font-weight: 800;
+        color: #111827;
+        margin: 0 0 6px;
+    }
+
+    .login-card .subtitle {
+        text-align: center;
+        font-size: 12.5px;
+        color: #64748B;
+        line-height: 1.6;
+        margin: 0 0 20px;
     }
 
     /* Alerts */
@@ -151,74 +280,63 @@
         gap: 10px;
         padding: 12px 14px;
         border-radius: 10px;
-        font-size: 0.85rem;
-        line-height: 1.45;
-        margin-bottom: 20px;
+        font-size: 13px;
+        line-height: 1.5;
+        margin-bottom: 18px;
     }
 
-    .login-alert i { margin-top: 2px; }
-
     .login-alert--error {
-        background: var(--js-error-soft);
-        color: var(--js-error);
-        border: 1px solid rgba(242, 85, 90, 0.22);
+        background: #FEF2F2;
+        color: #B91C1C;
+        border: 1px solid #FECACA;
     }
 
     .login-alert--success {
-        background: var(--js-success-soft);
-        color: var(--js-accent);
-        border: 1px solid rgba(22, 199, 132, 0.22);
+        background: #F0FDF4;
+        color: #15803D;
+        border: 1px solid #BBF7D0;
     }
 
-    /* Form */
     .login-form {
         display: flex;
         flex-direction: column;
         gap: 18px;
     }
 
-    .login-field {
-        display: flex;
-        flex-direction: column;
-        gap: 7px;
-    }
-
     .login-field label {
-        font-size: 0.82rem;
-        font-weight: 600;
-        color: rgba(255, 255, 255, 0.85);
+        display: block;
+        font-size: 13px;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 7px;
     }
 
     .login-input {
         position: relative;
         display: flex;
         align-items: center;
-        border: 1.5px solid var(--js-gray-300);
+        border: 1.5px solid #E2E8F0;
         border-radius: 10px;
-        background: rgba(255, 255, 255, 0.03);
-        transition: border-color var(--js-transition), box-shadow var(--js-transition), background var(--js-transition);
+        background: #F8FAFC;
+        transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
     }
 
     .login-input:focus-within {
-        border-color: var(--js-accent);
-        background: rgba(22, 199, 132, 0.04);
-        box-shadow: 0 0 0 4px var(--js-accent-soft);
+        border-color: #2563EB;
+        background: #FFFFFF;
+        box-shadow: 0 0 0 4px rgba(37,99,235,.1);
     }
 
     .login-input--error {
-        border-color: var(--js-error);
-        background: var(--js-error-soft);
+        border-color: #EF4444;
+        background: #FEF2F2;
     }
 
-    .login-input--error:focus-within {
-        box-shadow: 0 0 0 4px rgba(242, 85, 90, 0.12);
-    }
-
-    .login-input i.login-input__icon {
+    .login-input .icon {
         position: absolute;
-        left: 14px;
-        color: var(--js-gray-500);
-        font-size: 0.88rem;
+        left: 13px;
+        color: #94A3B8;
+        display: flex;
         pointer-events: none;
     }
 
@@ -228,53 +346,43 @@
         background: transparent;
         outline: none;
         padding: 12px 14px 12px 40px;
-        font-size: 0.92rem;
+        font-size: 14px;
         font-family: inherit;
-        color: var(--js-white);
-        box-sizing: border-box;
+        color: #111827;
     }
 
     .login-input input::placeholder {
-        color: #565C6B;
+        color: #94A3B8;
     }
 
-    .login-toggle-password {
+    .toggle-password {
         position: absolute;
         right: 10px;
         background: none;
         border: none;
-        color: var(--js-gray-500);
-        font-size: 0.88rem;
+        color: #94A3B8;
         padding: 6px;
         display: flex;
-        align-items: center;
-        justify-content: center;
+        cursor: pointer;
         border-radius: 6px;
-        transition: color var(--js-transition), background var(--js-transition);
     }
 
-    .login-toggle-password:hover {
-        color: var(--js-white);
-        background: rgba(255, 255, 255, 0.06);
+    .toggle-password:hover {
+        color: #475569;
+        background: #F1F5F9;
     }
 
-    .login-toggle-password:focus-visible,
-    .login-input input:focus-visible {
-        outline: 2px solid var(--js-accent);
-        outline-offset: 2px;
+    .field-error {
+        font-size: 12px;
+        color: #DC2626;
+        margin-top: 6px;
+        display: block;
     }
 
-    .login-field-error {
-        font-size: 0.78rem;
-        color: var(--js-error);
-    }
-
-    /* Row: remember + forgot */
     .login-row {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-top: -2px;
     }
 
     .login-checkbox {
@@ -286,313 +394,396 @@
     }
 
     .login-checkbox input {
-        position: absolute;
-        opacity: 0;
-        width: 0;
-        height: 0;
-    }
-
-    .login-checkbox__box {
-        width: 17px;
-        height: 17px;
-        border: 1.5px solid var(--js-gray-300);
-        border-radius: 5px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        transition: background var(--js-transition), border-color var(--js-transition);
-        flex-shrink: 0;
-    }
-
-    .login-checkbox__box::after {
-        content: '\f00c';
-        font-family: 'Font Awesome 6 Free';
-        font-weight: 900;
-        font-size: 0.56rem;
-        color: var(--js-charcoal);
-        opacity: 0;
-        transition: opacity var(--js-transition);
-    }
-
-    .login-checkbox input:checked + .login-checkbox__box {
-        background: var(--js-accent);
-        border-color: var(--js-accent);
-    }
-
-    .login-checkbox input:checked + .login-checkbox__box::after {
-        opacity: 1;
-    }
-
-    .login-checkbox input:focus-visible + .login-checkbox__box {
-        outline: 2px solid var(--js-accent);
-        outline-offset: 2px;
-    }
-
-    .login-checkbox span.login-checkbox__label {
-        font-size: 0.83rem;
-        color: var(--js-gray-500);
-    }
-
-    .login-forgot {
-        font-size: 0.83rem;
-        font-weight: 600;
-        color: var(--js-accent);
-        transition: opacity var(--js-transition);
-    }
-
-    .login-forgot:hover {
-        opacity: 0.75;
-        text-decoration: underline;
-    }
-
-    /* Submit button — overrides the site's generic .btn look on purpose */
-    .login-submit {
-        position: relative;
-        width: 100%;
-        padding: 13px 20px;
-        border: none;
-        border-radius: 10px;
-        background: var(--js-accent);
-        color: #06251B;
-        font-size: 0.94rem;
-        font-weight: 700;
-        letter-spacing: 0.01em;
-        margin-top: 2px;
-        transition: background var(--js-transition), transform var(--js-transition), box-shadow var(--js-transition);
+        width: 16px;
+        height: 16px;
+        accent-color: #2563EB;
         cursor: pointer;
     }
 
-    .login-submit:hover {
-        background: var(--js-accent-dark);
-        box-shadow: 0 8px 24px -6px rgba(22, 199, 132, 0.45);
+    .login-checkbox span {
+        font-size: 13px;
+        color: #64748B;
     }
 
-    .login-submit:active {
-        transform: scale(0.98);
+    .login-forgot {
+        font-size: 13px;
+        font-weight: 700;
+        color: #2563EB;
+        text-decoration: none;
     }
 
-    .login-submit:focus-visible {
-        outline: 2px solid var(--js-white);
-        outline-offset: 3px;
+    .login-forgot:hover {
+        text-decoration: underline;
     }
 
-    .login-submit__label,
-    .login-submit__loading {
-        display: inline-flex;
+    .login-submit {
+        width: 100%;
+        border: none;
+        border-radius: 10px;
+        padding: 14px;
+        background: linear-gradient(135deg, #2563EB, #3B82F6);
+        color: #FFFFFF;
+        font-size: 14.5px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: inherit;
+        display: flex;
         align-items: center;
         justify-content: center;
         gap: 8px;
+        transition: transform .2s ease, box-shadow .2s ease, opacity .2s ease;
     }
 
-    .login-submit__loading { display: none; }
+    .login-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 26px -8px rgba(37,99,235,.5);
+    }
 
-    .login-submit.is-loading .login-submit__label { display: none; }
-    .login-submit.is-loading .login-submit__loading { display: inline-flex; }
+    .login-submit:active {
+        transform: translateY(0);
+    }
+
     .login-submit.is-loading {
-        opacity: 0.85;
+        opacity: .8;
         pointer-events: none;
     }
 
-    /* Register link */
+    .login-submit__loading {
+        display: none;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .login-submit.is-loading .login-submit__label { display: none; }
+    .login-submit.is-loading .login-submit__loading { display: inline-flex; }
+
+    .divider {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 22px 0 18px;
+        color: #94A3B8;
+        font-size: 12.5px;
+    }
+
+    .divider::before,
+    .divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #E5E7EB;
+    }
+
+    .back-website {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 13px;
+        border-radius: 10px;
+        border: 1.5px solid #DBEAFE;
+        background: #FFFFFF;
+        color: #2563EB;
+        font-weight: 700;
+        font-size: 13.5px;
+        text-decoration: none;
+        transition: background .2s ease, transform .2s ease;
+    }
+
+    .back-website:hover {
+        background: #EFF6FF;
+        transform: translateY(-1px);
+    }
+
     .login-register {
-        margin-top: 24px;
+        margin-top: 20px;
         text-align: center;
-        font-size: 0.85rem;
-        color: var(--js-gray-500);
+        font-size: 13px;
+        color: #64748B;
     }
 
     .login-register a {
-        color: var(--js-accent);
-        font-weight: 600;
-        transition: opacity var(--js-transition);
+        color: #2563EB;
+        font-weight: 700;
+        text-decoration: none;
     }
 
     .login-register a:hover {
-        opacity: 0.75;
         text-decoration: underline;
     }
 
     .login-footer-note {
         margin-top: 22px;
         text-align: center;
-        font-size: 0.76rem;
-        color: #4A505E;
+        font-size: 12px;
+        color: #94A3B8;
     }
 
-    /* Responsive */
-    @media (max-width: 700px) {
-        .login-screen {
-            padding: 40px 16px;
+    /* ================= RESPONSIVE ================= */
+
+    @media (max-width: 980px) {
+
+        .login-page {
+            grid-template-columns: 1fr;
+        }
+
+        .login-visual {
+            padding: 32px 28px;
+            min-height: 300px;
+        }
+
+        .visual-illustration,
+        .visual-features {
+            display: none;
+        }
+
+        .visual-heading h1 {
+            font-size: 26px;
+        }
+    }
+
+    @media (max-width: 480px) {
+
+        .login-side {
+            padding: 24px 16px;
         }
 
         .login-card {
-            padding: 32px 22px;
-            border-radius: 16px;
-        }
-
-        .login-brand__title {
-            font-size: 1.32rem;
+            padding: 30px 22px;
+            border-radius: 18px;
         }
     }
 
     @media (prefers-reduced-motion: reduce) {
-        .login-screen * {
-            transition: none !important;
+        .login-page * {
             animation: none !important;
+            transition: none !important;
         }
     }
 </style>
 
-<div class="login-screen">
-    <div class="login-card">
-        <div class="login-card__stripe" aria-hidden="true"></div>
+<div class="login-page">
 
-        <div class="login-brand">
-            <span class="login-brand__logo">
-                <i class="fa-solid fa-shirt"></i>
-            </span>
-            <span class="login-brand__name">JERSEY<strong>STORE</strong></span>
+    <!-- ================= LEFT: STADIUM VISUAL ================= -->
 
-            <h1 class="login-brand__title">Login Admin</h1>
-            <p class="login-brand__subtitle">Masuk ke dashboard untuk mengelola Jersey Store.</p>
+    <div class="login-visual">
+
+        <div class="stadium-light l1"></div>
+        <div class="stadium-light l2"></div>
+        <div class="stadium-light l3"></div>
+        <div class="stadium-light l4"></div>
+
+        <div class="particle" style="left:15%; animation-delay:0s;"></div>
+        <div class="particle" style="left:35%; animation-delay:1.5s;"></div>
+        <div class="particle" style="left:55%; animation-delay:3s;"></div>
+        <div class="particle" style="left:75%; animation-delay:.8s;"></div>
+        <div class="particle" style="left:90%; animation-delay:2.2s;"></div>
+
+        <div class="pitch-strip"></div>
+
+        <div class="visual-brand">
+            <img src="{{ asset('images/logo.png') }}" alt="Jersey Store">
+            <div class="visual-brand-text">
+                <div class="name">JERSEY STORE</div>
+                <div class="subname">ADMIN DASHBOARD</div>
+            </div>
         </div>
 
-        {{-- Session status (contoh: setelah reset password) --}}
-        @if (session('status'))
-            <div class="login-alert login-alert--success" role="alert">
-                <i class="fa-solid fa-circle-check"></i>
-                <span>{{ session('status') }}</span>
+        {{--
+            Slot ilustrasi. Kalau kamu punya foto/ilustrasi pemain sendiri,
+            ganti div .jersey-badge ini dengan:
+            <img src="{{ asset('images/login-illustration.png') }}" ...>
+        --}}
+        <div class="visual-illustration">
+            <div class="jersey-badge">
+                <svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M8 3l4 2 4-2 3 4-2 2v10a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V9L3 7l3-4z"/>
+                    <circle cx="17" cy="17" r="3.4" fill="#0B2447" stroke="#93C5FD"/>
+                </svg>
             </div>
-        @endif
+        </div>
 
-        {{-- Error umum (misal: kredensial salah) --}}
-        @error('email')
-            @if ($message === __('auth.failed') || $loop->first)
-                <div class="login-alert login-alert--error" role="alert">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                    <span>{{ $message }}</span>
+        <div>
+            <div class="visual-heading">
+                <h1>Welcome Back!<br><span class="highlight">Sign in to continue</span></h1>
+                <p class="desc">Manage your products, orders, and grow your jersey business.</p>
+            </div>
+
+            <div class="visual-features">
+
+                <div class="feature-box">
+                    <div class="feature-icon">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z"/></svg>
+                    </div>
+                    <h4>Secure</h4>
+                    <p>Your data is safe with us</p>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-icon">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 11 14 11 22 21 10 13 10 13 2"/></svg>
+                    </div>
+                    <h4>Fast</h4>
+                    <p>Quick access to your dashboard</p>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-icon">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                    </div>
+                    <h4>Analytics</h4>
+                    <p>Track your store performance</p>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="visual-trust">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z"/></svg>
+            Trusted by jersey store owners nationwide.
+        </div>
+
+    </div>
+
+
+    <!-- ================= RIGHT: LOGIN CARD ================= -->
+
+    <div class="login-side">
+
+        <div class="login-card">
+
+            <div class="login-badge">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3l4 2 4-2 3 4-2 2v10a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V9L3 7l3-4z"/></svg>
+            </div>
+
+            <h1>Login</h1>
+            <p class="subtitle">Sign in to continue to Jersey Store<br>admin dashboard</p>
+
+            {{-- Session status (contoh: setelah reset password) --}}
+            @if (session('status'))
+                <div class="login-alert login-alert--success" role="alert">
+                    <span>{{ session('status') }}</span>
                 </div>
             @endif
-        @enderror
 
-        <form method="POST" action="{{ route('login') }}" class="login-form" novalidate>
-            @csrf
-
-            {{-- Email --}}
-            <div class="login-field">
-                <label for="email">Email</label>
-                <div class="login-input @error('email') login-input--error @enderror">
-                    <i class="fa-solid fa-envelope login-input__icon"></i>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value="{{ old('email') }}"
-                        placeholder="admin@jerseystore.com"
-                        autocomplete="username"
-                        autofocus
-                        required
-                        aria-describedby="email-error"
-                    >
+            {{-- Error umum (misal: kredensial salah) --}}
+            @error('email')
+                <div class="login-alert login-alert--error" role="alert">
+                    <span>{{ $message }}</span>
                 </div>
-                @error('email')
-                    <span id="email-error" class="login-field-error">{{ $message }}</span>
-                @enderror
-            </div>
+            @enderror
 
-            {{-- Password --}}
-            <div class="login-field">
-                <label for="password">Password</label>
-                <div class="login-input @error('password') login-input--error @enderror">
-                    <i class="fa-solid fa-lock login-input__icon"></i>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        placeholder="Masukkan password"
-                        autocomplete="current-password"
-                        required
-                        aria-describedby="password-error"
-                    >
-                    <button
-                        type="button"
-                        class="login-toggle-password"
-                        id="togglePassword"
-                        aria-label="Tampilkan password"
-                        aria-pressed="false"
-                    >
-                        <i class="fa-solid fa-eye" id="togglePasswordIcon"></i>
-                    </button>
+            <form method="POST" action="{{ route('login') }}" class="login-form" novalidate>
+                @csrf
+
+                {{-- Email --}}
+                <div class="login-field">
+                    <label for="email">Email Address</label>
+                    <div class="login-input @error('email') login-input--error @enderror">
+                        <span class="icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/></svg>
+                        </span>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value="{{ old('email') }}"
+                            placeholder="Enter your email"
+                            autocomplete="username"
+                            autofocus
+                            required
+                        >
+                    </div>
                 </div>
-                @error('password')
-                    <span id="password-error" class="login-field-error">{{ $message }}</span>
-                @enderror
-            </div>
 
-            {{-- Remember me + Forgot password --}}
-            <div class="login-row">
-                <label class="login-checkbox">
-                    <input type="checkbox" name="remember" id="remember">
-                    <span class="login-checkbox__box"></span>
-                    <span class="login-checkbox__label">Remember me</span>
-                </label>
+                {{-- Password --}}
+                <div class="login-field">
+                    <label for="password">Password</label>
+                    <div class="login-input @error('password') login-input--error @enderror">
+                        <span class="icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+                        </span>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+                        <button type="button" class="toggle-password" id="togglePassword" aria-label="Tampilkan password">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" id="eyeIcon"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
+                    @error('password')
+                        <span class="field-error">{{ $message }}</span>
+                    @enderror
+                </div>
 
-                @if (Route::has('password.request'))
-                    <a href="{{ route('password.request') }}" class="login-forgot">Lupa password?</a>
-                @endif
-            </div>
+                {{-- Remember me + Forgot password --}}
+                <div class="login-row">
+                    <label class="login-checkbox">
+                        <input type="checkbox" name="remember" id="remember">
+                        <span>Remember me</span>
+                    </label>
 
-            {{-- Submit --}}
-            <button type="submit" class="login-submit" id="submitBtn">
-                <span class="login-submit__label">
-                    <i class="fa-solid fa-right-to-bracket"></i>
-                    Login
-                </span>
-                <span class="login-submit__loading">
-                    <i class="fa-solid fa-spinner fa-spin"></i>
-                    Memproses...
-                </span>
-            </button>
-        </form>
+                    @if (Route::has('password.request'))
+                        <a href="{{ route('password.request') }}" class="login-forgot">Forgot password?</a>
+                    @endif
+                </div>
 
-        @if (Route::has('register'))
-            <p class="login-register">
-                Belum punya akun? <a href="{{ route('register') }}">Daftar di sini</a>
-            </p>
-        @endif
+                {{-- Submit --}}
+                <button type="submit" class="login-submit" id="submitBtn">
+                    <span class="login-submit__label">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                        Login
+                    </span>
+                    <span class="login-submit__loading">
+                        Memproses...
+                    </span>
+                </button>
+            </form>
 
-        <p class="login-footer-note">
-            &copy; {{ date('Y') }} Jersey Store. Panel khusus administrator.
-        </p>
+            <div class="divider">or</div>
+
+            <a href="{{ route('home') }}" class="back-website">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z"/></svg>
+                Back to Website
+            </a>
+
+            @if (Route::has('register'))
+                <p class="login-register">
+                    Belum punya akun? <a href="{{ route('register') }}">Daftar di sini</a>
+                </p>
+            @endif
+
+            <p class="login-footer-note">&copy; {{ date('Y') }} Jersey Store. All rights reserved.</p>
+
+        </div>
+
     </div>
+
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
 
-        // Show / hide password
         var toggleBtn = document.getElementById('togglePassword');
-        var toggleIcon = document.getElementById('togglePasswordIcon');
         var passwordInput = document.getElementById('password');
+        var eyeIcon = document.getElementById('eyeIcon');
 
-        if (toggleBtn && passwordInput && toggleIcon) {
+        if (toggleBtn && passwordInput) {
             toggleBtn.addEventListener('click', function () {
                 var isHidden = passwordInput.getAttribute('type') === 'password';
-
                 passwordInput.setAttribute('type', isHidden ? 'text' : 'password');
 
-                toggleIcon.classList.toggle('fa-eye', !isHidden);
-                toggleIcon.classList.toggle('fa-eye-slash', isHidden);
-
-                toggleBtn.setAttribute('aria-pressed', String(isHidden));
-                toggleBtn.setAttribute(
-                    'aria-label',
-                    isHidden ? 'Sembunyikan password' : 'Tampilkan password'
-                );
+                eyeIcon.innerHTML = isHidden
+                    ? '<path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a18.6 18.6 0 0 1 4.22-5.06M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 7 11 7a18.6 18.6 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>'
+                    : '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/>';
             });
         }
 
-        // Submit loading state
         var form = document.querySelector('.login-form');
         var submitBtn = document.getElementById('submitBtn');
 

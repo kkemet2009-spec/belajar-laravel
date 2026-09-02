@@ -1,371 +1,315 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
 
-    <title>@yield('title', 'Jersey Store')</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>
+        @yield('title', 'Jersey Store')
+    </title>
+
+    {{-- FAVICON --}}
+    @include('components.favicon')
+
+    {{-- VITE --}}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    {{-- PAGE CSS --}}
+    @stack('styles')
 
     <style>
         * {
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-            background: #FFFFFF;
-            color: #171717;
-            -webkit-font-smoothing: antialiased;
+
+            min-height: 100vh;
+
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            background: #f8fafc;
+            color: #111827;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        button,
+        input,
+        textarea,
+        select {
+            font: inherit;
         }
 
         img {
             max-width: 100%;
-            display: block;
         }
 
-        a {
-            font-family: inherit;
+        /* ==========================================
+           MAIN CONTENT
+        ========================================== */
+
+        .js-main {
+            width: 100%;
+            min-height: calc(100vh - 72px);
         }
 
-        /* ================= NAVBAR ================= */
+        /* ==========================================
+           FOOTER
+        ========================================== */
 
-        .navbar {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            height: 80px;
-            background: #FFFFFF;
-            border-bottom: 1px solid #E5E7EB;
-        }
-
-        .navbar-inner {
-            max-width: 1240px;
-            height: 100%;
-            margin: 0 auto;
-            padding: 0 32px;
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            align-items: center;
-        }
-
-        .logo {
-            justify-self: start;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #111827;
-            text-decoration: none;
-            font-size: 18px;
-            font-weight: 800;
-        }
-
-        .logo-icon {
-            width: 46px;
-            height: 46px;
-            border-radius: 50%;
-            object-fit: cover;
-            flex-shrink: 0;
-        }
-
-        .nav-links {
-            justify-self: center;
-            display: flex;
-            align-items: center;
-            gap: 32px;
-        }
-
-        .nav-links a {
-            position: relative;
-            color: #111827;
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: 500;
-            padding-bottom: 6px;
-        }
-
-        .nav-links a.active {
-            font-weight: 600;
-            color: #92400E;
-        }
-
-        .nav-links a.active::after {
-            content: "";
-            position: absolute;
-            left: 0; right: 0; bottom: 0;
-            height: 2px;
-            background: #F4B400;
-        }
-
-        .nav-right {
-            justify-self: end;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .nav-cta {
-            padding: 10px 18px;
-            border-radius: 999px;
-            background: #111827;
-            color: #FFFFFF;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 6px;
-        }
-
-        .hamburger span {
-            width: 22px;
-            height: 2px;
-            background: #111827;
-        }
-
-        .mobile-menu {
-            display: none;
-            flex-direction: column;
-            background: #FFFFFF;
-            border-bottom: 1px solid #E5E7EB;
-            padding: 8px 32px 16px;
-        }
-
-        .mobile-menu.open {
-            display: flex;
-        }
-
-        .mobile-menu a {
-            color: #111827;
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: 500;
-            padding: 12px 0;
-            border-bottom: 1px solid #E5E7EB;
-        }
-
-        .mobile-menu a.active {
-            color: #92400E;
-            font-weight: 700;
-        }
-
-        @media (max-width: 800px) {
-            .nav-links {
-                display: none;
-            }
-
-            .hamburger {
-                display: flex;
-            }
-
-            .navbar-inner {
-                grid-template-columns: 1fr auto;
-            }
-        }
-
-        /* ================= GENERIC HELPERS ================= */
-
-        .btn {
-            display: inline-block;
-            background: #111827;
-            color: #FFFFFF;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 999px;
-            text-decoration: none;
-            cursor: pointer;
-            font-size: 13.5px;
-            font-weight: 700;
-        }
-
-        .btn:hover {
-            background: #F4B400;
-            color: #111827;
-        }
-
-        /* ================= FOOTER ================= */
-
-        footer {
-            background: #111827;
-            color: #FFFFFF;
-            padding: 48px 32px 24px;
+        .js-footer {
             margin-top: 60px;
+
+            background: #111827;
+            color: #ffffff;
         }
 
-        .footer-grid {
-            max-width: 1240px;
+        .js-footer-container {
+            max-width: 1200px;
             margin: 0 auto;
+
+            padding: 45px 24px 25px;
+
             display: grid;
             grid-template-columns: 2fr 1fr 1fr;
-            gap: 36px;
+            gap: 40px;
         }
 
-        .footer-brand h2 {
-            font-size: 17px;
-            margin: 0 0 10px;
+        .js-footer-brand {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        .footer-brand p {
-            color: #9CA3AF;
-            font-size: 13.5px;
-            line-height: 1.7;
-            max-width: 320px;
+        .js-footer-title {
+            font-size: 22px;
+            font-weight: 800;
             margin: 0;
         }
 
-        footer h4 {
-            font-size: 13.5px;
-            margin: 0 0 14px;
-            color: #E5E7EB;
+        .js-footer-description {
+            max-width: 450px;
+
+            margin: 0;
+
+            color: #cbd5e1;
+
+            font-size: 14px;
+            line-height: 1.7;
         }
 
-        footer a.footer-link {
-            display: block;
-            color: #9CA3AF;
-            text-decoration: none;
-            margin-bottom: 10px;
+        .js-footer-heading {
+            margin: 0 0 15px;
+
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .js-footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .js-footer-links a {
+            color: #cbd5e1;
+
+            font-size: 14px;
+
+            transition: color 0.2s ease;
+        }
+
+        .js-footer-links a:hover {
+            color: #ffffff;
+        }
+
+        .js-footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+
+            padding: 18px 24px;
+
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .js-footer-bottom p {
+            margin: 0;
+
+            color: #94a3b8;
+
             font-size: 13px;
         }
 
-        footer a.footer-link:hover {
-            color: #FFFFFF;
-        }
+        /* ==========================================
+           RESPONSIVE FOOTER
+        ========================================== */
 
-        .copyright {
-            max-width: 1240px;
-            margin: 32px auto 0;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,.08);
-            text-align: center;
-            color: #9CA3AF;
-            font-size: 12.5px;
-        }
+        @media (max-width: 768px) {
 
-        @media (max-width: 800px) {
-            .footer-grid {
+            .js-footer-container {
                 grid-template-columns: 1fr;
-                gap: 26px;
-            }
-        }
+                gap: 30px;
 
-        @media (max-width: 640px) {
-            .navbar-inner,
-            footer {
-                padding-left: 20px;
-                padding-right: 20px;
+                padding: 35px 20px 20px;
+            }
+
+            .js-footer-bottom {
+                padding: 16px 20px;
+
+                flex-direction: column;
+                text-align: center;
             }
         }
     </style>
 </head>
 
+
 <body>
 
-    @php
-        $authPageRoutes = ['login', 'register', 'password.request', 'password.email', 'password.reset', 'password.confirm', 'verification.notice', 'verification.verify'];
-        $isAuthPage = request()->routeIs($authPageRoutes);
-    @endphp
+    {{-- ==========================================
+         PUBLIC NAVBAR
+    ========================================== --}}
 
-    @unless($isAuthPage)
-    {{-- NAVBAR --}}
-    <header class="navbar" id="navbar">
-        <div class="navbar-inner">
+    @include('components.navbar')
 
-            <a href="{{ route('home') }}" class="logo">
-                <img src="{{ asset('images/logo.png') }}" alt="Jersey Store" class="logo-icon">
-            </a>
 
-            <nav class="nav-links">
-                <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
-                <a href="{{ route('public.products.index') }}" class="{{ request()->routeIs('public.products.*') ? 'active' : '' }}">Produk</a>
-                <a href="{{ route('public.articles.index') }}" class="{{ request()->routeIs('public.articles.*') ? 'active' : '' }}">Artikel</a>
-                <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'active' : '' }}">Kontak</a>
-            </nav>
+    {{-- ==========================================
+         MAIN CONTENT
+    ========================================== --}}
 
-            <div class="nav-right">
+    <main class="js-main">
 
-                @auth
-                    @if(Route::has('dashboard'))
-                        <a href="{{ route('dashboard') }}" class="nav-cta">Dashboard</a>
-                    @endif
-                @endauth
+        @yield('content')
 
-                <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
+    </main>
+
+
+    {{-- ==========================================
+         FOOTER
+    ========================================== --}}
+
+    <footer class="js-footer">
+
+        <div class="js-footer-container">
+
+            {{-- BRAND --}}
+            <div class="js-footer-brand">
+
+                <h2 class="js-footer-title">
+                    Jersey Store
+                </h2>
+
+                <p class="js-footer-description">
+                    Temukan berbagai jersey berkualitas dengan desain
+                    keren untuk mendukung tim favoritmu.
+                </p>
+
+            </div>
+
+
+            {{-- NAVIGASI --}}
+            <div>
+
+                <h3 class="js-footer-heading">
+                    Navigasi
+                </h3>
+
+                <div class="js-footer-links">
+
+                    <a href="{{ route('home') }}">
+                        Home
+                    </a>
+
+                    <a href="{{ route('public.products.index') }}">
+                        Produk
+                    </a>
+
+                    <a href="{{ route('public.articles.index') }}">
+                        Artikel
+                    </a>
+
+                    <a href="{{ route('kontak') }}">
+                        Kontak
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            {{-- INFORMASI --}}
+            <div>
+
+                <h3 class="js-footer-heading">
+                    Jersey Store
+                </h3>
+
+                <div class="js-footer-links">
+
+                    <a href="{{ route('public.products.index') }}">
+                        Koleksi Jersey
+                    </a>
+
+                    <a href="{{ route('public.articles.index') }}">
+                        Artikel
+                    </a>
+
+                    <a href="{{ route('kontak') }}">
+                        Hubungi Kami
+                    </a>
+
+                </div>
 
             </div>
 
         </div>
-    </header>
-
-    <div class="mobile-menu" id="mobileMenu">
-        <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
-        <a href="{{ route('public.products.index') }}" class="{{ request()->routeIs('public.products.*') ? 'active' : '' }}">Produk</a>
-        <a href="{{ route('public.articles.index') }}" class="{{ request()->routeIs('public.articles.*') ? 'active' : '' }}">Artikel</a>
-        <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'active' : '' }}">Kontak</a>
-    </div>
-    @endunless
 
 
-    {{-- ISI HALAMAN --}}
-    @yield('content')
+        {{-- FOOTER BOTTOM --}}
 
+        <div class="js-footer-bottom">
 
-    @unless($isAuthPage)
-    {{-- FOOTER --}}
-    <footer>
+            <p>
+                © {{ date('Y') }} Jersey Store. All rights reserved.
+            </p>
 
-        <div class="footer-grid">
+            <p>
+                Dibuat dengan Laravel
+            </p>
 
-            <div class="footer-brand">
-                <h2>Jersey Store</h2>
-                <p>Jersey pilihan untuk pecinta sepak bola.</p>
-            </div>
-
-            <div>
-                <h4>Shop</h4>
-                <a href="{{ route('public.products.index') }}" class="footer-link">Produk</a>
-                <a href="{{ route('public.articles.index') }}" class="footer-link">Artikel</a>
-            </div>
-
-            <div>
-                <h4>Company</h4>
-                <a href="{{ route('home') }}" class="footer-link">Home</a>
-                <a href="{{ route('contact') }}" class="footer-link">Kontak</a>
-            </div>
-
-        </div>
-
-        <div class="copyright">
-            © {{ date('Y') }} Jersey Store. All Rights Reserved.
         </div>
 
     </footer>
-    @endunless
 
-    <script>
-        var hamburgerBtn = document.getElementById('hamburgerBtn');
-        var mobileMenu = document.getElementById('mobileMenu');
-        if (hamburgerBtn && mobileMenu) {
-            hamburgerBtn.addEventListener('click', function () {
-                mobileMenu.classList.toggle('open');
-            });
-        }
-    </script>
+
+    {{-- PAGE JAVASCRIPT --}}
+    @stack('scripts')
 
 </body>
+
 </html>
