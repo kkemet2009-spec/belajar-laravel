@@ -105,6 +105,7 @@
             font-size: 22px;
             font-weight: 800;
             margin: 0;
+            color: #ffffff;
         }
 
         .js-footer-description {
@@ -123,6 +124,7 @@
 
             font-size: 15px;
             font-weight: 700;
+            color: #e5e7eb;
         }
 
         .js-footer-links {
@@ -225,25 +227,20 @@
                 </h2>
 
                 <p class="js-footer-description">
-                    Temukan berbagai jersey berkualitas dengan desain
-                    keren untuk mendukung tim favoritmu.
+                    Jersey pilihan untuk pecinta sepak bola.
                 </p>
 
             </div>
 
 
-            {{-- NAVIGASI --}}
+            {{-- SHOP --}}
             <div>
 
                 <h3 class="js-footer-heading">
-                    Navigasi
+                    Shop
                 </h3>
 
                 <div class="js-footer-links">
-
-                    <a href="{{ route('home') }}">
-                        Home
-                    </a>
 
                     <a href="{{ route('public.products.index') }}">
                         Produk
@@ -253,34 +250,26 @@
                         Artikel
                     </a>
 
-                    <a href="{{ route('kontak') }}">
-                        Kontak
-                    </a>
-
                 </div>
 
             </div>
 
 
-            {{-- INFORMASI --}}
+            {{-- COMPANY --}}
             <div>
 
                 <h3 class="js-footer-heading">
-                    Jersey Store
+                    Company
                 </h3>
 
                 <div class="js-footer-links">
 
-                    <a href="{{ route('public.products.index') }}">
-                        Koleksi Jersey
-                    </a>
-
-                    <a href="{{ route('public.articles.index') }}">
-                        Artikel
+                    <a href="{{ route('home') }}">
+                        Home
                     </a>
 
                     <a href="{{ route('kontak') }}">
-                        Hubungi Kami
+                        Kontak
                     </a>
 
                 </div>
@@ -296,10 +285,6 @@
 
             <p>
                 © {{ date('Y') }} Jersey Store. All rights reserved.
-            </p>
-
-            <p>
-                Dibuat dengan Laravel
             </p>
 
         </div>

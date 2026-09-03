@@ -9,12 +9,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
+    html, body {
+        height: 100%;
+        overflow: hidden;
+    }
+
     * {
         box-sizing: border-box;
     }
 
     .login-page {
         height: 100vh;
+        overflow: hidden;
         display: grid;
         grid-template-columns: 1.05fr 1fr;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
@@ -24,7 +30,7 @@
 
     .login-visual {
         position: relative;
-        overflow-y: auto;
+        overflow: hidden;
         background:
             radial-gradient(circle at 20% 15%, rgba(59,130,246,.25), transparent 45%),
             radial-gradient(circle at 80% 85%, rgba(37,99,235,.18), transparent 50%),
@@ -129,6 +135,16 @@
         margin: 0;
     }
 
+    .visual-illustration img {
+        width: 100%;
+        max-width: 320px;
+        max-height: 260px;
+        object-fit: contain;
+        display: block;
+        margin: 0 auto;
+        border-radius: 16px;
+    }
+
     .jersey-badge {
         width: 120px;
         height: 120px;
@@ -224,7 +240,6 @@
         justify-content: center;
         background: #F8FAFC;
         padding: 24px 24px;
-        overflow-y: auto;
     }
 
     .login-card {
@@ -300,7 +315,7 @@
     .login-form {
         display: flex;
         flex-direction: column;
-        gap: 18px;
+        gap: 14px;
     }
 
     .login-field label {
@@ -583,7 +598,9 @@
         <div class="pitch-strip"></div>
 
         <div class="visual-brand">
-            <img src="{{ asset('images/logo.png') }}" alt="Jersey Store">
+            @if(file_exists(public_path('images/logo.png')))
+                <img src="{{ asset('images/logo.png') }}" alt="Jersey Store">
+            @endif
             <div class="visual-brand-text">
                 <div class="name">JERSEY STORE</div>
                 <div class="subname">ADMIN DASHBOARD</div>
@@ -591,17 +608,22 @@
         </div>
 
         {{--
-            Slot ilustrasi. Kalau kamu punya foto/ilustrasi pemain sendiri,
-            ganti div .jersey-badge ini dengan:
-            <img src="{{ asset('images/login-illustration.png') }}" ...>
+            Slot ilustrasi. Otomatis pakai gambar asli begitu kamu
+            upload file ke: public/images/login-illustration.png
+            (format PNG, disarankan ada background transparan).
+            Kalau file belum ada, otomatis fallback ke ikon CSS.
         --}}
         <div class="visual-illustration">
-            <div class="jersey-badge">
-                <svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M8 3l4 2 4-2 3 4-2 2v10a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V9L3 7l3-4z"/>
-                    <circle cx="17" cy="17" r="3.4" fill="#0B2447" stroke="#93C5FD"/>
-                </svg>
-            </div>
+            @if(file_exists(public_path('images/login-illustration.png')))
+                <img src="{{ asset('images/login-illustration.png') }}" alt="Jersey Store">
+            @else
+                <div class="jersey-badge">
+                    <svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M8 3l4 2 4-2 3 4-2 2v10a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V9L3 7l3-4z"/>
+                        <circle cx="17" cy="17" r="3.4" fill="#0B2447" stroke="#93C5FD"/>
+                    </svg>
+                </div>
+            @endif
         </div>
 
         <div>
@@ -653,8 +675,17 @@
 
         <div class="login-card">
 
+            {{--
+                Badge di atas card. Otomatis pakai logo asli begitu
+                kamu upload file ke: public/images/logo.png
+                Kalau file belum ada, otomatis fallback ke ikon jersey.
+            --}}
             <div class="login-badge">
-                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3l4 2 4-2 3 4-2 2v10a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V9L3 7l3-4z"/></svg>
+                @if(file_exists(public_path('images/logo.png')))
+                    <img src="{{ asset('images/logo.png') }}" alt="Jersey Store" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
+                @else
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3l4 2 4-2 3 4-2 2v10a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V9L3 7l3-4z"/></svg>
+                @endif
             </div>
 
             <h1>Login</h1>
