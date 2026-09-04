@@ -6,6 +6,9 @@
 
     <title>{{ $article->title }} - Jersey Store</title>
 
+    <link rel="icon" href="{{ asset('images/logo.png') }}" type="image/png">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo.png') }}">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -65,15 +68,11 @@
         }
 
         .logo-icon {
-            width: 34px;
-            height: 34px;
-            border-radius: 8px;
-            background: #111827;
-            color: #FFFFFF;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 15px;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
         }
 
         .nav-links {
@@ -94,6 +93,7 @@
 
         .nav-links a.active {
             font-weight: 600;
+            color: #92400E;
         }
 
         .nav-links a.active::after {
@@ -813,12 +813,16 @@
 @endphp
 
 <!-- ================= NAVBAR ================= -->
+{{--
+    Navbar disamakan persis dengan Home: logo gambar (bukan emoji),
+    tidak ada tombol Login (hanya Dashboard jika sudah login).
+--}}
 
 <header class="navbar" id="navbar">
     <div class="navbar-inner">
 
         <a href="{{ route('home') }}" class="logo">
-            <span class="logo-icon">⚽</span>
+            <img src="{{ asset('images/logo.png') }}" alt="Jersey Store" class="logo-icon">
             Jersey Store
         </a>
 
@@ -834,10 +838,6 @@
             @auth
                 @if(Route::has('dashboard'))
                     <a href="{{ route('dashboard') }}" class="nav-cta">Dashboard</a>
-                @endif
-            @else
-                @if(Route::has('login'))
-                    <a href="{{ route('login') }}" class="nav-cta">Login</a>
                 @endif
             @endauth
 

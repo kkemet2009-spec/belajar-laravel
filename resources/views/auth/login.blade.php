@@ -1,17 +1,29 @@
-@extends('layouts.app')
+{{--
+    Halaman login ini SENGAJA dibuat berdiri sendiri (bukan @extends
+    layouts.app), supaya navbar/footer situs publik tidak pernah ikut
+    muncul di sini, apapun isi layouts/app.blade.php.
+--}}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-@section('title', 'Login Admin - Jersey Store')
+    <title>Login Admin - Jersey Store</title>
 
-@section('content')
+    <link rel="icon" href="{{ asset('images/logo.png') }}" type="image/png">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo.png') }}">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
-    html, body {
-        height: 100%;
-        overflow: hidden;
+    @media (min-width: 981px) {
+        .login-page {
+            min-height: 100vh;
+        }
     }
 
     * {
@@ -19,8 +31,7 @@
     }
 
     .login-page {
-        height: 100vh;
-        overflow: hidden;
+        min-height: 100vh;
         display: grid;
         grid-template-columns: 1.05fr 1fr;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
@@ -31,16 +42,50 @@
     .login-visual {
         position: relative;
         overflow: hidden;
-        background:
-            radial-gradient(circle at 20% 15%, rgba(59,130,246,.25), transparent 45%),
-            radial-gradient(circle at 80% 85%, rgba(37,99,235,.18), transparent 50%),
-            linear-gradient(180deg, #06152F 0%, #0B2447 55%, #0F3460 100%);
+        background-color: #06152F;
+        background-size: cover;
+        background-position: center;
         color: #FFFFFF;
         padding: 28px 40px;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
-        gap: 12px;
+        justify-content: flex-start;
+        gap: 18px;
+    }
+
+    /* Lapisan gradasi navy di atas foto (atau jadi background utama
+       kalau belum ada foto custom) — supaya teks tetap kebaca. */
+    .login-visual::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        background:
+            radial-gradient(circle at 20% 15%, rgba(59,130,246,.28), transparent 45%),
+            radial-gradient(circle at 80% 85%, rgba(37,99,235,.2), transparent 50%),
+            linear-gradient(180deg, rgba(6,21,47,.88) 0%, rgba(11,36,71,.9) 55%, rgba(15,52,96,.92) 100%);
+    }
+
+    .login-visual.has-photo::before {
+        background:
+            linear-gradient(180deg, rgba(6,21,47,.55) 0%, rgba(6,21,47,.35) 45%, rgba(6,21,47,.85) 100%);
+    }
+
+    /* ------------------------------------------------------------
+       PENTING (perbaikan bug tata letak):
+       Elemen dekoratif (stadium-light, particle, pitch-strip) HARUS
+       tetap position:absolute supaya tidak ikut memakan ruang
+       vertikal di dalam flex container. Aturan ".login-visual > *"
+       di bawah ini sengaja diletakkan SEBELUM definisi elemen
+       dekoratif tersebut, supaya position:absolute mereka yang
+       menang (urutan CSS menentukan pemenang saat spesifisitas
+       sama). Sebelumnya aturan ini ada DI BAWAH, sehingga menimpa
+       posisi absolute mereka menjadi relative dan mendorong logo +
+       konten lain turun jauh ke bawah.
+    ------------------------------------------------------------ */
+    .login-visual > * {
+        position: relative;
+        z-index: 2;
     }
 
     /* Stadium light beams — pure CSS */
@@ -92,11 +137,6 @@
         background: linear-gradient(180deg, transparent, rgba(6,78,59,.55));
     }
 
-    .login-visual > * {
-        position: relative;
-        z-index: 2;
-    }
-
     .visual-brand {
         display: flex;
         align-items: center;
@@ -137,8 +177,8 @@
 
     .visual-illustration img {
         width: 100%;
-        max-width: 320px;
-        max-height: 260px;
+        max-width: 260px;
+        max-height: 190px;
         object-fit: contain;
         display: block;
         margin: 0 auto;
@@ -146,8 +186,8 @@
     }
 
     .jersey-badge {
-        width: 120px;
-        height: 120px;
+        width: 92px;
+        height: 92px;
         border-radius: 50%;
         background: rgba(255,255,255,.06);
         border: 1px solid rgba(255,255,255,.12);
@@ -163,7 +203,7 @@
     }
 
     .visual-heading h1 {
-        font-size: 25px;
+        font-size: 23px;
         font-weight: 800;
         letter-spacing: -.5px;
         margin: 0 0 4px;
@@ -186,7 +226,7 @@
     .visual-features {
         display: flex;
         gap: 10px;
-        margin-top: 16px;
+        margin-top: 14px;
     }
 
     .feature-box {
@@ -194,13 +234,13 @@
         background: rgba(255,255,255,.05);
         border: 1px solid rgba(255,255,255,.08);
         border-radius: 12px;
-        padding: 10px 8px;
+        padding: 9px 8px;
         text-align: center;
     }
 
     .feature-icon {
-        width: 26px;
-        height: 26px;
+        width: 24px;
+        height: 24px;
         margin: 0 auto 6px;
         border-radius: 8px;
         background: rgba(59,130,246,.18);
@@ -225,6 +265,8 @@
     }
 
     .visual-trust {
+        margin-top: auto;
+        padding-top: 14px;
         display: flex;
         align-items: center;
         gap: 8px;
@@ -577,12 +619,22 @@
         }
     }
 </style>
+</head>
+
+<body>
 
 <div class="login-page">
 
     <!-- ================= LEFT: STADIUM VISUAL ================= -->
 
-    <div class="login-visual">
+    <div
+        class="login-visual {{ file_exists(public_path('images/login-background.jpg')) || file_exists(public_path('images/login-background.png')) ? 'has-photo' : '' }}"
+        @if(file_exists(public_path('images/login-background.jpg')))
+            style="background-image: url('{{ asset('images/login-background.jpg') }}');"
+        @elseif(file_exists(public_path('images/login-background.png')))
+            style="background-image: url('{{ asset('images/login-background.png') }}');"
+        @endif
+    >
 
         <div class="stadium-light l1"></div>
         <div class="stadium-light l2"></div>
@@ -618,7 +670,7 @@
                 <img src="{{ asset('images/login-illustration.png') }}" alt="Jersey Store">
             @else
                 <div class="jersey-badge">
-                    <svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M8 3l4 2 4-2 3 4-2 2v10a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V9L3 7l3-4z"/>
                         <circle cx="17" cy="17" r="3.4" fill="#0B2447" stroke="#93C5FD"/>
                     </svg>
@@ -636,7 +688,7 @@
 
                 <div class="feature-box">
                     <div class="feature-icon">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z"/></svg>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z"/></svg>
                     </div>
                     <h4>Secure</h4>
                     <p>Your data is safe with us</p>
@@ -644,7 +696,7 @@
 
                 <div class="feature-box">
                     <div class="feature-icon">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 11 14 11 22 21 10 13 10 13 2"/></svg>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 11 14 11 22 21 10 13 10 13 2"/></svg>
                     </div>
                     <h4>Fast</h4>
                     <p>Quick access to your dashboard</p>
@@ -652,7 +704,7 @@
 
                 <div class="feature-box">
                     <div class="feature-icon">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
                     </div>
                     <h4>Analytics</h4>
                     <p>Track your store performance</p>
@@ -827,4 +879,5 @@
     });
 </script>
 
-@endsection
+</body>
+</html>

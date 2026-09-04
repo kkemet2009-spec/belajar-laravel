@@ -1,20 +1,34 @@
 <header class="js-navbar">
+
     <div class="js-navbar-container">
 
-        {{-- LOGO --}}
-        <a href="{{ route('home') }}" class="js-brand">
-            <img
-                src="{{ asset('images/logo.png') }}"
-                alt="Jersey Store"
-                class="js-brand-logo"
-            >
+        {{-- =====================================================
+             LOGO
+        ====================================================== --}}
 
-            <span>Jersey Store</span>
+        <a href="{{ route('home') }}" class="js-brand">
+
+            <div class="js-brand-logo">
+                <img
+                    src="{{ asset('images/logo.png') }}"
+                    alt="Jersey Store"
+                >
+            </div>
+
+            <span class="js-brand-name">
+                Jersey Store
+            </span>
+
         </a>
 
-        {{-- NAVIGASI TENGAH --}}
+
+        {{-- =====================================================
+             NAVIGASI TENGAH
+        ====================================================== --}}
+
         <nav class="js-nav-menu">
 
+            {{-- HOME --}}
             <a
                 href="{{ route('home') }}"
                 class="{{ request()->routeIs('home') ? 'active' : '' }}"
@@ -22,6 +36,8 @@
                 Home
             </a>
 
+
+            {{-- PRODUK --}}
             <a
                 href="{{ route('public.products.index') }}"
                 class="{{ request()->routeIs('public.products.*') ? 'active' : '' }}"
@@ -29,6 +45,8 @@
                 Produk
             </a>
 
+
+            {{-- ARTIKEL --}}
             <a
                 href="{{ route('public.articles.index') }}"
                 class="{{ request()->routeIs('public.articles.*') ? 'active' : '' }}"
@@ -36,6 +54,8 @@
                 Artikel
             </a>
 
+
+            {{-- KONTAK --}}
             <a
                 href="{{ route('kontak') }}"
                 class="{{ request()->routeIs('kontak') || request()->routeIs('contact') ? 'active' : '' }}"
@@ -45,131 +65,200 @@
 
         </nav>
 
-        {{-- WISHLIST + KERANJANG HANYA DI PRODUK --}}
-        @if(request()->routeIs('public.products.*'))
-            <div class="js-actions">
 
-                <a
-                    href="{{ route('wishlist.index') }}"
-                    class="js-action"
-                    title="Wishlist"
-                >
-                    ♡
-                </a>
+        {{-- =====================================================
+             WISHLIST + KERANJANG
+             MUNCUL DI HOME DAN PRODUK
+        ====================================================== --}}
 
-                <a
-                    href="{{ route('cart.index') }}"
-                    class="js-action"
-                    title="Keranjang"
-                >
-                    🛒
-                </a>
+        <div class="js-actions">
 
-            </div>
-        @endif
+            {{-- WISHLIST --}}
+            <a
+                href="{{ route('wishlist.index') }}"
+                class="js-action"
+                title="Wishlist"
+                aria-label="Wishlist"
+            >
+                <span>♡</span>
+            </a>
+
+
+            {{-- KERANJANG --}}
+            <a
+                href="{{ route('cart.index') }}"
+                class="js-action"
+                title="Keranjang"
+                aria-label="Keranjang"
+            >
+                <span>🛒</span>
+            </a>
+
+        </div>
 
     </div>
+
 </header>
 
+
 <style>
-/* ==========================================
-   NAVBAR — SAMA SEPERTI HOME
-========================================== */
+
+/* ==========================================================
+   NAVBAR
+========================================================== */
 
 .js-navbar {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-
     width: 100%;
-    height: 80px;
+    height: 72px;
 
-    background: #FFFFFF;
-    border-bottom: 1px solid #E5E7EB;
+    background: #ffffff;
+
+    border-bottom: 1px solid #eeeeee;
+
+    position: relative;
+
+    z-index: 1000;
 }
+
+
+/* ==========================================================
+   CONTAINER
+========================================================== */
 
 .js-navbar-container {
+    position: relative;
+
     width: 100%;
-    max-width: 1240px;
-    height: 100%;
+    max-width: 1200px;
+
+    height: 72px;
 
     margin: 0 auto;
-    padding: 0 32px;
 
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-}
-
-/* ==========================================
-   LOGO
-========================================== */
-
-.js-brand {
-    justify-self: start;
+    padding: 0 24px;
 
     display: flex;
     align-items: center;
+}
+
+
+/* ==========================================================
+   LOGO
+========================================================== */
+
+.js-brand {
+    display: flex;
+
+    align-items: center;
+
     gap: 10px;
 
     color: #111827;
+
     text-decoration: none;
 
-    font-size: 18px;
-    font-weight: 800;
-}
-
-.js-brand-logo {
-    width: 46px;
-    height: 46px;
-
-    border-radius: 50%;
-
-    object-fit: cover;
     flex-shrink: 0;
 }
 
-/* ==========================================
-   NAVIGASI TENGAH
-========================================== */
 
-.js-nav-menu {
-    justify-self: center;
+.js-brand-logo {
+    width: 42px;
+    height: 42px;
 
     display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+}
+
+
+.js-brand-logo img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    display: block;
+}
+
+
+.js-brand-name {
+    color: #111827;
+
+    font-size: 20px;
+
+    font-weight: 800;
+
+    white-space: nowrap;
+}
+
+
+/* ==========================================================
+   NAVIGASI TENGAH
+========================================================== */
+
+.js-nav-menu {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    display: flex;
+
     align-items: center;
 
-    gap: 32px;
+    gap: 34px;
 }
+
 
 .js-nav-menu a {
     position: relative;
 
+    display: flex;
+
+    align-items: center;
+
+    height: 40px;
+
+    padding: 0;
+
     color: #111827;
+
+    background: transparent;
+
     text-decoration: none;
 
     font-size: 15px;
+
     font-weight: 500;
 
-    padding-bottom: 6px;
+    border-radius: 0;
 
     transition: color 0.2s ease;
 }
 
+
 /* HOVER */
 
 .js-nav-menu a:hover {
-    color: #92400E;
+    color: #c87500;
 }
+
 
 /* MENU AKTIF */
 
 .js-nav-menu a.active {
-    color: #92400E;
-    font-weight: 600;
+    color: #c87500;
+
+    background: transparent;
 }
 
-/* GARIS KUNING SEPERTI HOME */
+
+/* GARIS AKTIF */
 
 .js-nav-menu a.active::after {
     content: "";
@@ -178,115 +267,188 @@
 
     left: 0;
     right: 0;
-    bottom: 0;
+
+    bottom: 2px;
 
     height: 2px;
 
-    background: #F4B400;
+    background: #c87500;
+
+    border-radius: 0;
 }
 
-/* ==========================================
-   ICON KANAN
-========================================== */
+
+/* ==========================================================
+   WISHLIST + KERANJANG
+========================================================== */
 
 .js-actions {
-    justify-self: end;
+    position: absolute;
+
+    right: 24px;
+
+    top: 50%;
+
+    transform: translateY(-50%);
 
     display: flex;
+
     align-items: center;
 
-    gap: 16px;
+    gap: 12px;
 }
+
+
+/* ==========================================================
+   ICON BUTTON
+========================================================== */
 
 .js-action {
     width: 42px;
     height: 42px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
     color: #111827;
-    background: #F8FAFC;
+
+    background: #f8fafc;
 
     border-radius: 50%;
 
     text-decoration: none;
 
-    font-size: 20px;
-
     transition:
         color 0.2s ease,
         background 0.2s ease,
         transform 0.2s ease;
+
+    cursor: pointer;
 }
 
+
+.js-action span {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    line-height: 1;
+
+    font-size: 21px;
+}
+
+
+/* ==========================================================
+   HOVER ICON
+========================================================== */
+
 .js-action:hover {
-    color: #92400E;
-    background: #F1F5F9;
+    color: #c87500;
+
+    background: #f1f5f9;
 
     transform: translateY(-2px);
 }
 
-/* ==========================================
-   RESPONSIVE
-========================================== */
 
-@media (max-width: 800px) {
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 768px) {
 
     .js-navbar {
-        height: 80px;
+        height: auto;
     }
+
 
     .js-navbar-container {
-        grid-template-columns: 1fr auto;
+        height: auto;
 
-        padding: 0 20px;
+        min-height: 72px;
+
+        padding: 12px 16px;
+
+        flex-direction: column;
+
+        gap: 10px;
     }
+
+
+    .js-brand {
+        width: 100%;
+
+        justify-content: center;
+    }
+
 
     .js-nav-menu {
-        position: absolute;
+        position: static;
 
-        top: 80px;
-        left: 0;
-        right: 0;
+        transform: none;
 
-        display: none;
+        width: 100%;
 
-        background: #FFFFFF;
+        justify-content: center;
 
-        padding: 20px;
+        flex-wrap: wrap;
 
-        border-bottom: 1px solid #E5E7EB;
+        gap: 22px;
     }
+
 
     .js-nav-menu a {
+        height: 36px;
+
         font-size: 14px;
     }
-}
 
-@media (max-width: 640px) {
-
-    .js-navbar-container {
-        padding: 0 20px;
-    }
-
-    .js-brand span {
-        display: none;
-    }
-
-    .js-nav-menu {
-        gap: 20px;
-    }
 
     .js-actions {
-        gap: 8px;
+        position: static;
+
+        transform: none;
+
+        margin-top: 2px;
     }
+
+}
+
+
+/* ==========================================================
+   HP KECIL
+========================================================== */
+
+@media (max-width: 480px) {
+
+    .js-brand-name {
+        font-size: 18px;
+    }
+
+
+    .js-nav-menu {
+        gap: 16px;
+    }
+
+
+    .js-nav-menu a {
+        font-size: 13px;
+    }
+
 
     .js-action {
         width: 38px;
         height: 38px;
-        font-size: 18px;
     }
+
+
+    .js-action span {
+        font-size: 19px;
+    }
+
 }
+
 </style>
