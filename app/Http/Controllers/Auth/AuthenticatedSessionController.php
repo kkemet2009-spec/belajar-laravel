@@ -21,6 +21,7 @@ class AuthenticatedSessionController extends Controller
 
     /**
      * Proses login.
+     * Admin -> dashboard admin. Customer -> Home (website publik).
      */
     public function store(LoginRequest $request): RedirectResponse
     {
@@ -28,25 +29,30 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard'));
+        if ($request->user()->isAdmin()) {
+            return redirect()->intended(route('dashboard'));
+        }
+
+        return redirect()->route('home');
     }
 
     /**
      * Logout pengguna.
+     * Admin -> halaman login (perilaku lama dipertahankan).
+     * Customer -> Home.
      */
     public function destroy(Request $request): RedirectResponse
     {
-        // Logout dari guard web
+        $wasAdmin = $request->user()?->isAdmin() ?? false;
+
         Auth::guard('web')->logout();
 
-        // Hapus session lama
         $request->session()->invalidate();
 
-        // Buat CSRF token baru
         $request->session()->regenerateToken();
 
-        // Setelah logout langsung kembali ke halaman LOGIN
-        // bukan ke halaman Home publik
-        return redirect()->route('login');
+        return $wasAdmin
+            ? redirect()->route('login')
+            : redirect()->route('home');
     }
 }

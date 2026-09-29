@@ -133,7 +133,7 @@ Route::post('/contact', [ContactController::class, 'send'])
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'admin'])->group(function () {
 
 
     // =================================================
