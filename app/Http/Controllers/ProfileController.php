@@ -38,10 +38,13 @@ class ProfileController extends Controller
     }
 
     /**
-     * Delete the user's account.
+     * Delete the user's account (customer only).
      */
     public function destroy(Request $request): RedirectResponse
     {
+        // Admin tidak boleh menghapus akunnya sendiri lewat halaman ini.
+        abort_if($request->user()->isAdmin(), 403, 'Akun admin tidak dapat dihapus dari halaman ini.');
+
         $request->validateWithBag('userDeletion', [
             'password' => ['required', 'current_password'],
         ]);

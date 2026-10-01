@@ -952,36 +952,106 @@
 
 <!-- ================= NAVBAR ================= -->
 
-<header class="navbar" id="navbar">
-    <div class="navbar-inner">
+    <header class="navbar" id="navbar">
+        <div class="navbar-inner">
 
-        <a href="{{ route('home') }}" class="logo">
-            <img src="{{ asset('images/logo.png') }}" alt="Jersey Store" class="logo-icon">
-            Jersey Store
-        </a>
+            <a href="{{ route('home') }}" class="logo">
+                <img src="{{ asset('images/logo.png') }}" alt="Jersey Store" class="logo-icon">
+            </a>
 
-        <nav class="nav-links">
-            <a href="{{ route('home') }}" class="active">Home</a>
-            <a href="{{ route('public.products.index') }}">Produk</a>
-            <a href="{{ route('public.articles.index') }}">Artikel</a>
-            <a href="{{ route('contact') }}">Kontak</a>
-        </nav>
+            <nav class="nav-links">
+                <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
+                <a href="{{ route('public.products.index') }}" class="{{ request()->routeIs('public.products.*') ? 'active' : '' }}">Produk</a>
+                <a href="{{ route('public.articles.index') }}" class="{{ request()->routeIs('public.articles.*') ? 'active' : '' }}">Artikel</a>
+                <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'active' : '' }}">Kontak</a>
 
-        <div class="nav-right">
+                @auth
+                    @if(! auth()->user()->isAdmin())
+                        <a href="{{ route('wishlist.index') }}" class="{{ request()->routeIs('wishlist.*') ? 'active' : '' }}">Wishlist</a>
+                        <a href="{{ route('cart.index') }}" class="{{ request()->routeIs('cart.*') ? 'active' : '' }}">Keranjang</a>
 
-            @auth
-                @if(Route::has('dashboard'))
-                    <a href="{{ route('dashboard') }}" class="nav-cta">Dashboard</a>
-                @endif
-            @endauth
+                        @if(Route::has('profile.edit'))
+                            <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.*') ? 'active' : '' }}">Akun</a>
+                        @endif
 
-            <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+                        @if(Route::has('orders.index'))
+                            <a href="{{ route('orders.index') }}" class="{{ request()->routeIs('orders.*') ? 'active' : '' }}">Pesanan Saya</a>
+                        @endif
+                    @endif
+                @endauth
+            </nav>
+
+            <div class="nav-right">
+
+                @guest
+                    <a href="{{ route('login') }}" class="nav-link-plain">Login</a>
+                    <a href="{{ route('register') }}" class="nav-cta">Register</a>
+                @endguest
+
+                @auth
+                    @if(auth()->user()->isAdmin())
+                        @if(Route::has('dashboard'))
+                            <a href="{{ route('dashboard') }}" class="nav-cta">Dashboard Admin</a>
+                        @endif
+                    @else
+                        <form method="POST" action="{{ route('logout') }}" style="margin:0;">
+                            @csrf
+                            <button type="submit" class="nav-cta" style="border:0; cursor:pointer;">
+                                Logout
+                            </button>
+                        </form>
+                    @endif
+                @endauth
+
+                <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+            </div>
 
         </div>
+    </header>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
+        <a href="{{ route('public.products.index') }}" class="{{ request()->routeIs('public.products.*') ? 'active' : '' }}">Produk</a>
+        <a href="{{ route('public.articles.index') }}" class="{{ request()->routeIs('public.articles.*') ? 'active' : '' }}">Artikel</a>
+        <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'active' : '' }}">Kontak</a>
+
+        @guest
+            <a href="{{ route('login') }}">Login</a>
+            <a href="{{ route('register') }}">Register</a>
+        @endguest
+
+        @auth
+            @if(auth()->user()->isAdmin())
+                @if(Route::has('dashboard'))
+                    <a href="{{ route('dashboard') }}">Dashboard Admin</a>
+                @endif
+            @else
+                <a href="{{ route('wishlist.index') }}">Wishlist</a>
+                <a href="{{ route('cart.index') }}">Keranjang</a>
+
+                @if(Route::has('profile.edit'))
+                    <a href="{{ route('profile.edit') }}">Akun</a>
+                @endif
+
+                @if(Route::has('orders.index'))
+                    <a href="{{ route('orders.index') }}">Pesanan Saya</a>
+                @endif
+
+                <form method="POST" action="{{ route('logout') }}" style="margin:0;">
+                    @csrf
+                    <button type="submit"
+                            style="background:none; border:0; padding:0; font:inherit; color:inherit; cursor:pointer; text-align:left;">
+                        Logout
+                    </button>
+                </form>
+            @endif
+        @endauth
+    </div>
 
     </div>
 </header>

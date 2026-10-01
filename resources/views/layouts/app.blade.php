@@ -282,7 +282,7 @@
 
     @unless($isAuthPage)
     {{-- NAVBAR --}}
-    <header class="navbar" id="navbar">
+        <header class="navbar" id="navbar">
         <div class="navbar-inner">
 
             <a href="{{ route('home') }}" class="logo">
@@ -294,13 +294,42 @@
                 <a href="{{ route('public.products.index') }}" class="{{ request()->routeIs('public.products.*') ? 'active' : '' }}">Produk</a>
                 <a href="{{ route('public.articles.index') }}" class="{{ request()->routeIs('public.articles.*') ? 'active' : '' }}">Artikel</a>
                 <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'active' : '' }}">Kontak</a>
+
+                @auth
+                    @if(! auth()->user()->isAdmin())
+                        <a href="{{ route('wishlist.index') }}" class="{{ request()->routeIs('wishlist.*') ? 'active' : '' }}">Wishlist</a>
+                        <a href="{{ route('cart.index') }}" class="{{ request()->routeIs('cart.*') ? 'active' : '' }}">Keranjang</a>
+
+                        @if(Route::has('profile.edit'))
+                            <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.*') ? 'active' : '' }}">Akun</a>
+                        @endif
+
+                        @if(Route::has('orders.index'))
+                            <a href="{{ route('orders.index') }}" class="{{ request()->routeIs('orders.*') ? 'active' : '' }}">Pesanan Saya</a>
+                        @endif
+                    @endif
+                @endauth
             </nav>
 
             <div class="nav-right">
 
+                @guest
+                    <a href="{{ route('login') }}" class="nav-link-plain">Login</a>
+                    <a href="{{ route('register') }}" class="nav-cta">Register</a>
+                @endguest
+
                 @auth
-                    @if(Route::has('dashboard'))
-                        <a href="{{ route('dashboard') }}" class="nav-cta">Dashboard</a>
+                    @if(auth()->user()->isAdmin())
+                        @if(Route::has('dashboard'))
+                            <a href="{{ route('dashboard') }}" class="nav-cta">Dashboard Admin</a>
+                        @endif
+                    @else
+                        <form method="POST" action="{{ route('logout') }}" style="margin:0;">
+                            @csrf
+                            <button type="submit" class="nav-cta" style="border:0; cursor:pointer;">
+                                Logout
+                            </button>
+                        </form>
                     @endif
                 @endauth
 
@@ -311,6 +340,48 @@
                 </button>
 
             </div>
+
+        </div>
+    </header>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
+        <a href="{{ route('public.products.index') }}" class="{{ request()->routeIs('public.products.*') ? 'active' : '' }}">Produk</a>
+        <a href="{{ route('public.articles.index') }}" class="{{ request()->routeIs('public.articles.*') ? 'active' : '' }}">Artikel</a>
+        <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'active' : '' }}">Kontak</a>
+
+        @guest
+            <a href="{{ route('login') }}">Login</a>
+            <a href="{{ route('register') }}">Register</a>
+        @endguest
+
+        @auth
+            @if(auth()->user()->isAdmin())
+                @if(Route::has('dashboard'))
+                    <a href="{{ route('dashboard') }}">Dashboard Admin</a>
+                @endif
+            @else
+                <a href="{{ route('wishlist.index') }}">Wishlist</a>
+                <a href="{{ route('cart.index') }}">Keranjang</a>
+
+                @if(Route::has('profile.edit'))
+                    <a href="{{ route('profile.edit') }}">Akun</a>
+                @endif
+
+                @if(Route::has('orders.index'))
+                    <a href="{{ route('orders.index') }}">Pesanan Saya</a>
+                @endif
+
+                <form method="POST" action="{{ route('logout') }}" style="margin:0;">
+                    @csrf
+                    <button type="submit"
+                            style="background:none; border:0; padding:0; font:inherit; color:inherit; cursor:pointer; text-align:left;">
+                        Logout
+                    </button>
+                </form>
+            @endif
+        @endauth
+    </div>
 
         </div>
     </header>

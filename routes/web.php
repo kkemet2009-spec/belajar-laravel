@@ -13,6 +13,8 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserOrderController;
 
 
 /*
@@ -125,6 +127,30 @@ Route::get('/kontak', function () {
 Route::post('/contact', [ContactController::class, 'send'])
     ->name('contact.send');
 
+    // =====================================================
+// PROFILE (semua user yang login: customer dan admin)
+// =====================================================
+
+Route::middleware('auth')->group(function () {
+
+    Route::get('/profile', [ProfileController::class, 'edit'])
+        ->name('profile.edit');
+
+    Route::patch('/profile', [ProfileController::class, 'update'])
+        ->name('profile.update');
+
+    Route::delete('/profile', [ProfileController::class, 'destroy'])
+        ->name('profile.destroy');
+
+    // Pesanan Saya
+    Route::get('/pesanan-saya', [UserOrderController::class, 'index'])
+        ->name('orders.index');
+
+    Route::get('/pesanan-saya/{order}', [UserOrderController::class, 'show'])
+        ->name('orders.show');
+
+
+});
 
 
 /*

@@ -207,6 +207,9 @@ class CheckoutController extends Controller
         */
 
         $order = Order::create([
+            // Null jika tamu, terisi jika user sedang login
+            'user_id' => auth()->id(),
+
             'order_number' => $orderNumber,
 
             'customer_name' => $request->name,
@@ -261,9 +264,6 @@ class CheckoutController extends Controller
         |--------------------------------------------------------------------------
         | SIMPAN LAST ORDER
         |--------------------------------------------------------------------------
-        |
-        | payment_method DITAMBAHKAN di sini.
-        |
         */
 
         session()->put('last_order', [

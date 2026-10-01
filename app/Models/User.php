@@ -7,7 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-
+use Illuminate\Database\Eloquent\Relations\HasMany;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
@@ -17,7 +17,6 @@ class User extends Authenticatable
     public const ROLE_CUSTOMER = 'customer';
 
     /**
-     * The attributes that are mass assignable.
      * 'role' TIDAK dimasukkan agar tidak bisa dimanipulasi lewat form.
      *
      * @var list<string>
@@ -25,6 +24,8 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'phone',
+        'address',
         'password',
     ];
 
@@ -55,5 +56,10 @@ class User extends Authenticatable
     public function isCustomer(): bool
     {
         return $this->role === self::ROLE_CUSTOMER;
+    }
+    
+        public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
     }
 }
